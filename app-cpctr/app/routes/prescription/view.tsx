@@ -6,12 +6,15 @@ import {
   ShoppingBagOpen,
 } from "@phosphor-icons/react";
 import type { Route } from "./+types/view";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
 import paracetamolSrc from "@/assets/paracetamol.png";
+import CollectModal from "./collect.modal";
 
 export default function PrescriptionView({ params }: Route.ComponentProps) {
+  const [, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+
   return (
     <>
       <div className="sticky top-0 bg-white p-6 shadow-md">
@@ -146,10 +149,14 @@ export default function PrescriptionView({ params }: Route.ComponentProps) {
       <div className="pointer-events-none fixed inset-x-0 bottom-0 isolate p-6 pt-0">
         <div className="mask-gradient absolute inset-0 -z-10 bg-gray-100/50 backdrop-blur"></div>
 
-        <button className="pointer-events-auto flex h-12 w-full items-center justify-center rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900">
+        <button
+          onClick={() => setSearchParams({ collect: "" })}
+          className="pointer-events-auto flex h-14 w-full items-center justify-center rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900"
+        >
           <span>Collect order</span>
         </button>
       </div>
+      <CollectModal params={params} />
     </>
   );
 }

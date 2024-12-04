@@ -11,4 +11,5 @@ export default [
     route("order", "routes/home/order.tsx"),
     route("account", "routes/home/account.tsx"),
   ]),
+  route("prescription/:id", "routes/prescription/view.tsx"),
 ] satisfies RouteConfig;

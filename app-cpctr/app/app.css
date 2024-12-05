@@ -5,7 +5,7 @@
 @layer base {
   html,
   body {
-    @apply h-full bg-gray-100;
+    @apply h-full select-none bg-gray-100;
     color-scheme: light;
   }
 }

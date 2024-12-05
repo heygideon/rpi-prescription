@@ -8,11 +8,18 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { CaretRight, Lock, MapPin } from "@phosphor-icons/react";
+import {
+  CaretRight,
+  Check,
+  Lock,
+  LockOpen,
+  MapPin,
+} from "@phosphor-icons/react";
 import { useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import clsx from "clsx";
+import { useMutation } from "@tanstack/react-query";
 
 export default function CollectModal({
   params,
@@ -24,8 +31,18 @@ export default function CollectModal({
   const [postcode, setPostcode] = useState("");
   const [showUnlock, setShowUnlock] = useState(false);
 
-  const buttonRef = useRef<HTMLDivElement>(null);
+  const {
+    data: unlockData,
+    mutate: unlock,
+    isPending: unlockPending,
+  } = useMutation({
+    mutationFn: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      return { success: true };
+    },
+  });
 
+  const buttonRef = useRef<HTMLDivElement>(null);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [{ x }, api] = useSpring(() => ({ x: 0, y: 0 }));
   const bind = useDrag(
@@ -34,13 +51,14 @@ export default function CollectModal({
       if (last) {
         setIsMouseDown(false);
         if (overflowX === 1) {
-          // unlock
+          unlock();
           console.log(overflowX);
+          return;
         }
       }
       api.start({ x: down ? mx : 0, immediate: down });
     },
-    { bounds: buttonRef },
+    { bounds: buttonRef, enabled: !unlockPending && !unlockData },
   );
 
   return (
@@ -77,7 +95,7 @@ export default function CollectModal({
                 </div>
               </div>
 
-              <div className="grid h-56 grid-cols-1 grid-rows-1">
+              <div className="grid h-64 grid-cols-1 grid-rows-1">
                 <Transition
                   show={!showUnlock}
                   enter="transition delay-75"
@@ -123,6 +141,9 @@ export default function CollectModal({
                     >
                       <span>Collect</span>
                     </button>
+                    <p className="mt-3 text-xs italic text-gray-600">
+                      just checking it's you
+                    </p>
                   </div>
                 </Transition>
                 <Transition
@@ -146,7 +167,10 @@ export default function CollectModal({
 
                     <div
                       ref={buttonRef}
-                      className="pointer-events-auto relative mt-4 flex h-14 w-full flex-none items-center justify-center rounded-full bg-gray-400 font-medium text-white shadow-md"
+                      className={clsx(
+                        "pointer-events-auto relative mt-4 flex h-14 w-full flex-none items-center justify-center rounded-full font-medium text-white shadow-md transition",
+                        !!unlockData ? "bg-emerald-700" : "bg-gray-400",
+                      )}
                     >
                       <animated.div
                         {...bind()}
@@ -154,22 +178,43 @@ export default function CollectModal({
                         className="absolute inset-y-0 left-0 aspect-square h-full touch-none p-1.5"
                       >
                         <div className="grid size-full place-items-center rounded-full bg-white shadow">
-                          <CaretRight
-                            weight="bold"
-                            className="size-4 text-gray-600"
-                          />
+                          {!!unlockData ? (
+                            <Check
+                              weight="bold"
+                              className="size-4 text-emerald-700"
+                            />
+                          ) : unlockPending ? (
+                            <span className="size-4 animate-spin rounded-full border-2 border-transparent border-r-gray-500"></span>
+                          ) : (
+                            <CaretRight
+                              weight="bold"
+                              className="size-4 text-gray-600"
+                            />
+                          )}
                         </div>
                       </animated.div>
-                      <div
-                        className={clsx(
-                          "flex items-center gap-1.5 transition-opacity",
-                          isMouseDown && "opacity-0",
-                        )}
-                      >
-                        <Lock weight="bold" className="size-4" />
-                        <span>locked</span>
-                      </div>
+                      {!!unlockData ? (
+                        <div className={"flex items-center gap-1.5"}>
+                          <LockOpen weight="bold" className="size-4" />
+                          <span>open</span>
+                        </div>
+                      ) : (
+                        <div
+                          className={clsx(
+                            "flex items-center gap-1.5 transition-opacity",
+                            (isMouseDown || unlockPending) && "opacity-25",
+                          )}
+                        >
+                          <Lock weight="bold" className="size-4" />
+                          <span>locked</span>
+                        </div>
+                      )}
                     </div>
+                    <p className="mt-3 text-xs italic text-gray-600">
+                      {!!unlockData
+                        ? "prescription's ready!"
+                        : "swipe to unlock"}
+                    </p>
                   </div>
                 </Transition>
               </div>

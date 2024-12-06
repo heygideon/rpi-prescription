@@ -20,19 +20,19 @@ export default function Home() {
             Your prescriptions
           </h2>
           <div className="mt-3 space-y-3">
-            {data?.map((prescription) => (
+            {data?.map(({ user, ...order }) => (
               <Link
-                to={`/prescription/${prescription.id}`}
+                to={`/prescription/${order.id}`}
                 className="block rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75"
               >
                 <h3 className="text-lg font-bold tracking-tight">
-                  #{prescription.id} / Mr John Doe
+                  #{order.id} / {user.title} {user.firstName} {user.lastName}
                 </h3>
                 <p className="text-sm text-gray-600">
                   Paracetamol 500mg capsules + 2
                 </p>
                 <div className="mt-1.5 flex items-baseline">
-                  <StatusTag status={prescription.status} />
+                  <StatusTag status={order.status} />
                   <div className="flex-1"></div>
                   {/* <span className="text-sm text-red-700">
                     expires in 2 days

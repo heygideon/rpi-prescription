@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   timestamp,
   pgTable,
@@ -18,6 +18,7 @@ export type OpeningHours = {
 
 export const users = pgTable("users", {
   id: serial().primaryKey(),
+  title: text().notNull(),
   firstName: text().notNull(),
   lastName: text().notNull(),
   createdAt: timestamp()
@@ -44,6 +45,16 @@ export const orders = pgTable("orders", {
     .references(() => pharmacies.id),
   status: orderStatus().notNull().default("checking"),
 });
+export const orderRelations = relations(orders, ({ one }) => ({
+  user: one(users, {
+    fields: [orders.userId],
+    references: [users.id],
+  }),
+  pharmacy: one(pharmacies, {
+    fields: [orders.pharmacyId],
+    references: [pharmacies.id],
+  }),
+}));
 
 export const pharmacies = pgTable("pharmacies", {
   id: serial().primaryKey(),

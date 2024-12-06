@@ -1,6 +1,12 @@
 {
   "name": "api",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/client.ts",
+      "types": "./src/client.ts"
+    }
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "db:push": "drizzle-kit push",

@@ -141,7 +141,7 @@ export default function CollectModal({
                     >
                       <span>Collect</span>
                     </button>
-                    <p className="mt-3 text-xs italic text-gray-600">
+                    <p className="mt-2 text-xs italic text-gray-600">
                       just checking it's you
                     </p>
                   </div>
@@ -210,7 +210,7 @@ export default function CollectModal({
                         </div>
                       )}
                     </div>
-                    <p className="mt-3 text-xs italic text-gray-600">
+                    <p className="mt-2 text-xs italic text-gray-600">
                       {!!unlockData
                         ? "prescription's ready!"
                         : "swipe to unlock"}

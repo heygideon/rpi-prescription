@@ -1,16 +1,29 @@
 {
   "name": "api",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/client.ts",
+      "types": "./src/client.ts"
+    }
+  },
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.2.14",
     "@hono/node-server": "^1.13.7",
+    "@hono/zod-validator": "^0.4.1",
     "chalk": "^5.3.0",
-    "hono": "^4.6.12"
+    "drizzle-orm": "^0.37.0",
+    "hono": "^4.6.12",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
+    "drizzle-kit": "^0.29.1",
     "tsx": "^4.7.1"
   }
 }

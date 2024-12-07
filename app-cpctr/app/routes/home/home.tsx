@@ -15,12 +15,12 @@ const prescriptionsQuery = queryOptions({
       .then((r) => r.json()),
 });
 const collectedQuery = queryOptions({
-  queryKey: ["prescriptions"],
+  queryKey: ["prescriptions", "collected"],
   queryFn: () =>
     client.prescriptions
       .$get({
         query: {
-          status: ["collected"],
+          status: "collected",
         },
       })
       .then((r) => r.json()),

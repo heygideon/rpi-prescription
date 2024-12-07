@@ -7,6 +7,7 @@ import {
   integer,
   jsonb,
   pgEnum,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export type OpeningHours = {
@@ -23,7 +24,7 @@ export const users = pgTable("users", {
   lastName: text().notNull(),
   createdAt: timestamp()
     .notNull()
-    .default(sql`now()`)
+    .defaultNow()
     .$onUpdate(() => new Date()),
 });
 
@@ -44,6 +45,7 @@ export const orders = pgTable("orders", {
     .notNull()
     .references(() => pharmacies.id),
   status: orderStatus().notNull().default("checking"),
+  collectedAt: timestamp(),
 });
 export const orderRelations = relations(orders, ({ one }) => ({
   user: one(users, {
@@ -55,6 +57,19 @@ export const orderRelations = relations(orders, ({ one }) => ({
     references: [pharmacies.id],
   }),
 }));
+
+export const orderCollections = pgTable("order_collections", {
+  orderId: integer()
+    .primaryKey()
+    .notNull()
+    .references(() => orders.id),
+  createdAt: timestamp().defaultNow(),
+  collectedBy: integer()
+    .notNull()
+    .references(() => users.id),
+  isAboutToCollect: boolean().notNull().default(false),
+  codeHash: text().notNull(),
+});
 
 export const pharmacies = pgTable("pharmacies", {
   id: serial().primaryKey(),

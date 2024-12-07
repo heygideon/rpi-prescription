@@ -19,7 +19,8 @@ import { useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import clsx from "clsx";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import client from "api";
 
 export default function CollectModal({
   params,
@@ -29,7 +30,24 @@ export default function CollectModal({
   const navigate = useNavigate();
 
   const [postcode, setPostcode] = useState("");
-  const [showUnlock, setShowUnlock] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const {
+    data: codeData,
+    mutate: genCode,
+    isPending: codePending,
+    error: codeError,
+  } = useMutation({
+    mutationFn: async (postcodeHalf: string) => {
+      const res = await client.prescriptions[":id"].collect["gen-code"].$post({
+        param: { id: params.id },
+        json: { postcodeHalf },
+      });
+      if (!res.ok) throw new Error(res.statusText);
+      return await res.json();
+    },
+  });
 
   const {
     data: unlockData,
@@ -37,8 +55,30 @@ export default function CollectModal({
     isPending: unlockPending,
   } = useMutation({
     mutationFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      if (!codeData) return;
+
+      const res = await client.prescriptions[":id"].collect[
+        "before-unlock"
+      ].$post({
+        param: { id: params.id },
+      });
+      if (!res.ok) throw new Error(res.statusText);
+
+      const res2 = await client.prescriptions[":id"].collect[
+        "test-unlock"
+      ].$post({
+        param: { id: params.id },
+        json: { code: codeData.code },
+      });
+      if (!res2.ok) throw new Error(res2.statusText);
+
       return { success: true };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["prescriptions"],
+      });
+      setTimeout(() => navigate(-1), 1500);
     },
   });
 
@@ -97,7 +137,7 @@ export default function CollectModal({
 
               <div className="grid h-64 grid-cols-1 grid-rows-1">
                 <Transition
-                  show={!showUnlock}
+                  show={!codeData?.code}
                   enter="transition delay-75"
                   enterFrom="opacity-0 translate-x-4"
                   enterTo="opacity-100 translate-x-0"
@@ -135,19 +175,25 @@ export default function CollectModal({
                     </div>
 
                     <button
-                      disabled={postcode.length < 3}
-                      onClick={() => setShowUnlock(true)}
+                      disabled={postcode.length < 3 || codePending}
+                      onClick={() => genCode(postcode)}
                       className="pointer-events-auto mt-4 flex h-14 w-full flex-none items-center justify-center rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
                     >
                       <span>Collect</span>
                     </button>
-                    <p className="mt-2 text-xs italic text-gray-600">
-                      just checking it's you
+                    <p className="mt-2 text-xs text-gray-600">
+                      {codeError ? (
+                        <span className="font-medium text-red-700">
+                          incorrect postcode
+                        </span>
+                      ) : (
+                        <span className="italic">just checking it's you</span>
+                      )}
                     </p>
                   </div>
                 </Transition>
                 <Transition
-                  show={showUnlock}
+                  show={!!codeData?.code}
                   enter="transition delay-75"
                   enterFrom="opacity-0 translate-x-4"
                   enterTo="opacity-100 translate-x-0"
@@ -178,7 +224,7 @@ export default function CollectModal({
                         className="absolute inset-y-0 left-0 aspect-square h-full touch-none p-1.5"
                       >
                         <div className="grid size-full place-items-center rounded-full bg-white shadow">
-                          {!!unlockData ? (
+                          {!!unlockData?.success ? (
                             <Check
                               weight="bold"
                               className="size-4 text-emerald-700"
@@ -193,7 +239,7 @@ export default function CollectModal({
                           )}
                         </div>
                       </animated.div>
-                      {!!unlockData ? (
+                      {!!unlockData?.success ? (
                         <div className={"flex items-center gap-1.5"}>
                           <LockOpen weight="bold" className="size-4" />
                           <span>open</span>
@@ -211,7 +257,7 @@ export default function CollectModal({
                       )}
                     </div>
                     <p className="mt-2 text-xs italic text-gray-600">
-                      {!!unlockData
+                      {!!unlockData?.success
                         ? "prescription's ready!"
                         : "swipe to unlock"}
                     </p>

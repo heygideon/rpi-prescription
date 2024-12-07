@@ -16,6 +16,7 @@
     "@electric-sql/pglite": "^0.2.14",
     "@hono/node-server": "^1.13.7",
     "@hono/zod-validator": "^0.4.1",
+    "@paralleldrive/cuid2": "^2.2.2",
     "chalk": "^5.3.0",
     "drizzle-orm": "^0.37.0",
     "hono": "^4.6.12",

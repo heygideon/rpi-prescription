@@ -206,9 +206,10 @@ export default new Hono()
       console.log(chalk.green(" ✓ Matches"));
       console.log(chalk.gray(` | Collected at: ${new Date().toDateString()}`));
 
-      setTimeout(() => {
+      setTimeout(async () => {
         // revert updates to order
-        db.update(db.orders)
+        await db
+          .update(db.orders)
           .set({ status: "ready", collectedAt: null })
           .where(eq(db.orders.id, id));
         console.log(chalk.gray(` | Order status reverted to ready`));

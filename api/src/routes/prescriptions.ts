@@ -7,6 +7,7 @@ import { zValidator } from "@hono/zod-validator";
 import { init } from "@paralleldrive/cuid2";
 import { sha256 } from "hono/utils/crypto";
 import chalk from "chalk";
+import { addHours, isAfter } from "date-fns";
 
 const createCollectCode = init({
   length: 32,
@@ -116,6 +117,7 @@ export default new Hono()
           target: [db.orderCollections.orderId],
           set: {
             codeHash: codeHash!,
+            codeHashExpiresAt: addHours(new Date(), 1),
             collectedBy: 1,
             isAboutToCollect: false,
           },
@@ -186,6 +188,12 @@ export default new Hono()
       const codeHash = await sha256(code);
       if (codeHash !== orderCollection.codeHash) {
         return c.text("Invalid code", 400);
+      }
+      if (
+        !orderCollection.codeHashExpiresAt ||
+        isAfter(new Date(), orderCollection.codeHashExpiresAt)
+      ) {
+        return c.text("Code expired", 400);
       }
 
       await db

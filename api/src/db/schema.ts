@@ -68,7 +68,8 @@ export const orderCollections = pgTable("order_collections", {
     .notNull()
     .references(() => users.id),
   isAboutToCollect: boolean().notNull().default(false),
-  codeHash: text().notNull(),
+  codeHash: text(),
+  codeHashExpiresAt: timestamp(),
 });
 
 export const pharmacies = pgTable("pharmacies", {

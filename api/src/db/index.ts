@@ -1,14 +1,16 @@
-import { PGlite } from "@electric-sql/pglite";
-import { drizzle } from "drizzle-orm/pglite";
+import { createClient } from "@libsql/client";
+import { drizzle } from "drizzle-orm/libsql";
 
 import * as schema from "./schema";
-import type { PgTableWithColumns } from "drizzle-orm/pg-core";
+import type { SQLiteTableWithColumns } from "drizzle-orm/sqlite-core";
 
-const client = new PGlite("./.db");
+const client = createClient({
+  url: "file:./data.db",
+});
 const db = drizzle({ client, schema, logger: true });
 
-type Schema = {
-  [K in keyof typeof schema as (typeof schema)[K] extends PgTableWithColumns<any>
+export type Schema = {
+  [K in keyof typeof schema as (typeof schema)[K] extends SQLiteTableWithColumns<any>
     ? K
     : never]: (typeof schema)[K];
 };

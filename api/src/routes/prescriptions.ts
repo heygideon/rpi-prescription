@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import db from "../db";
-import { orderStatus } from "../db/schema";
+import { orderStatusValues } from "../db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
@@ -20,10 +20,10 @@ export default new Hono()
       "query",
       z.object({
         status: z
-          .enum(orderStatus.enumValues)
+          .enum(orderStatusValues)
           .array()
-          .or(z.enum(orderStatus.enumValues))
-          .default(orderStatus.enumValues),
+          .or(z.enum(orderStatusValues))
+          .default([...orderStatusValues]),
       })
     ),
     async (c) => {
@@ -43,8 +43,8 @@ export default new Hono()
 
       const sorted = rows.toSorted(
         (a, b) =>
-          orderStatus.enumValues.indexOf(b.status) -
-          orderStatus.enumValues.indexOf(a.status)
+          orderStatusValues.indexOf(b.status) -
+          orderStatusValues.indexOf(a.status)
       );
 
       return c.json(sorted);

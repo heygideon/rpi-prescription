@@ -110,6 +110,7 @@ export default new Hono()
         .values({
           orderId: id,
           codeHash: codeHash!,
+          codeHashExpiresAt: addHours(new Date(), 1),
           collectedBy: 1,
           isAboutToCollect: false,
         })

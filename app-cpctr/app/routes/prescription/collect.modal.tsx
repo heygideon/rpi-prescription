@@ -80,6 +80,9 @@ export default function CollectModal({
       });
       setTimeout(() => navigate(-1), 1500);
     },
+    onError: () => {
+      api.start({ x: 0, immediate: true });
+    },
   });
 
   const buttonRef = useRef<HTMLDivElement>(null);

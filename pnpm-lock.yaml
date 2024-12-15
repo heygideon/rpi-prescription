@@ -10,9 +10,6 @@ importers:
 
   api:
     dependencies:
-      '@electric-sql/pglite':
-        specifier: ^0.2.14
-        version: 0.2.15
       '@hono/node-server':
         specifier: ^1.13.7
         version: 1.13.7(hono@4.6.13)
@@ -7517,7 +7514,8 @@ snapshots:
     dependencies:
       '@types/hammerjs': 2.0.46
 
-  '@electric-sql/pglite@0.2.15': {}
+  '@electric-sql/pglite@0.2.15':
+    optional: true
 
   '@esbuild-kit/core-utils@3.3.2':
     dependencies:

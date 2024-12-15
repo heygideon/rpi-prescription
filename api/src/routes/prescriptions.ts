@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import db from "../db";
-import { orderStatus } from "../db/schema";
+import { orderStatusValues } from "../db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
@@ -20,10 +20,10 @@ export default new Hono()
       "query",
       z.object({
         status: z
-          .enum(orderStatus.enumValues)
+          .enum(orderStatusValues)
           .array()
-          .or(z.enum(orderStatus.enumValues))
-          .default(orderStatus.enumValues),
+          .or(z.enum(orderStatusValues))
+          .default([...orderStatusValues]),
       })
     ),
     async (c) => {
@@ -43,8 +43,8 @@ export default new Hono()
 
       const sorted = rows.toSorted(
         (a, b) =>
-          orderStatus.enumValues.indexOf(b.status) -
-          orderStatus.enumValues.indexOf(a.status)
+          orderStatusValues.indexOf(b.status) -
+          orderStatusValues.indexOf(a.status)
       );
 
       return c.json(sorted);
@@ -92,11 +92,13 @@ export default new Hono()
         where: eq(db.orders.id, id),
       });
       if (!order) return c.text("Not found", 404);
+      if (order.status !== "ready") return c.text("Order not ready", 403);
+      // TODO: verify prescription user id
 
-      // TODO: verify postcode half with user
       if (!/[0-9]{1}[A-Z]{2}/.test(postcodeHalf)) {
-        return c.text("Invalid postcode", 400);
+        return c.text("Invalid postcode", 401);
       }
+      // TODO: verify postcode half with user
 
       const code = createCollectCode();
       const codeHash = await sha256(code);

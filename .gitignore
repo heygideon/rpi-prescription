@@ -11,3 +11,6 @@ yarn-error.*
 # macOS
 .DS_Store
 *.pem
+
+# secrets
+ideas.md

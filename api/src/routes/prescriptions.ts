@@ -92,11 +92,13 @@ export default new Hono()
         where: eq(db.orders.id, id),
       });
       if (!order) return c.text("Not found", 404);
+      if (order.status !== "ready") return c.text("Order not ready", 403);
+      // TODO: verify prescription user id
 
-      // TODO: verify postcode half with user
       if (!/[0-9]{1}[A-Z]{2}/.test(postcodeHalf)) {
-        return c.text("Invalid postcode", 400);
+        return c.text("Invalid postcode", 401);
       }
+      // TODO: verify postcode half with user
 
       const code = createCollectCode();
       const codeHash = await sha256(code);

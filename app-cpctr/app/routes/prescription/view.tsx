@@ -19,7 +19,7 @@ const prescriptionQuery = (id: string) =>
   queryOptions({
     queryKey: ["prescriptions", id],
     queryFn: () =>
-      client.prescriptions[":id"]
+      client.api.prescriptions[":id"]
         .$get({
           param: {
             id,

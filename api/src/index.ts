@@ -6,10 +6,12 @@ import chalk from "chalk";
 import prescriptions from "./routes/prescriptions";
 import { cors } from "hono/cors";
 
+const api = new Hono().route("/prescriptions", prescriptions);
+
 const app = new Hono()
   .use(logger())
   .use(cors())
-  .route("/prescriptions", prescriptions)
+  .route("/api", api)
   .get("/", (c) => {
     return c.text("Hello Hono!");
   });

@@ -143,7 +143,7 @@ export default new Hono()
       })
     ),
     async (c) => {
-      await new Promise((r) => setTimeout(r, 1500));
+      await new Promise((r) => setTimeout(r, 500));
       const orderCollection = await db.query.orderCollections.findFirst({
         where: eq(db.orderCollections.orderId, c.req.valid("param").id),
       });

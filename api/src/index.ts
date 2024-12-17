@@ -5,10 +5,12 @@ import { logger } from "hono/logger";
 import chalk from "chalk";
 import prescriptions from "./routes/prescriptions";
 import { cors } from "hono/cors";
+import { trimTrailingSlash } from "hono/trailing-slash";
 
 const api = new Hono().route("/prescriptions", prescriptions);
 
 const app = new Hono()
+  .use(trimTrailingSlash())
   .use(logger())
   .use(cors())
   .route("/api", api)

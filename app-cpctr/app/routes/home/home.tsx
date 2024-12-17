@@ -6,7 +6,7 @@ import { Link } from "react-router";
 const prescriptionsQuery = queryOptions({
   queryKey: ["prescriptions"],
   queryFn: () =>
-    client.prescriptions
+    client.api.prescriptions
       .$get({
         query: {
           status: ["checking", "with_gp", "preparing", "ready"],
@@ -17,7 +17,7 @@ const prescriptionsQuery = queryOptions({
 const collectedQuery = queryOptions({
   queryKey: ["prescriptions", "collected"],
   queryFn: () =>
-    client.prescriptions
+    client.api.prescriptions
       .$get({
         query: {
           status: "collected",

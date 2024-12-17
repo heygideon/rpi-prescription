@@ -40,7 +40,9 @@ export default function CollectModal({
     error: codeError,
   } = useMutation({
     mutationFn: async (postcodeHalf: string) => {
-      const res = await client.prescriptions[":id"].collect["gen-code"].$post({
+      const res = await client.api.prescriptions[":id"].collect[
+        "gen-code"
+      ].$post({
         param: { id: params.id },
         json: { postcodeHalf },
       });
@@ -57,14 +59,14 @@ export default function CollectModal({
     mutationFn: async () => {
       if (!codeData) return;
 
-      const res = await client.prescriptions[":id"].collect[
+      const res = await client.api.prescriptions[":id"].collect[
         "before-unlock"
       ].$post({
         param: { id: params.id },
       });
       if (!res.ok) throw new Error(res.statusText);
 
-      const res2 = await client.prescriptions[":id"].collect[
+      const res2 = await client.api.prescriptions[":id"].collect[
         "test-unlock"
       ].$post({
         param: { id: params.id },

@@ -3,6 +3,7 @@ import {
   index,
   layout,
   route,
+  prefix,
 } from "@react-router/dev/routes";
 
 export default [
@@ -12,4 +13,6 @@ export default [
     route("account", "routes/home/account.tsx"),
   ]),
   route("prescription/:id", "routes/prescription/view.tsx"),
+
+  ...prefix("auth", [index("routes/auth/home.tsx")]),
 ] satisfies RouteConfig;

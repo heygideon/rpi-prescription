@@ -8,7 +8,7 @@ import {
 } from "@phosphor-icons/react";
 import { Link } from "react-router";
 
-export default function Login() {
+export default function Signup() {
   return (
     <div className="relative flex h-full flex-col justify-center p-6 text-center">
       <Link to="/auth" className="absolute left-4 top-4 p-2">

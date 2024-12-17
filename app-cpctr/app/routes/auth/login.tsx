@@ -1,7 +1,9 @@
 import { ArrowLeft, ArrowRight, HandWaving } from "@phosphor-icons/react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   return (
     <div className="relative flex h-full flex-col justify-center p-6 text-center">
       <Link to="/auth" className="absolute left-4 top-4 p-2">
@@ -20,7 +22,10 @@ export default function Login() {
           <input type="password" placeholder="Enter your password..." />
         </div>
       </div>
-      <button className="mt-4 flex h-12 w-full items-center justify-center gap-1.5 rounded-md bg-emerald-700 font-medium text-white shadow-sm transition active:scale-95 active:bg-emerald-900">
+      <button
+        onClick={() => navigate("/auth/2fa")}
+        className="mt-4 flex h-12 w-full items-center justify-center gap-1.5 rounded-md bg-emerald-700 font-medium text-white shadow-sm transition active:scale-95 active:bg-emerald-900"
+      >
         <span>Continue</span>
         <ArrowRight weight="bold" className="size-4" />
       </button>

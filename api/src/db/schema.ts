@@ -14,14 +14,18 @@ export type OpeningHours = {
 };
 
 export const users = sqliteTable("users", {
-  id: integer().primaryKey({ autoIncrement: true }),
-  title: text().notNull(),
-  firstName: text().notNull(),
-  lastName: text().notNull(),
-  createdAt: integer({ mode: "timestamp" })
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  title: text("title").notNull(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .default(sql`(unixepoch())`)
     .$onUpdate(() => new Date()),
+
+  email: text("email").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+  phoneNumber: text("phone_number").notNull(),
 });
 
 export const orderStatusValues = [
@@ -33,15 +37,17 @@ export const orderStatusValues = [
 ] as const;
 
 export const orders = sqliteTable("orders", {
-  id: integer().primaryKey({ autoIncrement: true }),
-  userId: integer()
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id")
     .notNull()
     .references(() => users.id),
-  pharmacyId: integer()
+  pharmacyId: integer("pharmacy_id")
     .notNull()
     .references(() => pharmacies.id),
-  status: text({ enum: orderStatusValues }).notNull().default("checking"),
-  collectedAt: integer({ mode: "timestamp" }).default(sql`(unixepoch())`),
+  status: text("status", { enum: orderStatusValues })
+    .notNull()
+    .default("checking"),
+  collectedAt: integer("collected_at", { mode: "timestamp" }),
 });
 export const orderRelations = relations(orders, ({ one }) => ({
   user: one(users, {
@@ -57,20 +63,24 @@ export const orderRelations = relations(orders, ({ one }) => ({
 export const orderCollections = sqliteTable(
   "order_collections",
   {
-    orderId: integer()
+    orderId: integer("order_id")
       .primaryKey({ autoIncrement: true })
       .references(() => orders.id),
-    createdAt: integer({ mode: "timestamp" })
+    createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
       .default(sql`(unixepoch())`),
-    collectedBy: integer()
+    collectedBy: integer("collected_by")
       .notNull()
       .references(() => users.id),
-    isAboutToCollect: integer({ mode: "boolean" }).notNull().default(false),
-    codeHash: text(),
-    codeHashExpiresAt: integer({ mode: "timestamp" }),
+    isAboutToCollect: integer("is_about_to_collect", { mode: "boolean" })
+      .notNull()
+      .default(false),
+    codeHash: text("code_hash").notNull(),
+    codeHashExpiresAt: integer("code_hash_expires_at", {
+      mode: "timestamp",
+    }).notNull(),
   },
-  (t) => [uniqueIndex("order_collections_orderId").on(t.orderId)]
+  (t) => [uniqueIndex("order_collections_order_id").on(t.orderId)]
 );
 
 export const pharmacies = sqliteTable("pharmacies", {

@@ -14,5 +14,9 @@ export default [
   ]),
   route("prescription/:id", "routes/prescription/view.tsx"),
 
-  ...prefix("auth", [index("routes/auth/home.tsx")]),
+  ...prefix("auth", [
+    index("routes/auth/home.tsx"),
+    route("login", "routes/auth/login.tsx"),
+    route("signup", "routes/auth/signup.tsx"),
+  ]),
 ] satisfies RouteConfig;

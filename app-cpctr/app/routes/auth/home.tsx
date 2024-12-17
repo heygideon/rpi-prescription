@@ -1,5 +1,12 @@
 import background from "@/assets/pexels-olly-3769022.jpg";
-import { HandWaving, Pill, ShootingStar, Smiley } from "@phosphor-icons/react";
+import {
+  HandWaving,
+  Pill,
+  ShootingStar,
+  Smiley,
+  Star,
+} from "@phosphor-icons/react";
+import { Link } from "react-router";
 
 export default function AuthHome() {
   return (
@@ -27,38 +34,18 @@ export default function AuthHome() {
               <h2>pocket.</h2>
             </div>
           </div>
-          <button className="mt-8 flex h-14 w-full items-center justify-center rounded-full bg-emerald-700 text-lg font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900">
+          <Link
+            to="/auth/signup"
+            className="mt-8 flex h-14 w-full items-center justify-center rounded-full bg-emerald-700 text-lg font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900"
+          >
             Get started
-          </button>
-          <button className="mt-3 flex h-14 w-full items-center justify-center rounded-full border border-white/40 bg-white/10 text-lg font-medium text-white shadow-md transition active:scale-95 active:opacity-75">
+          </Link>
+          <Link
+            to="/auth/login"
+            className="mt-3 flex h-14 w-full items-center justify-center rounded-full border border-white/40 bg-white/10 text-lg font-medium text-white shadow-md transition active:scale-95 active:opacity-75"
+          >
             Login
-          </button>
-          <div className="mt-3 hidden w-full space-y-3 text-black">
-            <div className="flex items-center gap-3 rounded-md bg-white p-3 shadow-sm transition active:scale-95 active:opacity-75">
-              <div className="grid size-12 flex-none place-items-center rounded bg-blue-200">
-                <ShootingStar weight="fill" className="size-8 text-blue-700" />
-              </div>
-              <div className="min-w-0 flex-1 text-left">
-                <h3 className="text-lg font-semibold tracking-tight">
-                  Create account
-                </h3>
-                <p className="-mt-px text-sm text-gray-600">
-                  Save time & collect your medicine faster
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 rounded-md bg-white p-3 shadow-sm transition active:scale-95 active:opacity-75">
-              <div className="grid size-12 flex-none place-items-center rounded bg-emerald-200">
-                <Smiley weight="fill" className="size-8 text-emerald-700" />
-              </div>
-              <div className="min-w-0 flex-1 text-left">
-                <h3 className="text-lg font-semibold tracking-tight">Log in</h3>
-                <p className="-mt-px text-sm text-gray-600">
-                  Link your existing account to this phone
-                </p>
-              </div>
-            </div>
-          </div>
+          </Link>
         </div>
       </div>
     </>

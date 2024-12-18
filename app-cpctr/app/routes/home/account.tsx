@@ -1,4 +1,11 @@
-export default function Home() {
+import client, { getAccessToken } from "api";
+import { redirect } from "react-router";
+import type { Route } from "./+types/account";
+
+export default function Home({ loaderData }: Route.ComponentProps) {
+  if (!loaderData) return null;
+
+  const { user } = loaderData;
   return (
     <>
       <div className="sticky top-0 bg-white p-6 shadow-md">
@@ -7,7 +14,9 @@ export default function Home() {
             <span className="text-2xl font-medium leading-none">GS</span>
           </div>
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">Gideon Swai</h2>
+            <h2 className="text-3xl font-bold tracking-tight">
+              {user.firstName} {user.lastName}
+            </h2>
             <p className="mt-0.5 text-gray-600">Joined 4 months ago</p>
           </div>
         </div>
@@ -114,4 +123,25 @@ export default function Home() {
       </div>
     </>
   );
+}
+
+export async function clientLoader() {
+  try {
+    const token = await getAccessToken();
+    console.log(token);
+    const res = await client.auth.me.$get(
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
+    return res.json();
+  } catch (e) {
+    throw redirect("/auth");
+  }
 }

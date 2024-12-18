@@ -39,14 +39,12 @@ export default new Hono<Env>()
     ),
     async (c) => {
       const { email, password } = c.req.valid("json");
-      const passwordHash = await hash(password);
-      console.log("passwordHash", passwordHash);
 
       const user = await db.query.users.findFirst({
         where: eq(db.users.email, email),
       });
 
-      if (!user || !verify(user.passwordHash, passwordHash)) {
+      if (!user || !verify(user.passwordHash, password)) {
         return c.text("Invalid email or password", { status: 401 });
       }
 

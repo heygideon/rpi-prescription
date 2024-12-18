@@ -1,8 +1,30 @@
 import { ArrowLeft, ArrowRight, HandWaving } from "@phosphor-icons/react";
+import { useMutation } from "@tanstack/react-query";
+import client from "api";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 export default function Login() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { isPending, mutate } = useMutation({
+    mutationFn: async () => {
+      const res = await client.auth.login.$post({
+        json: {
+          email,
+          password,
+        },
+      });
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+
+      const { accessToken } = await res.json();
+      localStorage.setItem("access_token", accessToken);
+    },
+    onSuccess: () => navigate("/auth/2fa"),
+  });
 
   return (
     <div className="relative flex h-full flex-col justify-center p-6 text-center">
@@ -15,16 +37,27 @@ export default function Login() {
       <div className="mt-3 space-y-3 text-left">
         <div>
           <p className="mb-0.5 font-semibold">Email</p>
-          <input type="email" placeholder="Enter your email..." />
+          <input
+            type="email"
+            placeholder="Enter your email..."
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div>
           <p className="mb-0.5 font-semibold">Password</p>
-          <input type="password" placeholder="Enter your password..." />
+          <input
+            type="password"
+            placeholder="Enter your password..."
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
       </div>
       <button
-        onClick={() => navigate("/auth/2fa")}
-        className="mt-4 flex h-12 w-full items-center justify-center gap-1.5 rounded-md bg-emerald-700 font-medium text-white shadow-sm transition active:scale-95 active:bg-emerald-900"
+        disabled={isPending}
+        onClick={() => mutate()}
+        className="mt-4 flex h-12 w-full items-center justify-center gap-1.5 rounded-md bg-emerald-700 font-medium text-white shadow-sm transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
       >
         <span>Continue</span>
         <ArrowRight weight="bold" className="size-4" />

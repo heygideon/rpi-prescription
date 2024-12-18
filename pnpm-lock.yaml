@@ -25,9 +25,6 @@ importers:
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
-      '@trpc/react-query':
-        specifier: 11.0.0-rc.666
-        version: 11.0.0-rc.666(@tanstack/react-query@5.62.7(react@19.0.0))(@trpc/client@11.0.0-rc.666(@trpc/server@11.0.0-rc.666(typescript@5.7.2))(typescript@5.7.2))(@trpc/server@11.0.0-rc.666(typescript@5.7.2))(react-dom@18.3.1(react@19.0.0))(react@19.0.0)(typescript@5.7.2)
       '@trpc/server':
         specifier: 11.0.0-rc.666
         version: 11.0.0-rc.666(typescript@5.7.2)
@@ -195,9 +192,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.62.2
         version: 5.62.7(react@18.3.1)
-      '@trpc/client':
+      '@trpc/react-query':
         specifier: 11.0.0-rc.666
-        version: 11.0.0-rc.666(@trpc/server@11.0.0-rc.666(typescript@5.7.2))(typescript@5.7.2)
+        version: 11.0.0-rc.666(@tanstack/react-query@5.62.7(react@18.3.1))(@trpc/client@11.0.0-rc.666(@trpc/server@11.0.0-rc.666(typescript@5.7.2))(typescript@5.7.2))(@trpc/server@11.0.0-rc.666(typescript@5.7.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2)
       '@use-gesture/react':
         specifier: ^10.3.1
         version: 10.3.1(react@18.3.1)
@@ -4677,7 +4674,6 @@ packages:
 
   libsql@0.4.7:
     resolution: {integrity: sha512-T9eIRCs6b0J1SHKYIvD8+KCJMcWZ900iZyxdnSCdqxN12Z1ijzT+jY5nrk72Jw4B0HGzms2NgpryArlJqvc3Lw==}
-    cpu: [x64, arm64, wasm32]
     os: [darwin, linux, win32]
 
   lighthouse-logger@1.4.2:
@@ -9362,11 +9358,6 @@ snapshots:
       '@tanstack/query-core': 5.62.7
       react: 18.3.1
 
-  '@tanstack/react-query@5.62.7(react@19.0.0)':
-    dependencies:
-      '@tanstack/query-core': 5.62.7
-      react: 19.0.0
-
   '@tanstack/react-virtual@3.10.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tanstack/virtual-core': 3.10.9
@@ -9382,13 +9373,13 @@ snapshots:
       '@trpc/server': 11.0.0-rc.666(typescript@5.7.2)
       typescript: 5.7.2
 
-  '@trpc/react-query@11.0.0-rc.666(@tanstack/react-query@5.62.7(react@19.0.0))(@trpc/client@11.0.0-rc.666(@trpc/server@11.0.0-rc.666(typescript@5.7.2))(typescript@5.7.2))(@trpc/server@11.0.0-rc.666(typescript@5.7.2))(react-dom@18.3.1(react@19.0.0))(react@19.0.0)(typescript@5.7.2)':
+  '@trpc/react-query@11.0.0-rc.666(@tanstack/react-query@5.62.7(react@18.3.1))(@trpc/client@11.0.0-rc.666(@trpc/server@11.0.0-rc.666(typescript@5.7.2))(typescript@5.7.2))(@trpc/server@11.0.0-rc.666(typescript@5.7.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2)':
     dependencies:
-      '@tanstack/react-query': 5.62.7(react@19.0.0)
+      '@tanstack/react-query': 5.62.7(react@18.3.1)
       '@trpc/client': 11.0.0-rc.666(@trpc/server@11.0.0-rc.666(typescript@5.7.2))(typescript@5.7.2)
       '@trpc/server': 11.0.0-rc.666(typescript@5.7.2)
-      react: 19.0.0
-      react-dom: 18.3.1(react@19.0.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
       typescript: 5.7.2
 
   '@trpc/server@11.0.0-rc.666(typescript@5.7.2)':
@@ -12843,12 +12834,6 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
-  react-dom@18.3.1(react@19.0.0):
-    dependencies:
-      loose-envify: 1.4.0
-      react: 19.0.0
-      scheduler: 0.23.2
-
   react-fast-compare@3.2.2: {}
 
   react-freeze@1.0.4(react@18.3.1):
@@ -13040,7 +13025,8 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
 
-  react@19.0.0: {}
+  react@19.0.0:
+    optional: true
 
   read-cache@1.0.0:
     dependencies:

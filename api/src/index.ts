@@ -11,7 +11,16 @@ import chalk from "chalk";
 import dotenv from "dotenv";
 import authMiddleware from "./middleware/auth";
 
+import { router } from "./lib/trpc";
+import prescriptionsRouter from "./routers/prescriptions";
+import { trpcServer } from "@hono/trpc-server";
+
 dotenv.config();
+
+const appRouter = router({
+  prescriptions: prescriptionsRouter,
+});
+export type AppRouter = typeof appRouter;
 
 const api = new Hono().route("/prescriptions", prescriptions);
 
@@ -20,6 +29,12 @@ const app = new Hono()
   .use(logger())
   .use(cors())
   .use(authMiddleware)
+  .use(
+    "/trpc/*",
+    trpcServer({
+      router: appRouter,
+    })
+  )
   .route("/api", api)
   .route("/auth", auth)
   .get("/", (c) => {

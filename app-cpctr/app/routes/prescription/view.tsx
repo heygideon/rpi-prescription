@@ -1,38 +1,17 @@
-import {
-  ArrowLeft,
-  Check,
-  Package,
-  PaperPlaneRight,
-  ShoppingBagOpen,
-} from "@phosphor-icons/react";
+import { ArrowLeft } from "@phosphor-icons/react";
 import type { Route } from "./+types/view";
 import { useNavigate, useSearchParams } from "react-router";
 
 import paracetamolSrc from "@/assets/paracetamol.png";
 import CollectModal from "./collect.modal";
-import { queryOptions, useQuery } from "@tanstack/react-query";
-import client from "api";
 import { StatusProgress } from "@/lib/status";
 import { Transition, TransitionChild } from "@headlessui/react";
-
-const prescriptionQuery = (id: string) =>
-  queryOptions({
-    queryKey: ["prescriptions", id],
-    queryFn: () =>
-      client.api.prescriptions[":id"]
-        .$get({
-          param: {
-            id,
-          },
-        })
-        .then((r) => {
-          if (!r.ok) throw new Error(r.statusText);
-          return r.json();
-        }),
-  });
+import { trpc } from "@/lib/trpc";
 
 export default function PrescriptionView({ params }: Route.ComponentProps) {
-  const { data: order } = useQuery(prescriptionQuery(params.id));
+  const { data: order } = trpc.prescriptions.getOne.useQuery({
+    id: parseInt(params.id),
+  });
   const [, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 

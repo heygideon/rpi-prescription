@@ -16,23 +16,29 @@ type Context =
 
 const t = initTRPC.context<Context>().create();
 
+export const createCallerFactory = t.createCallerFactory;
 export const router = t.router;
 export const publicProcedure = t.procedure;
-export const authProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.verified) {
+export const authNoVerifyProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.session) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({
-    ctx: {
-      ...ctx,
-      user: ctx.user,
-      session: ctx.session,
-    },
+    ctx,
+  });
+});
+export const authProcedure = authNoVerifyProcedure.use(({ ctx, next }) => {
+  if (!ctx.session.verified) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  return next({
+    ctx,
   });
 });
 
 export const createContext = async (
-  opts: FetchCreateContextFnOptions,
+  // _opts: FetchCreateContextFnOptions,
+  _opts: any,
   c: HonoContext
 ): Promise<Context> => {
   if (!process.env.JWT_SECRET) {

@@ -46,6 +46,12 @@ export const refreshTokens = sqliteTable("refresh_tokens", {
     .references(() => users.id),
   expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
 });
+export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
+  user: one(users, {
+    fields: [refreshTokens.userId],
+    references: [users.id],
+  }),
+}));
 
 export const orderStatusValues = [
   "checking",

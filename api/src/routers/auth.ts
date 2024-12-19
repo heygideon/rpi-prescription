@@ -1,19 +1,15 @@
 import { z } from "zod";
-import { publicProcedure, router } from "../lib/trpc";
+import { authNoVerifyProcedure, publicProcedure, router } from "../lib/trpc";
 import { verify } from "@node-rs/argon2";
 import { and, eq } from "drizzle-orm";
 import db from "../db";
 import { TRPCError } from "@trpc/server";
 import { addDays, addMinutes, getUnixTime, isBefore } from "date-fns";
-import { sign } from "../lib/jwt";
+import { createAccessToken, createRefreshToken, sign } from "../lib/jwt";
 import { sha256 } from "hono/utils/crypto";
-import { init } from "@paralleldrive/cuid2";
 import { customAlphabet } from "nanoid";
 import chalk from "chalk";
 
-const createRefreshToken = init({
-  length: 32,
-});
 const createVerifyCode = customAlphabet(
   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
   6
@@ -69,25 +65,14 @@ const authRouter = router({
         });
       }
 
-      const accessToken = await sign(
-        {
-          iat: getUnixTime(new Date()),
-          exp: getUnixTime(addMinutes(new Date(), 15)),
-          nbf: getUnixTime(new Date()),
-          sub: user.id,
-          verified: false,
-        },
-        process.env.JWT_SECRET!
-      );
-      // TODO: generate + store refresh token (after 2fa)
+      const accessToken = await createAccessToken(user);
+      const refreshToken = await createRefreshToken(user);
 
-      return { accessToken };
+      return { accessToken, refreshToken };
     }),
 
-  getVerifyCode: publicProcedure.query(async ({ ctx, input }) => {
+  getVerifyCode: authNoVerifyProcedure.query(async ({ ctx, input }) => {
     const { session, user } = ctx;
-    if (!session) throw new TRPCError({ code: "UNAUTHORIZED" });
-
     if (session.verified) throw new TRPCError({ code: "NOT_IMPLEMENTED" });
 
     const code = createVerifyCode();
@@ -107,16 +92,14 @@ const authRouter = router({
       phoneNumberPartial: user.phoneNumber.slice(-4),
     };
   }),
-  verify: publicProcedure
+  verify: authNoVerifyProcedure
     .input(
       z.object({
-        code: z.string().length(6),
+        code: z.string().length(6).toUpperCase(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { session, user } = ctx;
-      if (!session) throw new TRPCError({ code: "UNAUTHORIZED" });
-
       if (session.verified) throw new TRPCError({ code: "NOT_IMPLEMENTED" });
 
       const codeHash = await sha256(input.code);
@@ -148,25 +131,35 @@ const authRouter = router({
         });
       }
 
-      const accessToken = await sign(
-        {
-          iat: getUnixTime(new Date()),
-          exp: getUnixTime(addMinutes(new Date(), 15)),
-          nbf: getUnixTime(new Date()),
-          sub: user.id,
-          verified: true,
-        },
-        process.env.JWT_SECRET!
-      );
-      const refreshToken = createRefreshToken();
-      const refreshTokenHash = await sha256(refreshToken);
-      await db.insert(db.refreshTokens).values({
-        tokenHash: refreshTokenHash!,
-        userId: user.id,
-        expiresAt: addDays(new Date(), 7),
-      });
+      const accessToken = await createAccessToken(user, { verified: true });
 
-      return { accessToken, refreshToken };
+      return { accessToken };
+    }),
+  refresh: publicProcedure
+    .input(z.object({ refreshToken: z.string() }))
+    .mutation(async ({ input }) => {
+      const refreshTokenHash = await sha256(input.refreshToken);
+      const row = await db.query.refreshTokens.findFirst({
+        where: eq(db.refreshTokens.tokenHash, refreshTokenHash!),
+        with: { user: { columns: { id: true } } },
+      });
+      // await db
+      //   .delete(db.refreshTokens)
+      //   .where(eq(db.refreshTokens.tokenHash, refreshTokenHash!));
+
+      if (!row) {
+        console.log("Invalid refresh token");
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+      if (isBefore(row.expiresAt, new Date())) {
+        console.log("Expired refresh token");
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      const accessToken = await createAccessToken(row.user);
+      const newRefreshToken = await createRefreshToken(row.user);
+
+      return { accessToken, refreshToken: newRefreshToken };
     }),
 });
 export default authRouter;

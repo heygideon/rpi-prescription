@@ -11,10 +11,12 @@ import chalk from "chalk";
 import dotenv from "dotenv";
 import authMiddleware from "./middleware/auth";
 
-import { createContext, router } from "./lib/trpc";
+import { createCallerFactory, createContext, router } from "./lib/trpc";
 import prescriptionsRouter from "./routers/prescriptions";
 import { trpcServer } from "@hono/trpc-server";
 import authRouter from "./routers/auth";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
 
 dotenv.config();
 
@@ -23,6 +25,8 @@ const appRouter = router({
   auth: authRouter,
 });
 export type AppRouter = typeof appRouter;
+
+const createCaller = createCallerFactory(appRouter);
 
 const api = new Hono().route("/prescriptions", prescriptions);
 
@@ -40,6 +44,26 @@ const app = new Hono()
   )
   .route("/api", api)
   .route("/auth", auth)
+  .post(
+    "/auth/refresh",
+    zValidator(
+      "json",
+      z.object({
+        refreshToken: z.string(),
+      })
+    ),
+    async (c) => {
+      const context = await createContext(undefined, c);
+      const caller = createCaller(context);
+
+      const { refreshToken: oldRefreshToken } = c.req.valid("json");
+      const { accessToken, refreshToken } = await caller.auth.refresh({
+        refreshToken: oldRefreshToken,
+      });
+
+      return c.json({ accessToken, refreshToken });
+    }
+  )
   .get("/", (c) => {
     return c.text("Hello Hono!");
   });

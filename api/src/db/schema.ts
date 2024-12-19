@@ -28,6 +28,25 @@ export const users = sqliteTable("users", {
   phoneNumber: text("phone_number").notNull(),
 });
 
+export const verificationCodes = sqliteTable("verification_codes", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+  codeHash: text("code_hash").notNull(),
+  codeHashExpiresAt: integer("code_hash_expires_at", {
+    mode: "timestamp",
+  }).notNull(),
+});
+
+export const refreshTokens = sqliteTable("refresh_tokens", {
+  tokenHash: text("token_hash").notNull().primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+});
+
 export const orderStatusValues = [
   "checking",
   "with_gp",

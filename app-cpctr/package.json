@@ -20,6 +20,7 @@
     "@use-gesture/react": "^10.3.1",
     "api": "workspace:^",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
     "isbot": "^5.1.17",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

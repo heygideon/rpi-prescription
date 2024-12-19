@@ -12,11 +12,14 @@ const authRouter = router({
     const { session, user } = ctx;
     if (!session) throw new TRPCError({ code: "UNAUTHORIZED" });
 
+    await new Promise((r) => setTimeout(r, 500));
+
     return {
       user: {
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
+        createdAt: user.createdAt,
         email: user.email,
         phoneNumber: session.verified ? user.phoneNumber : null,
       },

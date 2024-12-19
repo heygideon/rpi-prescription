@@ -8,6 +8,24 @@ import { addMinutes, getUnixTime } from "date-fns";
 import { sign } from "../lib/jwt";
 
 const authRouter = router({
+  me: publicProcedure.query(async ({ ctx }) => {
+    const { session, user } = ctx;
+    if (!session) throw new TRPCError({ code: "UNAUTHORIZED" });
+
+    return {
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phoneNumber: session.verified ? user.phoneNumber : null,
+      },
+      session: {
+        sub: session.sub,
+        verified: session.verified,
+      },
+    };
+  }),
   login: publicProcedure
     .input(
       z.object({

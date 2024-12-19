@@ -1,6 +1,6 @@
-import client, { getAccessToken } from "api";
 import { redirect } from "react-router";
 import type { Route } from "./+types/account";
+import { client } from "@/lib/trpc";
 
 export default function Home({ loaderData }: Route.ComponentProps) {
   if (!loaderData) return null;
@@ -116,7 +116,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               </div>
             </div>
             <p className="mt-1.5 text-xs italic text-gray-600">
-              If you’ve moved, contact your new GP to change.
+              If you've moved, contact your new GP to change.
             </p>
           </div>
         </section>
@@ -127,20 +127,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
 export async function clientLoader() {
   try {
-    const token = await getAccessToken();
-    console.log(token);
-    const res = await client.auth.me.$get(
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
-    return res.json();
+    return await client.auth.me.query();
   } catch (e) {
     throw redirect("/auth");
   }

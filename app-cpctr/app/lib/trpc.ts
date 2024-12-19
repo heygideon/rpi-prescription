@@ -10,11 +10,15 @@ const trpcLinks = [
   httpBatchLink({
     url: "http://localhost:3000/trpc",
     // You can pass any HTTP headers you wish here
-    // async headers() {
-    //   return {
-    //     authorization: getAuthCookie(),
-    //   };
-    // },
+    async headers() {
+      const token = localStorage.getItem("access_token");
+      // TODO: refresh token if expired
+      if (!token) return {};
+
+      return {
+        Authorization: `Bearer ${token}`,
+      };
+    },
   }),
 ] satisfies TRPCLink<AppRouter>[];
 

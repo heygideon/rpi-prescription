@@ -1,6 +1,5 @@
+import { trpc } from "@/lib/trpc";
 import { ArrowLeft, ArrowRight, HandWaving } from "@phosphor-icons/react";
-import { useMutation } from "@tanstack/react-query";
-import client from "api";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
@@ -8,22 +7,12 @@ export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { isPending, mutate } = useMutation({
-    mutationFn: async () => {
-      const res = await client.auth.login.$post({
-        json: {
-          email,
-          password,
-        },
-      });
-      if (!res.ok) {
-        throw new Error(res.statusText);
-      }
 
-      const { accessToken } = await res.json();
+  const { mutate, isPending } = trpc.auth.login.useMutation({
+    onSuccess: async ({ accessToken }) => {
       localStorage.setItem("access_token", accessToken);
+      await navigate("/auth/2fa");
     },
-    onSuccess: () => navigate("/auth/2fa"),
   });
 
   return (
@@ -56,7 +45,12 @@ export default function Login() {
       </div>
       <button
         disabled={isPending}
-        onClick={() => mutate()}
+        onClick={() =>
+          mutate({
+            email,
+            password,
+          })
+        }
         className="mt-4 flex h-12 w-full items-center justify-center gap-1.5 rounded-md bg-emerald-700 font-medium text-white shadow-sm transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
       >
         <span>Continue</span>

@@ -1,5 +1,4 @@
 import { sign as _sign, verify as _verify } from "hono/jwt";
-import type { SignatureAlgorithm } from "hono/utils/jwt/jwa";
 import type { SignatureKey } from "hono/utils/jwt/jws";
 import { z } from "zod";
 

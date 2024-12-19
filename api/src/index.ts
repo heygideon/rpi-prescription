@@ -14,11 +14,13 @@ import authMiddleware from "./middleware/auth";
 import { router } from "./lib/trpc";
 import prescriptionsRouter from "./routers/prescriptions";
 import { trpcServer } from "@hono/trpc-server";
+import authRouter from "./routers/auth";
 
 dotenv.config();
 
 const appRouter = router({
   prescriptions: prescriptionsRouter,
+  auth: authRouter,
 });
 export type AppRouter = typeof appRouter;
 

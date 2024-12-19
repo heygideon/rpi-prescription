@@ -11,8 +11,7 @@ import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
 import figtree from "@fontsource-variable/figtree?url";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { trpc } from "./lib/trpc";
-import { httpBatchLink } from "@trpc/react-query";
+import { reactClient, trpc } from "./lib/trpc";
 
 export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: figtree },
@@ -38,23 +37,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 const queryClient = new QueryClient();
-const trpcClient = trpc.createClient({
-  links: [
-    httpBatchLink({
-      url: "http://localhost:3000/trpc",
-      // You can pass any HTTP headers you wish here
-      // async headers() {
-      //   return {
-      //     authorization: getAuthCookie(),
-      //   };
-      // },
-    }),
-  ],
-});
 
 export default function App() {
   return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+    <trpc.Provider client={reactClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <Outlet />
       </QueryClientProvider>

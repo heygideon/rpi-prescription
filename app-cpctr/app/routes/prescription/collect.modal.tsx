@@ -20,7 +20,7 @@ import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import clsx from "clsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import client from "api";
+import { trpc, client } from "@/lib/trpc";
 
 export default function CollectModal({
   params,
@@ -38,18 +38,7 @@ export default function CollectModal({
     mutate: genCode,
     isPending: codePending,
     error: codeError,
-  } = useMutation({
-    mutationFn: async (postcodeHalf: string) => {
-      const res = await client.api.prescriptions[":id"].collect[
-        "gen-code"
-      ].$post({
-        param: { id: params.id },
-        json: { postcodeHalf },
-      });
-      if (!res.ok) throw new Error(res.statusText);
-      return await res.json();
-    },
-  });
+  } = trpc.prescriptions.collect.generateCode.useMutation();
 
   const {
     data: unlockData,
@@ -59,22 +48,14 @@ export default function CollectModal({
     mutationFn: async () => {
       if (!codeData) return;
 
-      const res = await client.api.prescriptions[":id"].collect[
-        "before-unlock"
-      ].$post({
-        param: { id: params.id },
+      await client.prescriptions.collect.beforeUnlock.mutate({
+        id: Number(params.id),
       });
-      if (!res.ok) throw new Error(res.statusText);
 
-      const res2 = await client.api.prescriptions[":id"].collect[
-        "test-unlock"
-      ].$post({
-        param: { id: params.id },
-        json: { code: codeData.code },
+      return await client.prescriptions.collect.testUnlock.mutate({
+        id: Number(params.id),
+        code: codeData.code,
       });
-      if (!res2.ok) throw new Error(res2.statusText);
-
-      return { success: true };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -181,7 +162,12 @@ export default function CollectModal({
 
                     <button
                       disabled={postcode.length < 3 || codePending}
-                      onClick={() => genCode(postcode)}
+                      onClick={() =>
+                        genCode({
+                          id: parseInt(params.id),
+                          postcodeHalf: postcode,
+                        })
+                      }
                       className="pointer-events-auto mt-4 flex h-14 w-full flex-none items-center justify-center rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
                     >
                       <span>Collect</span>

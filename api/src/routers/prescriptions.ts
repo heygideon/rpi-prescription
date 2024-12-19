@@ -65,7 +65,7 @@ const prescriptionsRouter = router({
           postcodeHalf: z.string().toUpperCase(),
         })
       )
-      .query(async ({ input }) => {
+      .mutation(async ({ input }) => {
         await new Promise((r) => setTimeout(r, 500));
         const { id, postcodeHalf } = input;
 
@@ -122,7 +122,7 @@ const prescriptionsRouter = router({
           id: z.coerce.number(),
         })
       )
-      .query(async ({ input }) => {
+      .mutation(async ({ input }) => {
         await new Promise((r) => setTimeout(r, 500));
         const orderCollection = await db.query.orderCollections.findFirst({
           where: eq(db.orderCollections.orderId, input.id),
@@ -150,7 +150,7 @@ const prescriptionsRouter = router({
           code: z.string(),
         })
       )
-      .query(async ({ input }) => {
+      .mutation(async ({ input }) => {
         // This is what would run on the client
         await new Promise((r) => setTimeout(r, 500));
         const { id, code } = input;

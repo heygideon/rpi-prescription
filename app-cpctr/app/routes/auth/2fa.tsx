@@ -21,9 +21,8 @@ export default function Verify() {
   });
 
   const { mutate, isPending } = trpc.auth.verify.useMutation({
-    onSuccess: async ({ accessToken, refreshToken }) => {
+    onSuccess: async ({ accessToken }) => {
       localStorage.setItem("access_token", accessToken);
-      localStorage.setItem("refresh_token", refreshToken);
       await navigate("/auth/finish");
     },
   });

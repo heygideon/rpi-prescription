@@ -9,8 +9,9 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const { mutate, isPending } = trpc.auth.login.useMutation({
-    onSuccess: async ({ accessToken }) => {
+    onSuccess: async ({ accessToken, refreshToken }) => {
       localStorage.setItem("access_token", accessToken);
+      localStorage.setItem("refresh_token", refreshToken);
       await navigate("/auth/2fa");
     },
   });

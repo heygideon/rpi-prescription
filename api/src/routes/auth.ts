@@ -1,13 +1,12 @@
 import type { Env } from "../middleware/auth";
 import { zValidator } from "@hono/zod-validator";
-import { hash } from "../lib/passwords";
+import { verify } from "../lib/passwords";
 import { Hono } from "hono";
 import z from "zod";
 import db from "../db";
 import { eq } from "drizzle-orm";
-import { sign } from "../lib/jwt";
+import { sign } from "../lib/auth";
 import { addMinutes, getUnixTime } from "date-fns";
-import { verify } from "@node-rs/argon2";
 
 export default new Hono<Env>()
   .get("/me", async (c) => {

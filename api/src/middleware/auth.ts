@@ -1,5 +1,5 @@
 import { createMiddleware } from "hono/factory";
-import { verify, type payloadSchema } from "../lib/jwt";
+import { verify, type payloadSchema } from "../lib/auth";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 import db from "../db";

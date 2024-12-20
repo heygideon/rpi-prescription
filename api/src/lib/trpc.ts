@@ -3,7 +3,7 @@ import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import type { Context as HonoContext } from "hono";
 import type { z } from "zod";
 import db from "../db";
-import { payloadSchema, verify } from "./jwt";
+import { payloadSchema, verify } from "./auth";
 import { eq } from "drizzle-orm";
 import chalk from "chalk";
 

@@ -6,7 +6,11 @@ import {
   Phone,
 } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { OTPInput, type SlotProps } from "input-otp";
+import {
+  OTPInput,
+  REGEXP_ONLY_DIGITS_AND_CHARS,
+  type SlotProps,
+} from "input-otp";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
@@ -137,9 +141,12 @@ export default function Login() {
               <p className="mb-0.5 font-semibold">One-time code</p>
               <OTPInput
                 maxLength={6}
+                pasteTransformer={(value) => value.replace("-", "")}
+                inputMode="text"
                 containerClassName="flex items-center gap-2"
                 value={verifyCode}
                 onChange={setVerifyCode}
+                pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
                 autoFocus={true}
                 render={({ slots }) => (
                   <>

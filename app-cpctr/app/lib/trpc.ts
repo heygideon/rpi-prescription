@@ -26,11 +26,19 @@ const trpcLinks = [
             },
             body: JSON.stringify({ refreshToken }),
           });
-          const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-            await response.json();
-          localStorage.setItem("access_token", newAccessToken);
-          localStorage.setItem("refresh_token", newRefreshToken);
-          accessToken = newAccessToken;
+
+          if (response.ok) {
+            const {
+              accessToken: newAccessToken,
+              refreshToken: newRefreshToken,
+            } = await response.json();
+            localStorage.setItem("access_token", newAccessToken);
+            localStorage.setItem("refresh_token", newRefreshToken);
+            accessToken = newAccessToken;
+          } else {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+          }
         }
       }
       if (!accessToken) return {};

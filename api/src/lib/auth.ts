@@ -5,6 +5,7 @@ import type { SignatureKey } from "hono/utils/jwt/jws";
 import { z } from "zod";
 import db from "../db";
 import { init } from "@paralleldrive/cuid2";
+import { customAlphabet } from "nanoid";
 
 const genRefreshToken = init({
   length: 32,
@@ -61,4 +62,21 @@ export async function createRefreshToken(
   });
 
   return refreshToken;
+}
+
+const _verifyDigits = customAlphabet("0123456789");
+const _verifyLetters = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+export async function createVerificationCode(
+  user: Pick<typeof db.users.$inferSelect, "id">
+) {
+  const code = _verifyDigits(3) + _verifyLetters(3);
+  const codeHash = await sha256(code);
+
+  await db.insert(db.verificationCodes).values({
+    userId: user.id,
+    codeHash: codeHash!,
+    codeHashExpiresAt: addMinutes(new Date(), 15),
+  });
+
+  return { code, codeHash: codeHash! };
 }

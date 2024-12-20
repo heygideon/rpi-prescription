@@ -5,7 +5,11 @@ import { and, eq } from "drizzle-orm";
 import db from "../db";
 import { TRPCError } from "@trpc/server";
 import { addMinutes, isBefore } from "date-fns";
-import { createAccessToken, createRefreshToken } from "../lib/auth";
+import {
+  createAccessToken,
+  createRefreshToken,
+  createVerificationCode,
+} from "../lib/auth";
 import { sha256 } from "hono/utils/crypto";
 import { customAlphabet } from "nanoid";
 import chalk from "chalk";
@@ -71,17 +75,11 @@ const authRouter = router({
       return { accessToken, refreshToken };
     }),
 
-  getVerifyCode: authNoVerifyProcedure.query(async ({ ctx, input }) => {
+  getVerifyCode: authNoVerifyProcedure.query(async ({ ctx }) => {
     const { session, user } = ctx;
     if (session.verified) throw new TRPCError({ code: "NOT_IMPLEMENTED" });
 
-    const code = createVerifyCode();
-    const codeHash = await sha256(code);
-    await db.insert(db.verificationCodes).values({
-      userId: user.id,
-      codeHash: codeHash!,
-      codeHashExpiresAt: addMinutes(new Date(), 15),
-    });
+    const { code, codeHash } = await createVerificationCode(user);
 
     console.log("");
     console.log(chalk.bold.blue(`Verification code for user ${user.id}`));

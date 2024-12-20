@@ -20,7 +20,7 @@ import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import clsx from "clsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { trpc, client } from "@/lib/trpc";
+import { trpc } from "@/lib/trpc";
 
 export default function CollectModal({
   params,
@@ -31,7 +31,7 @@ export default function CollectModal({
 
   const [postcode, setPostcode] = useState("");
 
-  const queryClient = useQueryClient();
+  const queryUtils = trpc.useUtils();
 
   const {
     data: codeData,
@@ -48,19 +48,17 @@ export default function CollectModal({
     mutationFn: async () => {
       if (!codeData) return;
 
-      await client.prescriptions.collect.beforeUnlock.mutate({
+      await queryUtils.client.prescriptions.collect.beforeUnlock.mutate({
         id: Number(params.id),
       });
 
-      return await client.prescriptions.collect.testUnlock.mutate({
+      return await queryUtils.client.prescriptions.collect.testUnlock.mutate({
         id: Number(params.id),
         code: codeData.code,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["prescriptions"],
-      });
+      queryUtils.prescriptions.invalidate();
       setTimeout(() => navigate(-1), 1500);
     },
     onError: () => {

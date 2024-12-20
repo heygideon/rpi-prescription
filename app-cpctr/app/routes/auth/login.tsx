@@ -32,6 +32,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
 
+  const queryUtils = trpc.useUtils();
+
   const {
     data,
     mutate: login,
@@ -47,6 +49,7 @@ export default function Login() {
       onSuccess: async ({ accessToken, refreshToken }) => {
         localStorage.setItem("access_token", accessToken);
         localStorage.setItem("refresh_token", refreshToken);
+        queryUtils.auth.me.invalidate();
         await navigate("/auth/finish");
       },
     });

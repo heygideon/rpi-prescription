@@ -1,4 +1,4 @@
-import { client } from "@/lib/trpc";
+import { trpcUtils } from "@/lib/trpc";
 import { Outlet, redirect } from "react-router";
 
 export default function AuthLayout() {
@@ -7,7 +7,7 @@ export default function AuthLayout() {
 
 export async function clientLoader() {
   try {
-    await client.auth.me.query();
+    await trpcUtils.auth.me.ensureData();
   } catch (e) {
     throw redirect("/auth");
   }

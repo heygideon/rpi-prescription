@@ -1,23 +1,18 @@
 import { z } from "zod";
 import { authNoVerifyProcedure, publicProcedure, router } from "../lib/trpc";
 import { verify } from "@node-rs/argon2";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import db from "../db";
 import { TRPCError } from "@trpc/server";
-import { addMinutes, isBefore } from "date-fns";
+import { isBefore } from "date-fns";
 import {
   createAccessToken,
   createRefreshToken,
   createVerificationCode,
 } from "../lib/auth";
 import { sha256 } from "hono/utils/crypto";
-import { customAlphabet } from "nanoid";
 import chalk from "chalk";
-
-const createVerifyCode = customAlphabet(
-  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-  6
-);
+import { hash } from "../lib/passwords";
 
 const authRouter = router({
   me: publicProcedure.query(async ({ ctx }) => {
@@ -55,6 +50,7 @@ const authRouter = router({
         where: eq(db.users.email, email),
       });
       if (!user) {
+        await hash(password);
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "Invalid email or password",
@@ -69,10 +65,24 @@ const authRouter = router({
         });
       }
 
-      const accessToken = await createAccessToken(user);
-      const refreshToken = await createRefreshToken(user);
+      const { id, code, codeHash } = await createVerificationCode(user);
 
-      return { accessToken, refreshToken };
+      console.log("");
+      console.log(chalk.bold.blue(`Verification code for user ${user.id}`));
+      console.log(chalk.gray(` | Code: ${code}`));
+      console.log(chalk.gray(` | Saved hash: ${chalk.bold.white(codeHash)}`));
+
+      return {
+        sessionId: id,
+        user: {
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          createdAt: user.createdAt,
+          email: user.email,
+          phoneNumberPartial: user.phoneNumber.slice(-4),
+        },
+      };
     }),
 
   getVerifyCode: authNoVerifyProcedure.query(async ({ ctx }) => {
@@ -90,32 +100,18 @@ const authRouter = router({
       phoneNumberPartial: user.phoneNumber.slice(-4),
     };
   }),
-  verify: authNoVerifyProcedure
+  verify: publicProcedure
     .input(
       z.object({
+        sessionId: z.string(),
         code: z.string().length(6).toUpperCase(),
       })
     )
-    .mutation(async ({ ctx, input }) => {
-      const { session, user } = ctx;
-      if (session.verified) throw new TRPCError({ code: "NOT_IMPLEMENTED" });
-
-      const codeHash = await sha256(input.code);
+    .mutation(async ({ input }) => {
       const row = await db.query.verificationCodes.findFirst({
-        where: and(
-          eq(db.verificationCodes.userId, user.id),
-          eq(db.verificationCodes.codeHash, codeHash!)
-        ),
+        where: eq(db.verificationCodes.id, input.sessionId),
+        with: { user: { columns: { id: true } } },
       });
-      await db
-        .delete(db.verificationCodes)
-        .where(
-          and(
-            eq(db.verificationCodes.userId, user.id),
-            eq(db.verificationCodes.codeHash, codeHash!)
-          )
-        );
-
       if (!row) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
@@ -129,9 +125,22 @@ const authRouter = router({
         });
       }
 
-      const accessToken = await createAccessToken(user, { verified: true });
+      const codeHash = await sha256(input.code);
+      if (row.codeHash !== codeHash) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Invalid code",
+        });
+      }
 
-      return { accessToken };
+      await db
+        .delete(db.verificationCodes)
+        .where(eq(db.verificationCodes.id, input.sessionId));
+
+      const accessToken = await createAccessToken(row.user, { verified: true });
+      const refreshToken = await createRefreshToken(row.user);
+
+      return { accessToken, refreshToken };
     }),
   refresh: publicProcedure
     .input(z.object({ refreshToken: z.string() }))

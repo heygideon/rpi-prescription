@@ -69,14 +69,16 @@ const _verifyLetters = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 export async function createVerificationCode(
   user: Pick<typeof db.users.$inferSelect, "id">
 ) {
+  const id = genRefreshToken();
   const code = _verifyDigits(3) + _verifyLetters(3);
   const codeHash = await sha256(code);
 
   await db.insert(db.verificationCodes).values({
+    id,
     userId: user.id,
     codeHash: codeHash!,
     codeHashExpiresAt: addMinutes(new Date(), 15),
   });
 
-  return { code, codeHash: codeHash! };
+  return { id, code, codeHash: codeHash! };
 }

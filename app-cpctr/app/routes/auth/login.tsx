@@ -30,20 +30,30 @@ export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [verifyCode, setVerifyCode] = useState("");
 
-  const [show2fa, setShow2fa] = useState(false);
-
-  // const { mutate, isPending } = trpc.auth.login.useMutation({
-  //   onSuccess: async ({ accessToken, refreshToken }) => {
-  //     localStorage.setItem("access_token", accessToken);
-  //     localStorage.setItem("refresh_token", refreshToken);
-  //     await navigate("/auth/2fa");
-  //   },
-  // });
+  const {
+    data,
+    mutate: login,
+    isPending: loginIsPending,
+    reset: resetLogin,
+  } = trpc.auth.login.useMutation({
+    onSuccess: () => {
+      setPassword("");
+    },
+  });
+  const { mutate: verify, isPending: verifyIsPending } =
+    trpc.auth.verify.useMutation({
+      onSuccess: async ({ accessToken, refreshToken }) => {
+        localStorage.setItem("access_token", accessToken);
+        localStorage.setItem("refresh_token", refreshToken);
+        await navigate("/auth/finish");
+      },
+    });
 
   return (
     <div className="relative h-full text-center">
-      {!show2fa ? (
+      {!data ? (
         <div className="flex h-full flex-col justify-center p-6">
           <Link to="/auth" className="absolute left-4 top-4 p-2">
             <ArrowLeft weight="bold" className="size-5" />
@@ -75,14 +85,13 @@ export default function Login() {
             </div>
           </div>
           <button
-            // disabled={isPending}
-            // onClick={() =>
-            //   mutate({
-            //     email,
-            //     password,
-            //   })
-            // }
-            onClick={() => setShow2fa(true)}
+            disabled={loginIsPending || !email || !password}
+            onClick={() =>
+              login({
+                email,
+                password,
+              })
+            }
             className="mt-4 flex h-12 w-full items-center justify-center gap-1.5 rounded-md bg-emerald-700 font-medium text-white shadow-sm transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
           >
             <span>Continue</span>
@@ -94,27 +103,40 @@ export default function Login() {
         </div>
       ) : (
         <div className="flex h-full flex-col justify-center p-6">
-          <Link to="/auth/login" className="absolute left-4 top-4 p-2">
+          <button
+            onClick={() => {
+              setVerifyCode("");
+              resetLogin();
+            }}
+            className="absolute left-4 top-4 p-2"
+          >
             <ArrowLeft weight="bold" className="size-5" />
-          </Link>
+          </button>
 
           <div className="mx-auto mb-1 grid size-12 place-items-center rounded-full bg-yellow-700 text-white shadow">
-            <span className="text-xl font-medium leading-none">JB</span>
+            <span className="text-xl font-medium leading-none">
+              {data.user.firstName[0].toUpperCase() +
+                data.user.lastName[0].toUpperCase()}
+            </span>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">Hey Joe!</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Hey {data.user.firstName}!
+          </h1>
           <p className="mt-0.5 text-sm text-gray-600">
             We've sent a code to your phone, to check it's really you.
           </p>
           <div className="mt-3 space-y-3 text-left">
             <div className="flex items-center justify-center gap-1 rounded-md border border-gray-400 p-2 px-3 text-gray-600">
               <Phone className="size-4" />
-              <span>+44 •••• ••{"1234"}</span>
+              <span>+44 •••• ••{data.user.phoneNumberPartial}</span>
             </div>
             <div>
               <p className="mb-0.5 font-semibold">One-time code</p>
               <OTPInput
                 maxLength={6}
                 containerClassName="flex items-center gap-2"
+                value={verifyCode}
+                onChange={setVerifyCode}
                 autoFocus={true}
                 render={({ slots }) => (
                   <>
@@ -135,8 +157,10 @@ export default function Login() {
             </div>
           </div>
           <button
-            // onClick={() => mutate({ code: code.join("") })}
-            // disabled={isPending || code.some((c) => c.length === 0)}
+            onClick={() =>
+              verify({ sessionId: data.sessionId, code: verifyCode })
+            }
+            disabled={verifyIsPending || verifyCode.length !== 6}
             className="mt-4 flex h-12 w-full items-center justify-center gap-1.5 rounded-md bg-emerald-700 font-medium text-white shadow-sm transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
           >
             <span>Log in</span>

@@ -6,15 +6,9 @@ export default function AuthLayout() {
 }
 
 export async function clientLoader() {
-  let data;
   try {
-    data = await client.auth.me.query();
+    await client.auth.me.query();
   } catch (e) {
     throw redirect("/auth");
-  }
-
-  const { session } = data;
-  if (!session.verified) {
-    throw redirect("/auth/2fa");
   }
 }

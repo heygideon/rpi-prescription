@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { authNoVerifyProcedure, publicProcedure, router } from "../lib/trpc";
+import { publicProcedure, router } from "../lib/trpc";
 import { verify } from "@node-rs/argon2";
 import { eq } from "drizzle-orm";
 import db from "../db";
@@ -28,11 +28,7 @@ const authRouter = router({
         lastName: user.lastName,
         createdAt: user.createdAt,
         email: user.email,
-        phoneNumber: session.verified ? user.phoneNumber : null,
-      },
-      session: {
-        sub: session.sub,
-        verified: session.verified,
+        phoneNumber: user.phoneNumber,
       },
     };
   }),
@@ -85,21 +81,6 @@ const authRouter = router({
       };
     }),
 
-  getVerifyCode: authNoVerifyProcedure.query(async ({ ctx }) => {
-    const { session, user } = ctx;
-    if (session.verified) throw new TRPCError({ code: "NOT_IMPLEMENTED" });
-
-    const { code, codeHash } = await createVerificationCode(user);
-
-    console.log("");
-    console.log(chalk.bold.blue(`Verification code for user ${user.id}`));
-    console.log(chalk.gray(` | Code: ${code}`));
-    console.log(chalk.gray(` | Saved hash: ${chalk.bold.white(codeHash)}`));
-
-    return {
-      phoneNumberPartial: user.phoneNumber.slice(-4),
-    };
-  }),
   verify: publicProcedure
     .input(
       z.object({
@@ -137,7 +118,7 @@ const authRouter = router({
         .delete(db.verificationCodes)
         .where(eq(db.verificationCodes.id, input.sessionId));
 
-      const accessToken = await createAccessToken(row.user, { verified: true });
+      const accessToken = await createAccessToken(row.user);
       const refreshToken = await createRefreshToken(row.user);
 
       return { accessToken, refreshToken };

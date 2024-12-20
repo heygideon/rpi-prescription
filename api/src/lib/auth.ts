@@ -17,7 +17,6 @@ export const payloadSchema = z.object({
   iat: z.number(),
 
   sub: z.number(),
-  verified: z.boolean(),
 });
 type Payload = z.infer<typeof payloadSchema>;
 
@@ -36,8 +35,7 @@ export async function verify(
 }
 
 export async function createAccessToken(
-  user: Pick<typeof db.users.$inferSelect, "id">,
-  { verified = false }: { verified?: boolean } = {}
+  user: Pick<typeof db.users.$inferSelect, "id">
 ) {
   return await sign(
     {
@@ -45,7 +43,6 @@ export async function createAccessToken(
       exp: getUnixTime(addMinutes(new Date(), 15)),
       nbf: getUnixTime(new Date()),
       sub: user.id,
-      verified,
     },
     process.env.JWT_SECRET!
   );

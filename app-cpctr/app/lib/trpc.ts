@@ -11,13 +11,13 @@ import dayjs from "dayjs";
 
 const tokens = {
   get accessToken() {
-    return localStorage.getItem("access_token");
+    return sessionStorage.getItem("access_token");
   },
   set accessToken(value) {
     if (value) {
-      localStorage.setItem("access_token", value);
+      sessionStorage.setItem("access_token", value);
     } else {
-      localStorage.removeItem("access_token");
+      sessionStorage.removeItem("access_token");
     }
   },
   get refreshToken() {

@@ -19,7 +19,6 @@ export default [
   ...prefix("auth", [
     index("routes/auth/home.tsx"),
     route("login", "routes/auth/login.tsx"),
-    route("2fa", "routes/auth/2fa.tsx"),
     route("signup", "routes/auth/signup.tsx"),
     route("finish", "routes/auth/finish.tsx"),
   ]),

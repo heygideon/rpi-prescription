@@ -19,11 +19,10 @@ export default new Hono<Env>()
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        phoneNumber: session.verified ? user.phoneNumber : null,
+        phoneNumber: user.phoneNumber,
       },
       session: {
         sub: session.sub,
-        verified: session.verified,
       },
     });
   })
@@ -53,7 +52,6 @@ export default new Hono<Env>()
           exp: getUnixTime(addMinutes(new Date(), 15)),
           nbf: getUnixTime(new Date()),
           sub: user.id,
-          verified: false,
         },
         process.env.JWT_SECRET!
       );

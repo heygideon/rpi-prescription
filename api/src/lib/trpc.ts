@@ -1,5 +1,4 @@
 import { initTRPC, TRPCError } from "@trpc/server";
-import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import type { Context as HonoContext } from "hono";
 import type { z } from "zod";
 import db from "../db";
@@ -19,16 +18,8 @@ const t = initTRPC.context<Context>().create();
 export const createCallerFactory = t.createCallerFactory;
 export const router = t.router;
 export const publicProcedure = t.procedure;
-export const authNoVerifyProcedure = t.procedure.use(({ ctx, next }) => {
+export const authProcedure = publicProcedure.use(({ ctx, next }) => {
   if (!ctx.session) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  return next({
-    ctx,
-  });
-});
-export const authProcedure = authNoVerifyProcedure.use(({ ctx, next }) => {
-  if (!ctx.session.verified) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({

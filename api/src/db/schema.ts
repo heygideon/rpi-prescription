@@ -29,7 +29,7 @@ export const users = sqliteTable("users", {
 });
 
 export const verificationCodes = sqliteTable("verification_codes", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+  id: text("id").notNull().primaryKey(),
   userId: integer("user_id")
     .notNull()
     .references(() => users.id),
@@ -38,6 +38,15 @@ export const verificationCodes = sqliteTable("verification_codes", {
     mode: "timestamp",
   }).notNull(),
 });
+export const verificationCodesRelations = relations(
+  verificationCodes,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [verificationCodes.userId],
+      references: [users.id],
+    }),
+  })
+);
 
 export const refreshTokens = sqliteTable("refresh_tokens", {
   tokenHash: text("token_hash").notNull().primaryKey(),

@@ -1,59 +1,83 @@
+import { QueryClient } from "@tanstack/react-query";
 import {
   createTRPCClient,
+  createTRPCQueryUtils,
   createTRPCReact,
   httpBatchLink,
-  type TRPCLink,
+  httpLink,
 } from "@trpc/react-query";
 import type { AppRouter } from "api/trpc";
+import dayjs from "dayjs";
 
-const trpcLinks = [
-  httpBatchLink({
-    url: "http://localhost:3000/trpc",
-    // You can pass any HTTP headers you wish here
-    async headers() {
-      let accessToken = localStorage.getItem("access_token");
-      let refreshToken = localStorage.getItem("refresh_token");
+const tokens = {
+  get accessToken() {
+    return sessionStorage.getItem("access_token");
+  },
+  set accessToken(value) {
+    if (value) {
+      sessionStorage.setItem("access_token", value);
+    } else {
+      sessionStorage.removeItem("access_token");
+    }
+  },
+  get refreshToken() {
+    return localStorage.getItem("refresh_token");
+  },
+  set refreshToken(value) {
+    if (value) {
+      localStorage.setItem("refresh_token", value);
+    } else {
+      localStorage.removeItem("refresh_token");
+    }
+  },
+};
 
-      if (accessToken && refreshToken) {
-        const payload = accessToken.split(".")[1];
-        const { exp } = JSON.parse(atob(payload));
-
-        if (exp < Date.now() / 1000) {
-          const response = await fetch("http://localhost:3000/auth/refresh", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ refreshToken }),
-          });
-
-          if (response.ok) {
-            const {
-              accessToken: newAccessToken,
-              refreshToken: newRefreshToken,
-            } = await response.json();
-            localStorage.setItem("access_token", newAccessToken);
-            localStorage.setItem("refresh_token", newRefreshToken);
-            accessToken = newAccessToken;
-          } else {
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("refresh_token");
-          }
-        }
-      }
-      if (!accessToken) return {};
-
-      return {
-        Authorization: `Bearer ${accessToken}`,
-      };
-    },
-  }),
-] satisfies TRPCLink<AppRouter>[];
+const _refreshClient = createTRPCClient<AppRouter>({
+  links: [
+    httpLink({
+      url: "http://localhost:3000/trpc",
+    }),
+  ],
+});
 
 export const trpc = createTRPCReact<AppRouter>();
-export const client = createTRPCClient<AppRouter>({
-  links: trpcLinks,
+export const client = trpc.createClient({
+  links: [
+    httpBatchLink({
+      url: "http://localhost:3000/trpc",
+      async headers() {
+        if (tokens.accessToken && tokens.refreshToken) {
+          const payload = tokens.accessToken.split(".")[1];
+          const { exp } = JSON.parse(atob(payload));
+          const expDate = dayjs.unix(exp);
+
+          if (expDate.isBefore(dayjs().add(30, "seconds"))) {
+            try {
+              const { accessToken, refreshToken } =
+                await _refreshClient.auth.refresh.mutate({
+                  refreshToken: tokens.refreshToken,
+                });
+              tokens.accessToken = accessToken;
+              tokens.refreshToken = refreshToken;
+            } catch (e) {
+              console.error(e);
+              tokens.accessToken = "";
+              tokens.refreshToken = "";
+            }
+          }
+        }
+
+        if (!tokens.accessToken) return {};
+        return {
+          Authorization: `Bearer ${tokens.accessToken}`,
+        };
+      },
+    }),
+  ],
 });
-export const reactClient = trpc.createClient({
-  links: trpcLinks,
+export const queryClient = new QueryClient();
+
+export const trpcUtils = createTRPCQueryUtils<AppRouter>({
+  client,
+  queryClient,
 });

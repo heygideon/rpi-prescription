@@ -39,6 +39,21 @@ const _refreshClient = createTRPCClient<AppRouter>({
     }),
   ],
 });
+async function refreshTokens() {
+  if (!tokens.refreshToken) return;
+  try {
+    const { accessToken, refreshToken } =
+      await _refreshClient.auth.refresh.mutate({
+        refreshToken: tokens.refreshToken,
+      });
+    tokens.accessToken = accessToken;
+    tokens.refreshToken = refreshToken;
+  } catch (e) {
+    console.error(e);
+    tokens.accessToken = null;
+    tokens.refreshToken = null;
+  }
+}
 
 export const trpc = createTRPCReact<AppRouter>();
 export const client = trpc.createClient({
@@ -46,24 +61,17 @@ export const client = trpc.createClient({
     httpBatchLink({
       url: "http://localhost:3000/trpc",
       async headers() {
-        if (tokens.accessToken && tokens.refreshToken) {
-          const payload = tokens.accessToken.split(".")[1];
-          const { exp } = JSON.parse(atob(payload));
-          const expDate = dayjs.unix(exp);
+        if (tokens.refreshToken) {
+          if (tokens.accessToken) {
+            const payload = tokens.accessToken.split(".")[1];
+            const { exp } = JSON.parse(atob(payload));
+            const expDate = dayjs.unix(exp);
 
-          if (expDate.isBefore(dayjs().add(30, "seconds"))) {
-            try {
-              const { accessToken, refreshToken } =
-                await _refreshClient.auth.refresh.mutate({
-                  refreshToken: tokens.refreshToken,
-                });
-              tokens.accessToken = accessToken;
-              tokens.refreshToken = refreshToken;
-            } catch (e) {
-              console.error(e);
-              tokens.accessToken = "";
-              tokens.refreshToken = "";
+            if (expDate.isBefore(dayjs().add(30, "seconds"))) {
+              await refreshTokens();
             }
+          } else {
+            await refreshTokens();
           }
         }
 

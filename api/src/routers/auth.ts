@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { publicProcedure, router } from "../lib/trpc";
+import { authProcedure, publicProcedure, router } from "../lib/trpc";
 import { verify } from "@node-rs/argon2";
 import { eq } from "drizzle-orm";
 import db from "../db";
@@ -15,9 +15,8 @@ import chalk from "chalk";
 import { hash } from "../lib/passwords";
 
 const authRouter = router({
-  me: publicProcedure.query(async ({ ctx }) => {
-    const { session, user } = ctx;
-    if (!session) throw new TRPCError({ code: "UNAUTHORIZED" });
+  me: authProcedure.query(async ({ ctx }) => {
+    const { user } = ctx;
 
     await new Promise((r) => setTimeout(r, 500));
 

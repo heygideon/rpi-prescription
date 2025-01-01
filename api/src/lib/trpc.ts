@@ -1,5 +1,4 @@
 import { initTRPC, TRPCError } from "@trpc/server";
-import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import type { Context as HonoContext } from "hono";
 import type { z } from "zod";
 import db from "../db";

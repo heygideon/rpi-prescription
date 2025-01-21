@@ -67,7 +67,7 @@ export const client = trpc.createClient({
             const { exp } = JSON.parse(atob(payload));
             const expDate = dayjs.unix(exp);
 
-            if (expDate.isBefore(dayjs().add(30, "seconds"))) {
+            if (expDate.subtract(30, "seconds").isBefore(dayjs())) {
               await refreshTokens();
             }
           } else {

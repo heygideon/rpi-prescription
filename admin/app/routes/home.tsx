@@ -1,26 +1,21 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
+import { useDate } from "~/lib/dayjs";
 
 function Greeting() {
-  const [greeting, setGreeting] = useState("Good morning");
-  useEffect(() => {
-    const updateGreeting = () => {
-      const now = new Date();
-      const hours = now.getHours();
-      if (hours >= 6 && hours < 12) {
-        setGreeting("Good morning");
-      } else if (hours >= 12 && hours < 18) {
-        setGreeting("Good afternoon");
-      } else if (hours >= 18 && hours < 22) {
-        setGreeting("Good evening");
-      } else {
-        setGreeting("Good night");
-      }
-    };
+  const date = useDate(1000 * 60 * 5);
 
-    const interval = setInterval(updateGreeting, 1000 * 60 * 5);
-    updateGreeting();
-    return () => clearInterval(interval);
-  }, []);
+  const greeting = useMemo(() => {
+    const hours = date.hour();
+    if (hours >= 6 && hours < 12) {
+      return "Good morning";
+    } else if (hours >= 12 && hours < 18) {
+      return "Good afternoon";
+    } else if (hours >= 18 && hours < 22) {
+      return "Good evening";
+    } else {
+      return "Good night";
+    }
+  }, [date]);
 
   return greeting;
 }

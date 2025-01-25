@@ -7,7 +7,7 @@ import {
   House,
   Users,
 } from "@phosphor-icons/react";
-import { Outlet } from "react-router";
+import { Link, Outlet } from "react-router";
 
 export default function AppLayout() {
   return (
@@ -45,10 +45,10 @@ export default function AppLayout() {
             <span className="font-medium text-gray-600">Lockers</span>
           </div>
           <div className="min-h-0 flex-1"></div>
-          <div className="flex items-center gap-1.5">
+          <Link to="/counter" className="flex items-center gap-1.5">
             <Basket weight="bold" className="size-6 text-gray-500" />
             <span className="font-medium text-gray-600">In-store counter</span>
-          </div>
+          </Link>
         </div>
         <hr className="my-4 border-gray-300" />
         <div className="-m-2 flex items-center gap-2 rounded-md p-2 transition hover:bg-gray-300">

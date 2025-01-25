@@ -1,4 +1,5 @@
 import { initTRPC, TRPCError } from "@trpc/server";
+import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import type { Context as HonoContext } from "hono";
 import type { z } from "zod";
 import db from "../db";
@@ -28,8 +29,7 @@ export const authProcedure = publicProcedure.use(({ ctx, next }) => {
 });
 
 export const createContext = async (
-  // _opts: FetchCreateContextFnOptions,
-  _opts: any,
+  _opts: FetchCreateContextFnOptions,
   c: HonoContext
 ): Promise<Context> => {
   if (!process.env.JWT_SECRET) {

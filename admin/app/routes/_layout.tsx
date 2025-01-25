@@ -1,4 +1,5 @@
 import {
+  ArrowLeft,
   Basket,
   CaretDown,
   CaretUp,
@@ -7,12 +8,20 @@ import {
   House,
   Users,
 } from "@phosphor-icons/react";
-import { Link, Outlet } from "react-router";
+import { Link, Outlet, useMatch, useNavigate } from "react-router";
 
 export default function AppLayout() {
+  const match = useMatch("/counter");
+  const navigate = useNavigate();
+
   return (
     <div className="flex h-full gap-2 bg-gray-100 p-2">
-      <div className="flex w-64 flex-none flex-col p-4">
+      <div
+        style={{
+          marginLeft: match ? "-16.5rem" : 0,
+        }}
+        className="flex w-64 flex-none flex-col p-4 transition-all"
+      >
         <div className="-m-2 flex items-center gap-2 rounded-md p-2 transition hover:bg-gray-300">
           <div className="size-8 flex-none rounded bg-gradient-to-tr from-blue-900 to-pink-500"></div>
           <div className="min-w-0 flex-1">
@@ -27,11 +36,11 @@ export default function AppLayout() {
         </div>
         <hr className="my-4 border-gray-300" />
         <div className="flex flex-1 flex-col space-y-4">
-          <div className="relative flex items-center gap-1.5">
+          <Link to="/" className="relative flex items-center gap-1.5">
             <div className="absolute inset-y-1 -left-6 w-[3px] rounded-r-full bg-emerald-700"></div>
             <House weight="fill" className="size-6 text-emerald-700" />
             <span className="font-semibold text-emerald-700">Home</span>
-          </div>
+          </Link>
           <div className="flex items-center gap-1.5">
             <ClipboardText weight="bold" className="size-6 text-gray-500" />
             <span className="font-medium text-gray-600">Orders</span>
@@ -62,7 +71,22 @@ export default function AppLayout() {
           <CaretUp weight="bold" className="size-4 text-gray-500" />
         </div>
       </div>
-      <div className="min-w-0 flex-1 overflow-clip rounded-xl border border-gray-300 bg-white shadow">
+      <div
+        onClick={() => navigate(-1)}
+        style={{
+          marginRight: !match ? "-3.5rem" : 0,
+          pointerEvents: !match ? "none" : "auto",
+        }}
+        className="flex w-12 flex-col items-center py-2 transition-all"
+      >
+        <div className="size-8 flex-none rounded bg-gradient-to-tr from-blue-900 to-pink-500"></div>
+        <div className="min-h-0 flex-1"></div>
+        <ArrowLeft weight="bold" className="size-4 text-gray-500" />
+        <span className="text-sm text-gray-500">Back</span>
+        <div className="min-h-0 flex-1"></div>
+        <div className="size-8 flex-none rounded-full bg-gradient-to-br from-red-600 to-amber-600"></div>
+      </div>
+      <div className="relative min-w-0 flex-1 overflow-clip rounded-xl border border-gray-300 bg-white shadow">
         <div className="size-full overflow-y-auto">
           <Outlet />
         </div>

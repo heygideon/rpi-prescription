@@ -10,6 +10,7 @@ import {
 } from "@headlessui/react";
 import {
   CaretRight,
+  CellSignalHigh,
   Check,
   Lock,
   LockOpen,
@@ -20,7 +21,7 @@ import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import clsx from "clsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import client from "api";
+import { trpc } from "@/lib/trpc";
 
 export default function CollectModal({
   params,
@@ -31,25 +32,14 @@ export default function CollectModal({
 
   const [postcode, setPostcode] = useState("");
 
-  const queryClient = useQueryClient();
+  const queryUtils = trpc.useUtils();
 
   const {
     data: codeData,
     mutate: genCode,
     isPending: codePending,
     error: codeError,
-  } = useMutation({
-    mutationFn: async (postcodeHalf: string) => {
-      const res = await client.api.prescriptions[":id"].collect[
-        "gen-code"
-      ].$post({
-        param: { id: params.id },
-        json: { postcodeHalf },
-      });
-      if (!res.ok) throw new Error(res.statusText);
-      return await res.json();
-    },
-  });
+  } = trpc.prescriptions.collect.generateCode.useMutation();
 
   const {
     data: unlockData,
@@ -59,27 +49,17 @@ export default function CollectModal({
     mutationFn: async () => {
       if (!codeData) return;
 
-      const res = await client.api.prescriptions[":id"].collect[
-        "before-unlock"
-      ].$post({
-        param: { id: params.id },
+      await queryUtils.client.prescriptions.collect.beforeUnlock.mutate({
+        id: Number(params.id),
       });
-      if (!res.ok) throw new Error(res.statusText);
 
-      const res2 = await client.api.prescriptions[":id"].collect[
-        "test-unlock"
-      ].$post({
-        param: { id: params.id },
-        json: { code: codeData.code },
+      return await queryUtils.client.prescriptions.collect.testUnlock.mutate({
+        id: Number(params.id),
+        code: codeData.code,
       });
-      if (!res2.ok) throw new Error(res2.statusText);
-
-      return { success: true };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["prescriptions"],
-      });
+      queryUtils.prescriptions.invalidate();
       setTimeout(() => navigate(-1), 1500);
     },
     onError: () => {
@@ -181,7 +161,12 @@ export default function CollectModal({
 
                     <button
                       disabled={postcode.length < 3 || codePending}
-                      onClick={() => genCode(postcode)}
+                      onClick={() =>
+                        genCode({
+                          id: parseInt(params.id),
+                          postcodeHalf: postcode,
+                        })
+                      }
                       className="pointer-events-auto mt-4 flex h-14 w-full flex-none items-center justify-center rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
                     >
                       <span>Collect</span>
@@ -207,12 +192,23 @@ export default function CollectModal({
                   leaveTo="opacity-0 -translate-x-4"
                 >
                   <div className="col-start-1 row-start-1 flex h-full flex-col p-4">
-                    <div className="flex flex-1 flex-col items-center justify-center">
-                      <div className="rounded-lg border-2 border-gray-400 p-4">
+                    <div className="flex flex-1 items-center justify-center divide-x divide-gray-200">
+                      <div className="px-4">
                         <p className="text-sm text-gray-600">Locker no.</p>
-                        <p className="text-3xl font-semibold tracking-tight">
-                          12
-                        </p>
+                        <div className="flex h-12 flex-col items-center justify-center">
+                          <p className="text-4xl font-semibold tracking-tight">
+                            12
+                          </p>
+                        </div>
+                      </div>
+                      <div className="px-4">
+                        <p className="text-sm text-gray-600">Connection</p>
+                        <div className="flex h-12 items-center justify-center gap-1 text-lime-700">
+                          <CellSignalHigh weight={"fill"} className="size-6" />
+                          <span className="text-medium text-lg font-medium">
+                            Good
+                          </span>
+                        </div>
                       </div>
                     </div>
 

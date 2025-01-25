@@ -1,3 +1,4 @@
+import type { Env } from "../middleware/auth";
 import { Hono } from "hono";
 import db from "../db";
 import { orderStatusValues } from "../db/schema";
@@ -13,7 +14,7 @@ const createCollectCode = init({
   length: 32,
 });
 
-export default new Hono()
+export default new Hono<Env>()
   .get(
     "/",
     zValidator(

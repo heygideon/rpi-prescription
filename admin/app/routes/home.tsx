@@ -6,7 +6,6 @@ function Greeting() {
     const updateGreeting = () => {
       const now = new Date();
       const hours = now.getHours();
-      console.log(hours);
       if (hours >= 6 && hours < 12) {
         setGreeting("Good morning");
       } else if (hours >= 12 && hours < 18) {

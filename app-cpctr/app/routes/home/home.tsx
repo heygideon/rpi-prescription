@@ -1,34 +1,14 @@
 import { StatusTag } from "@/lib/status";
-import { queryOptions, useQuery } from "@tanstack/react-query";
-import client from "api";
+import { trpc } from "@/lib/trpc";
 import { Link } from "react-router";
 
-const prescriptionsQuery = queryOptions({
-  queryKey: ["prescriptions"],
-  queryFn: () =>
-    client.api.prescriptions
-      .$get({
-        query: {
-          status: ["checking", "with_gp", "preparing", "ready"],
-        },
-      })
-      .then((r) => r.json()),
-});
-const collectedQuery = queryOptions({
-  queryKey: ["prescriptions", "collected"],
-  queryFn: () =>
-    client.api.prescriptions
-      .$get({
-        query: {
-          status: "collected",
-        },
-      })
-      .then((r) => r.json()),
-});
-
 export default function Home() {
-  const { data: orders } = useQuery(prescriptionsQuery);
-  const { data: collectedOrders } = useQuery(collectedQuery);
+  const { data: orders } = trpc.prescriptions.getAll.useQuery({
+    status: ["checking", "with_gp", "preparing", "ready"],
+  });
+  const { data: collectedOrders } = trpc.prescriptions.getAll.useQuery({
+    status: ["collected"],
+  });
 
   return (
     <>

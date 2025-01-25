@@ -1,36 +1,55 @@
-import client, { getAccessToken } from "api";
-import { redirect } from "react-router";
-import type { Route } from "./+types/account";
+import { Navigate } from "react-router";
+import { trpc } from "@/lib/trpc";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
-export default function Home({ loaderData }: Route.ComponentProps) {
-  if (!loaderData) return null;
+dayjs.extend(relativeTime);
 
-  const { user } = loaderData;
+export default function Home() {
+  const { data, error, isPending } = trpc.auth.me.useQuery(undefined, {
+    // retry: (_, e) => e.data?.code !== "UNAUTHORIZED",
+    retry: false,
+  });
+
+  if (isPending)
+    return (
+      <div className="p-6">
+        <div className="mx-auto size-20 animate-pulse rounded-full bg-gray-300"></div>
+        <div className="mx-auto mt-2.5 h-9 w-44 rounded bg-gray-300"></div>
+        <div className="mx-auto mt-2.5 h-5 w-32 rounded bg-gray-300"></div>
+      </div>
+    );
+  if (error) return <Navigate to="/auth" />;
+
+  const { user } = data;
+
   return (
     <>
-      <div className="sticky top-0 bg-white p-6 shadow-md">
-        <div className="flex items-center gap-4">
-          <div className="grid size-16 place-items-center rounded-full bg-cyan-700 text-white shadow">
-            <span className="text-2xl font-medium leading-none">GS</span>
-          </div>
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">
-              {user.firstName} {user.lastName}
-            </h2>
-            <p className="mt-0.5 text-gray-600">Joined 4 months ago</p>
-          </div>
+      <div className="p-6 text-center">
+        <div className="mx-auto grid size-20 place-items-center rounded-full bg-cyan-700 text-white shadow">
+          <span className="text-3xl font-medium leading-none">
+            {user.firstName.charAt(0).toUpperCase() +
+              user.lastName.charAt(0).toUpperCase()}
+          </span>
         </div>
+        <h2 className="mt-2 text-4xl font-bold tracking-tight">
+          {user.firstName} {user.lastName}
+        </h2>
+        <p className="mt-1 text-gray-600">
+          Joined {dayjs(user.createdAt).fromNow()}
+        </p>
         <div className="mt-4 flex gap-3">
-          <div className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-gray-50 py-4 text-center">
+          <div className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white py-4 text-center">
             <p className="text-2xl font-semibold">5</p>
             <p className="text-sm text-gray-600">prescriptions collected</p>
           </div>
-          <div className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-gray-50 py-4 text-center">
+          <div className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white py-4 text-center">
             <p className="text-2xl font-semibold">50min</p>
             <p className="text-sm text-gray-600">time saved</p>
           </div>
         </div>
       </div>
+      <div className="mx-6 border-b border-dashed border-gray-400"></div>
       <div className="space-y-6 p-6">
         <section>
           <h2 className="text-xl font-bold tracking-tight">
@@ -116,32 +135,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               </div>
             </div>
             <p className="mt-1.5 text-xs italic text-gray-600">
-              If you’ve moved, contact your new GP to change.
+              If you've moved, contact your new GP to change.
             </p>
           </div>
         </section>
       </div>
     </>
   );
-}
-
-export async function clientLoader() {
-  try {
-    const token = await getAccessToken();
-    console.log(token);
-    const res = await client.auth.me.$get(
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
-    return res.json();
-  } catch (e) {
-    throw redirect("/auth");
-  }
 }

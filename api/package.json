@@ -5,6 +5,10 @@
     ".": {
       "import": "./src/client.ts",
       "types": "./src/client.ts"
+    },
+    "./trpc": {
+      "import": "./src/clientTrpc.ts",
+      "types": "./src/clientTrpc.ts"
     }
   },
   "scripts": {
@@ -14,14 +18,17 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",
+    "@hono/trpc-server": "^0.3.4",
     "@hono/zod-validator": "^0.4.1",
     "@node-rs/argon2": "^2.0.2",
     "@paralleldrive/cuid2": "^2.2.2",
+    "@trpc/server": "11.0.0-rc.666",
     "chalk": "^5.3.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.38.2",
     "hono": "^4.6.12",
+    "nanoid": "^5.0.9",
     "zod": "^3.23.8"
   },
   "devDependencies": {

@@ -1,13 +1,12 @@
 import type { Env } from "../middleware/auth";
 import { zValidator } from "@hono/zod-validator";
-import { hash } from "../lib/passwords";
+import { verify } from "../lib/passwords";
 import { Hono } from "hono";
 import z from "zod";
 import db from "../db";
 import { eq } from "drizzle-orm";
-import { sign } from "../lib/jwt";
+import { sign } from "../lib/auth";
 import { addMinutes, getUnixTime } from "date-fns";
-import { verify } from "@node-rs/argon2";
 
 export default new Hono<Env>()
   .get("/me", async (c) => {
@@ -20,11 +19,10 @@ export default new Hono<Env>()
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        phoneNumber: session.verified ? user.phoneNumber : null,
+        phoneNumber: user.phoneNumber,
       },
       session: {
         sub: session.sub,
-        verified: session.verified,
       },
     });
   })
@@ -54,7 +52,6 @@ export default new Hono<Env>()
           exp: getUnixTime(addMinutes(new Date(), 15)),
           nbf: getUnixTime(new Date()),
           sub: user.id,
-          verified: false,
         },
         process.env.JWT_SECRET!
       );

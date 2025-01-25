@@ -7,8 +7,8 @@
       "types": "./src/client.ts"
     },
     "./trpc": {
-      "import": "./src/clientTrpc.ts",
-      "types": "./src/clientTrpc.ts"
+      "import": "./src/client.ts",
+      "types": "./src/client.ts"
     }
   },
   "scripts": {

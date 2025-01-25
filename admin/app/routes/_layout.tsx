@@ -2,9 +2,9 @@ import {
   Basket,
   CaretDown,
   CaretUp,
+  ClipboardText,
   Door,
   House,
-  Pill,
   Users,
 } from "@phosphor-icons/react";
 import { Outlet } from "react-router";
@@ -33,7 +33,7 @@ export default function AppLayout() {
             <span className="font-semibold text-emerald-700">Home</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Pill weight="bold" className="size-6 text-gray-500" />
+            <ClipboardText weight="bold" className="size-6 text-gray-500" />
             <span className="font-medium text-gray-600">Orders</span>
           </div>
           <div className="flex items-center gap-1.5">

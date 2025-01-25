@@ -10,6 +10,7 @@ import {
 } from "@headlessui/react";
 import {
   CaretRight,
+  CellSignalHigh,
   Check,
   Lock,
   LockOpen,
@@ -191,12 +192,23 @@ export default function CollectModal({
                   leaveTo="opacity-0 -translate-x-4"
                 >
                   <div className="col-start-1 row-start-1 flex h-full flex-col p-4">
-                    <div className="flex flex-1 flex-col items-center justify-center">
-                      <div className="rounded-lg border-2 border-gray-400 p-4">
+                    <div className="flex flex-1 items-center justify-center divide-x divide-gray-200">
+                      <div className="px-4">
                         <p className="text-sm text-gray-600">Locker no.</p>
-                        <p className="text-3xl font-semibold tracking-tight">
-                          12
-                        </p>
+                        <div className="flex h-12 flex-col items-center justify-center">
+                          <p className="text-4xl font-semibold tracking-tight">
+                            12
+                          </p>
+                        </div>
+                      </div>
+                      <div className="px-4">
+                        <p className="text-sm text-gray-600">Connection</p>
+                        <div className="flex h-12 items-center justify-center gap-1 text-lime-700">
+                          <CellSignalHigh weight={"fill"} className="size-6" />
+                          <span className="text-medium text-lg font-medium">
+                            Good
+                          </span>
+                        </div>
                       </div>
                     </div>
 

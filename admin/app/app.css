@@ -56,4 +56,14 @@
       opacity: 0;
     }
   }
+
+  .bg-stripes-used {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgba(0, 0, 0, 0.1),
+      rgba(0, 0, 0, 0.1) 1px,
+      transparent 1px,
+      transparent 10px
+    );
+  }
 }

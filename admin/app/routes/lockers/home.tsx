@@ -2,7 +2,7 @@ import { Check, Info, Warning } from "@phosphor-icons/react";
 
 export default function LockersHome() {
   return (
-    <div className="p-8">
+    <div className="mx-auto max-w-6xl p-8">
       <h1 className="text-3xl font-bold tracking-tight">Lockers</h1>
       <div className="mt-6 divide-y divide-gray-300 border-t border-gray-300">
         <div className="py-6">

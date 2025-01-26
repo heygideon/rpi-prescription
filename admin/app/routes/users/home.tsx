@@ -9,7 +9,7 @@ import {
 
 export default function UsersHome() {
   return (
-    <div className="p-8">
+    <div className="mx-auto max-w-6xl p-8">
       <h1 className="text-3xl font-bold tracking-tight">Users</h1>
       <div className="mt-4 flex flex-wrap gap-4">
         <button className="flex h-10 items-center gap-1.5 rounded-md border border-gray-400 px-4 shadow-sm transition hover:bg-gray-200">

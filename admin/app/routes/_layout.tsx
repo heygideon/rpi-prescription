@@ -8,7 +8,15 @@ import {
   House,
   Users,
 } from "@phosphor-icons/react";
-import { Link, Outlet, useMatch, useNavigate } from "react-router";
+import clsx from "clsx";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useMatch,
+  useNavigate,
+} from "react-router";
 
 export default function AppLayout() {
   const match = useMatch("/counter");
@@ -35,24 +43,108 @@ export default function AppLayout() {
           <CaretDown weight="bold" className="size-4 text-gray-500" />
         </div>
         <hr className="my-4 border-gray-300" />
-        <div className="flex flex-1 flex-col space-y-4">
-          <Link to="/" className="relative flex items-center gap-1.5">
-            <div className="absolute inset-y-1 -left-6 w-[3px] rounded-r-full bg-emerald-700"></div>
-            <House weight="fill" className="size-6 text-emerald-700" />
-            <span className="font-semibold text-emerald-700">Home</span>
-          </Link>
-          <div className="flex items-center gap-1.5">
-            <ClipboardText weight="bold" className="size-6 text-gray-500" />
-            <span className="font-medium text-gray-600">Orders</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Users weight="bold" className="size-6 text-gray-500" />
-            <span className="font-medium text-gray-600">Users</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Door weight="bold" className="size-6 text-gray-500" />
-            <span className="font-medium text-gray-600">Lockers</span>
-          </div>
+        <div className="flex flex-1 flex-col gap-y-4">
+          <NavLink to="/" end className="relative flex items-center gap-1.5">
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <div className="absolute -left-6 top-1 h-4 w-[3px] rounded-r-full bg-emerald-700"></div>
+                )}
+                <House
+                  weight={isActive ? "fill" : "bold"}
+                  className={clsx(
+                    "size-6",
+                    isActive ? "text-emerald-700" : "text-gray-500",
+                  )}
+                />
+                <span
+                  className={clsx(
+                    isActive
+                      ? "font-semibold text-emerald-700"
+                      : "font-medium text-gray-600",
+                  )}
+                >
+                  Home
+                </span>
+              </>
+            )}
+          </NavLink>
+
+          <NavLink to="/orders" className="relative flex items-center gap-1.5">
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <div className="absolute -left-6 top-1 h-4 w-[3px] rounded-r-full bg-emerald-700"></div>
+                )}
+                <ClipboardText
+                  weight={isActive ? "fill" : "bold"}
+                  className={clsx(
+                    "size-6",
+                    isActive ? "text-emerald-700" : "text-gray-500",
+                  )}
+                />
+                <span
+                  className={clsx(
+                    isActive
+                      ? "font-semibold text-emerald-700"
+                      : "font-medium text-gray-600",
+                  )}
+                >
+                  Orders
+                </span>
+              </>
+            )}
+          </NavLink>
+          <NavLink to="/users" className="relative flex items-center gap-1.5">
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <div className="absolute -left-6 top-1 h-4 w-[3px] rounded-r-full bg-emerald-700"></div>
+                )}
+                <Users
+                  weight={isActive ? "fill" : "bold"}
+                  className={clsx(
+                    "size-6",
+                    isActive ? "text-emerald-700" : "text-gray-500",
+                  )}
+                />
+                <span
+                  className={clsx(
+                    isActive
+                      ? "font-semibold text-emerald-700"
+                      : "font-medium text-gray-600",
+                  )}
+                >
+                  Users
+                </span>
+              </>
+            )}
+          </NavLink>
+          <NavLink to="/lockers" className="relative flex items-center gap-1.5">
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <div className="absolute -left-6 top-1 h-4 w-[3px] rounded-r-full bg-emerald-700"></div>
+                )}
+                <Door
+                  weight={isActive ? "fill" : "bold"}
+                  className={clsx(
+                    "size-6",
+                    isActive ? "text-emerald-700" : "text-gray-500",
+                  )}
+                />
+                <span
+                  className={clsx(
+                    isActive
+                      ? "font-semibold text-emerald-700"
+                      : "font-medium text-gray-600",
+                  )}
+                >
+                  Lockers
+                </span>
+              </>
+            )}
+          </NavLink>
           <div className="min-h-0 flex-1"></div>
           <Link to="/counter" className="flex items-center gap-1.5">
             <Basket weight="bold" className="size-6 text-gray-500" />

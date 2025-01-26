@@ -3,6 +3,7 @@ import {
   index,
   layout,
   prefix,
+  route,
 } from "@react-router/dev/routes";
 
 export default [
@@ -11,6 +12,11 @@ export default [
     ...prefix("orders", [index("routes/orders/home.tsx")]),
     ...prefix("users", [index("routes/users/home.tsx")]),
     ...prefix("lockers", [index("routes/lockers/home.tsx")]),
-    ...prefix("counter", [index("routes/counter/home.tsx")]),
+    ...prefix("counter", [
+      index("routes/counter/home.tsx"),
+      layout("routes/counter/user/_layout.tsx", [
+        route("user/:id", "routes/counter/user/home.tsx"),
+      ]),
+    ]),
   ]),
 ] satisfies RouteConfig;

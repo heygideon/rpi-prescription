@@ -9,17 +9,13 @@ import {
   Users,
 } from "@phosphor-icons/react";
 import clsx from "clsx";
-import {
-  Link,
-  NavLink,
-  Outlet,
-  useLocation,
-  useMatch,
-  useNavigate,
-} from "react-router";
+import { Link, NavLink, Outlet, useMatch, useNavigate } from "react-router";
 
 export default function AppLayout() {
-  const match = useMatch("/counter");
+  const match = useMatch({
+    path: "/counter",
+    end: false,
+  });
   const navigate = useNavigate();
 
   return (

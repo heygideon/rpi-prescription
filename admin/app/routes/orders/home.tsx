@@ -10,10 +10,10 @@ export default function OrdersHome() {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold tracking-tight">Orders</h1>
-      <div className="mt-4 flex gap-4">
+      <div className="mt-4 flex flex-wrap gap-4">
         <button className="flex h-10 items-center gap-1.5 rounded-md border border-gray-400 px-4 shadow-sm transition hover:bg-gray-200">
           <Funnel weight="bold" className="size-4 text-gray-600" />
-          <span className="font-medium text-gray-700">Newest first</span>
+          <span className="font-medium text-gray-700">Date, newest first</span>
           <CaretDown weight="bold" className="ml-1 size-3 text-gray-500" />
         </button>
         <button className="flex h-10 items-center gap-1.5 rounded-md border border-gray-400 px-4 shadow-sm transition hover:bg-gray-200">

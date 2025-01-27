@@ -15,7 +15,8 @@ export default [
     ...prefix("counter", [
       index("routes/counter/home.tsx"),
       layout("routes/counter/user/_layout.tsx", [
-        route("user/:id", "routes/counter/user/home.tsx"),
+        route("user/:userId", "routes/counter/user/home.tsx"),
+        route("user/:userId/order/:orderId", "routes/counter/user/order.tsx"),
       ]),
     ]),
   ]),

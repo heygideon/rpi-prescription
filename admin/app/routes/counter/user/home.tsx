@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 export default function CounterUserHome() {
   return (
     <div className="p-8">
@@ -14,7 +16,10 @@ export default function CounterUserHome() {
             Status
           </span>
         </div>
-        <div className="flex gap-4 px-2 py-4 transition hover:bg-gray-200">
+        <Link
+          to="/counter/user/1/order/16"
+          className="flex gap-4 px-2 py-4 transition hover:bg-gray-200"
+        >
           <span className="w-24 flex-none text-lg">#16</span>
           <div className="w-full flex-auto text-lg">
             <p>Paracetamol 500mg capsules + 1</p>
@@ -24,8 +29,11 @@ export default function CounterUserHome() {
               Ready to collect
             </span>
           </div>
-        </div>
-        <div className="flex gap-4 px-2 py-4 transition hover:bg-gray-200">
+        </Link>
+        <Link
+          to="/counter/user/1/order/13"
+          className="flex gap-4 px-2 py-4 transition hover:bg-gray-200"
+        >
           <span className="w-24 flex-none text-lg">#13</span>
           <div className="w-full flex-auto text-lg">
             <p>Paracetamol 500mg capsules + 1</p>
@@ -36,8 +44,11 @@ export default function CounterUserHome() {
               For preparation
             </span>
           </div>
-        </div>
-        <div className="flex gap-4 px-2 py-4 transition hover:bg-gray-200">
+        </Link>
+        <Link
+          to="/counter/user/1/order/11"
+          className="flex gap-4 px-2 py-4 transition hover:bg-gray-200"
+        >
           <span className="w-24 flex-none text-lg">#11</span>
           <div className="w-full flex-auto text-lg">
             <p>Paracetamol 500mg capsules + 1</p>
@@ -47,7 +58,7 @@ export default function CounterUserHome() {
               Sent to GP
             </span>
           </div>
-        </div>
+        </Link>
       </div>
 
       <h3 className="mt-8 text-lg font-semibold tracking-tight">Past orders</h3>

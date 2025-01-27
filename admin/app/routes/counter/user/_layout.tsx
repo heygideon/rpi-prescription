@@ -37,8 +37,10 @@ export default function CounterUserLayout() {
           </div>
         </div>
       </div>
-      <div className="w-2/3 flex-auto overflow-y-auto">
-        <Outlet />
+      <div className="relative w-2/3 flex-auto">
+        <div className="size-full overflow-y-auto">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

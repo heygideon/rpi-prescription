@@ -6,7 +6,7 @@ import {
 } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Link } from "react-router";
-import { useDate } from "~/lib/dayjs";
+import { useDate } from "@/lib/dayjs";
 
 function DateLine() {
   const date = useDate();
@@ -53,7 +53,7 @@ export default function Counter() {
       {showResults && (
         <div className="mt-6 flex w-full max-w-4xl flex-wrap justify-center gap-4">
           <Link
-            to="/counter/user/123"
+            to="/counter/user/1"
             className="w-48 rounded-md border border-gray-300 p-4 text-center shadow-sm transition hover:bg-gray-200"
           >
             <div className="mx-auto size-12 flex-none rounded-full bg-gradient-to-br from-red-600 to-amber-600"></div>

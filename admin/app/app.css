@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    @apply h-full select-none bg-gray-100;
+    color-scheme: light;
+  }
+}
+
+@layer components {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    @apply w-full rounded-md border border-gray-400 bg-white shadow-sm focus:border-emerald-600 focus:ring-emerald-600 disabled:bg-gray-200 disabled:opacity-50;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  select {
+    @apply h-12 px-4 py-0;
+  }
+  select {
+    @apply truncate pr-10;
+  }
+  textarea {
+    @apply max-h-72 min-h-24 p-4 py-3;
+  }
+
+  .form-checkbox {
+    @apply rounded border border-gray-400 bg-white shadow-sm focus:border-emerald-600 focus:ring-emerald-600 disabled:bg-gray-200 disabled:opacity-50;
+  }
+}
+
+@layer utilities {
+  .mask-gradient {
+    mask-image: linear-gradient(0deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+  }
+  .field-sizing-content {
+    field-sizing: content;
+  }
+
+  .animate-caret-blink {
+    animation: caret-blink 1s step-end infinite;
+  }
+  @keyframes caret-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .bg-stripes-used {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgba(0, 0, 0, 0.1),
+      rgba(0, 0, 0, 0.1) 1px,
+      transparent 1px,
+      transparent 10px
+    );
+  }
+}

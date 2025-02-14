@@ -54,7 +54,7 @@ export default function Home() {
       </div>
       <div className="mt-8">
         <h2 className="text-lg font-semibold tracking-tight">Recent orders</h2>
-        <div className="mt-4 divide-y divide-gray-300">
+        <div className="-mx-2 mt-4 divide-y divide-gray-300">
           <div className="flex gap-4 px-2 pb-2">
             <span className="w-24 flex-none font-medium text-gray-600">
               Order no

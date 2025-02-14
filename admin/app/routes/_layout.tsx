@@ -49,7 +49,7 @@ export default function AppLayout() {
                 <House
                   weight={isActive ? "fill" : "bold"}
                   className={clsx(
-                    "size-6",
+                    "size-5",
                     isActive ? "text-emerald-700" : "text-gray-500",
                   )}
                 />
@@ -75,7 +75,7 @@ export default function AppLayout() {
                 <ClipboardText
                   weight={isActive ? "fill" : "bold"}
                   className={clsx(
-                    "size-6",
+                    "size-5",
                     isActive ? "text-emerald-700" : "text-gray-500",
                   )}
                 />
@@ -100,7 +100,7 @@ export default function AppLayout() {
                 <Users
                   weight={isActive ? "fill" : "bold"}
                   className={clsx(
-                    "size-6",
+                    "size-5",
                     isActive ? "text-emerald-700" : "text-gray-500",
                   )}
                 />
@@ -125,7 +125,7 @@ export default function AppLayout() {
                 <Door
                   weight={isActive ? "fill" : "bold"}
                   className={clsx(
-                    "size-6",
+                    "size-5",
                     isActive ? "text-emerald-700" : "text-gray-500",
                   )}
                 />
@@ -143,7 +143,7 @@ export default function AppLayout() {
           </NavLink>
           <div className="min-h-0 flex-1"></div>
           <Link to="/counter" className="flex items-center gap-1.5">
-            <Basket weight="bold" className="size-6 text-gray-500" />
+            <Basket weight="bold" className="size-5 text-gray-500" />
             <span className="font-medium text-gray-600">In-store counter</span>
           </Link>
         </div>

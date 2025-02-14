@@ -130,9 +130,9 @@ const authRouter = router({
         where: eq(db.refreshTokens.tokenHash, refreshTokenHash!),
         with: { user: { columns: { id: true } } },
       });
-      // await db
-      //   .delete(db.refreshTokens)
-      //   .where(eq(db.refreshTokens.tokenHash, refreshTokenHash!));
+      await db
+        .delete(db.refreshTokens)
+        .where(eq(db.refreshTokens.tokenHash, refreshTokenHash!));
 
       if (!row) {
         console.log("Invalid refresh token");

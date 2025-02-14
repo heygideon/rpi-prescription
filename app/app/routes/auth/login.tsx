@@ -1,4 +1,4 @@
-import { trpc } from "@/lib/trpc";
+import { tokens, trpc } from "@/lib/trpc";
 import {
   ArrowLeft,
   ArrowRight,
@@ -51,8 +51,8 @@ export default function Login() {
   const { mutate: verify, isPending: verifyIsPending } =
     trpc.auth.verify.useMutation({
       onSuccess: async ({ accessToken, refreshToken }) => {
-        localStorage.setItem("access_token", accessToken);
-        localStorage.setItem("refresh_token", refreshToken);
+        tokens.accessToken = accessToken;
+        tokens.refreshToken = refreshToken;
         queryUtils.auth.me.invalidate();
         await navigate("/auth/finish");
       },

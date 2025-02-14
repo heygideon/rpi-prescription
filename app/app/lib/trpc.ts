@@ -9,7 +9,7 @@ import {
 import type { AppRouter } from "api/trpc";
 import dayjs from "dayjs";
 
-const tokens = {
+export const tokens = {
   get accessToken() {
     return sessionStorage.getItem("access_token");
   },

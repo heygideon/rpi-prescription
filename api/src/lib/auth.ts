@@ -1,4 +1,4 @@
-import { getUnixTime, addMinutes, addDays } from "date-fns";
+import { getUnixTime, addMinutes, addDays, isBefore } from "date-fns";
 import { sign as _sign, verify as _verify } from "hono/jwt";
 import { sha256 } from "hono/utils/crypto";
 import type { SignatureKey } from "hono/utils/jwt/jws";
@@ -6,10 +6,8 @@ import { z } from "zod";
 import db from "../db";
 import { init } from "@paralleldrive/cuid2";
 import { customAlphabet } from "nanoid";
-
-const genRefreshToken = init({
-  length: 32,
-});
+import { eq } from "drizzle-orm";
+import chalk from "chalk";
 
 export const payloadSchema = z.object({
   exp: z.number(),
@@ -20,12 +18,21 @@ export const payloadSchema = z.object({
 });
 type Payload = z.infer<typeof payloadSchema>;
 
+export const JWT = {
+  async verify(token: string) {
+    const payload = await _verify(token, process.env.JWT_SECRET!);
+    return await payloadSchema.parseAsync(payload);
+  },
+};
+
+/** @deprecated */
 export async function sign(
   payload: Payload,
   privateKey: SignatureKey
 ): Promise<string> {
   return await _sign(payload, privateKey);
 }
+/** @deprecated */
 export async function verify(
   token: string,
   publicKey: SignatureKey
@@ -34,6 +41,59 @@ export async function verify(
   return await payloadSchema.parseAsync(payload);
 }
 
+export const Tokens = {
+  _genRefreshToken: init({
+    length: 32,
+  }),
+  async createAccessToken(user: Pick<typeof db.users.$inferSelect, "id">) {
+    return await _sign(
+      {
+        iat: getUnixTime(new Date()),
+        exp: getUnixTime(addMinutes(new Date(), 15)),
+        nbf: getUnixTime(new Date()),
+        sub: user.id,
+      },
+      process.env.JWT_SECRET!
+    );
+  },
+  async createRefreshToken(user: Pick<typeof db.users.$inferSelect, "id">) {
+    const refreshToken = this._genRefreshToken();
+    const refreshTokenHash = await sha256(refreshToken);
+    await db.insert(db.refreshTokens).values({
+      tokenHash: refreshTokenHash!,
+      userId: user.id,
+      expiresAt: addDays(new Date(), 7),
+    });
+
+    return refreshToken;
+  },
+  async createTokenPair(user: Pick<typeof db.users.$inferSelect, "id">) {
+    const accessToken = await this.createAccessToken(user);
+    const refreshToken = await this.createRefreshToken(user);
+
+    return { accessToken, refreshToken };
+  },
+  async refreshTokenPair(refreshToken: string) {
+    const refreshTokenHash = await sha256(refreshToken);
+    const row = await db.query.refreshTokens.findFirst({
+      where: eq(db.refreshTokens.tokenHash, refreshTokenHash!),
+    });
+    await db
+      .delete(db.refreshTokens)
+      .where(eq(db.refreshTokens.tokenHash, refreshTokenHash!));
+
+    if (!row) {
+      throw new Error("Invalid refresh token");
+    }
+    if (isBefore(row.expiresAt, new Date())) {
+      throw new Error("Expired refresh token");
+    }
+
+    return await this.createTokenPair({ id: row.userId });
+  },
+};
+
+/** @deprecated */
 export async function createAccessToken(
   user: Pick<typeof db.users.$inferSelect, "id">
 ) {
@@ -47,9 +107,13 @@ export async function createAccessToken(
     process.env.JWT_SECRET!
   );
 }
+/** @deprecated */
 export async function createRefreshToken(
   user: Pick<typeof db.users.$inferSelect, "id">
 ) {
+  const genRefreshToken = init({
+    length: 32,
+  });
   const refreshToken = genRefreshToken();
   const refreshTokenHash = await sha256(refreshToken);
   await db.insert(db.refreshTokens).values({
@@ -61,21 +125,55 @@ export async function createRefreshToken(
   return refreshToken;
 }
 
-const _verifyDigits = customAlphabet("0123456789");
-const _verifyLetters = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-export async function createVerificationCode(
-  user: Pick<typeof db.users.$inferSelect, "id">
-) {
-  const id = genRefreshToken();
-  const code = _verifyDigits(3) + _verifyLetters(3);
-  const codeHash = await sha256(code);
+export const VerificationCodes = {
+  _genSessionId: init({
+    length: 32,
+  }),
+  _genDigits: customAlphabet("0123456789"),
+  _genLetters: customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
 
-  await db.insert(db.verificationCodes).values({
-    id,
-    userId: user.id,
-    codeHash: codeHash!,
-    codeHashExpiresAt: addMinutes(new Date(), 15),
-  });
+  async create(user: Pick<typeof db.users.$inferSelect, "id">) {
+    const id = this._genSessionId();
+    const code = this._genDigits(3) + this._genLetters(3);
+    const codeHash = await sha256(code);
+    const expiresAt = addMinutes(new Date(), 15);
 
-  return { id, code, codeHash: codeHash! };
-}
+    await db.insert(db.verificationCodes).values({
+      id,
+      userId: user.id,
+      codeHash: codeHash!,
+      codeHashExpiresAt: expiresAt,
+    });
+
+    console.log("");
+    console.log(chalk.bold.blue(`Verification code for user ${user.id}`));
+    console.log(chalk.gray(` | Code: ${code}`));
+    console.log(chalk.gray(` | Saved hash: ${chalk.bold.white(codeHash)}`));
+
+    return { id, expiresAt };
+  },
+
+  async verify(id: string, code: string) {
+    const row = await db.query.verificationCodes.findFirst({
+      where: eq(db.verificationCodes.id, id),
+      with: { user: { columns: { id: true } } },
+    });
+    if (!row) {
+      throw new Error("Invalid code");
+    }
+    if (isBefore(row.codeHashExpiresAt, new Date())) {
+      throw new Error("Code expired");
+    }
+
+    const codeHash = await sha256(code);
+    if (row.codeHash !== codeHash) {
+      throw new Error("Invalid code");
+    }
+
+    await db
+      .delete(db.verificationCodes)
+      .where(eq(db.verificationCodes.id, id));
+
+    return { user: row.user };
+  },
+};

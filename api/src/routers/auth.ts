@@ -8,10 +8,9 @@ import { isBefore } from "date-fns";
 import {
   createAccessToken,
   createRefreshToken,
-  createVerificationCode,
+  VerificationCodes,
 } from "../lib/auth";
 import { sha256 } from "hono/utils/crypto";
-import chalk from "chalk";
 import { hash } from "../lib/passwords";
 
 const authRouter = router({
@@ -60,15 +59,11 @@ const authRouter = router({
         });
       }
 
-      const { id, code, codeHash } = await createVerificationCode(user);
-
-      console.log("");
-      console.log(chalk.bold.blue(`Verification code for user ${user.id}`));
-      console.log(chalk.gray(` | Code: ${code}`));
-      console.log(chalk.gray(` | Saved hash: ${chalk.bold.white(codeHash)}`));
+      const { id, expiresAt } = await VerificationCodes.create(user);
 
       return {
         sessionId: id,
+        expiresAt,
         user: {
           id: user.id,
           firstName: user.firstName,

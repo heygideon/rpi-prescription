@@ -1,5 +1,7 @@
 import { StatusTag } from "@/lib/status";
+import { useIntersection } from "@mantine/hooks";
 import { trpc } from "@repo/trpc";
+import clsx from "clsx";
 import { Link } from "react-router";
 
 export default function Home() {
@@ -11,8 +13,21 @@ export default function Home() {
     status: ["collected"],
   });
 
+  const { ref, entry } = useIntersection({
+    threshold: 1,
+  });
+  const showHeader = entry ? !entry?.isIntersecting : false;
+
   return (
     <>
+      <div
+        className={clsx(
+          "fixed inset-x-0 -top-2 z-10 flex h-16 items-center border-b border-gray-200 bg-white px-6 pt-2 shadow-md transition",
+          !showHeader && "pointer-events-none translate-y-2 opacity-0",
+        )}
+      >
+        <p className="text-xl font-bold tracking-tight">Prescriptions</p>
+      </div>
       <div className="relative isolate -mb-6 bg-white p-6 pb-12">
         <div className="absolute inset-x-0 top-0 -z-10 h-12 [mask-image:linear-gradient(black,transparent)]">
           <div className="size-full bg-gradient-to-r from-emerald-100 to-teal-100"></div>
@@ -20,6 +35,7 @@ export default function Home() {
         <h1 className="text-3xl font-bold tracking-tight">
           Hey {user?.firstName}!
         </h1>
+        <div ref={ref} className="absolute inset-x-0 bottom-20"></div>
       </div>
       <div className="relative isolate overflow-clip rounded-t-xl border-t border-gray-200 bg-gray-100 p-6">
         <section>

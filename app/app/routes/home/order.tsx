@@ -1,11 +1,27 @@
 import paracetamolSrc from "@/assets/paracetamol.png";
+import { useIntersection } from "@mantine/hooks";
 import { MinusCircle, PlusCircle } from "@phosphor-icons/react";
+import clsx from "clsx";
 
 export default function Home() {
+  const { ref, entry } = useIntersection({
+    threshold: 1,
+  });
+  const showHeader = entry ? !entry?.isIntersecting : false;
+
   return (
     <>
-      <div className="-mb-6 bg-white p-6 pb-12">
+      <div
+        className={clsx(
+          "fixed inset-x-0 -top-2 z-10 flex h-16 items-center border-b border-gray-200 bg-white px-6 pt-2 shadow-md transition",
+          !showHeader && "pointer-events-none translate-y-2 opacity-0",
+        )}
+      >
+        <p className="text-xl font-bold tracking-tight">Order</p>
+      </div>
+      <div className="relative -mb-6 bg-white p-6 pb-12">
         <h1 className="text-3xl font-bold tracking-tight">Order</h1>
+        <div ref={ref} className="absolute inset-x-0 bottom-20"></div>
       </div>
       <div className="relative isolate overflow-clip rounded-t-xl border-t border-gray-200 bg-gray-100 p-6">
         <div className="space-y-6">

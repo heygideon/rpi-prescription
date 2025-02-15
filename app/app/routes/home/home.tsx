@@ -24,6 +24,7 @@ export default function Home() {
             {orders ? (
               orders.map(({ user, ...order }) => (
                 <Link
+                  key={order.id}
                   to={`/prescription/${order.id}`}
                   className="block rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75"
                 >
@@ -55,6 +56,7 @@ export default function Home() {
             {collectedOrders ? (
               collectedOrders.map(({ user, ...order }) => (
                 <Link
+                  key={order.id}
                   to={`/prescription/${order.id}`}
                   className="block rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75"
                 >

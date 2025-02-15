@@ -21,7 +21,7 @@ import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import clsx from "clsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { trpc } from "@/lib/trpc";
+import { trpc } from "@repo/trpc";
 
 export default function CollectModal({
   params,

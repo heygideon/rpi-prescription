@@ -1,5 +1,5 @@
 import { Navigate } from "react-router";
-import { trpc } from "@/lib/trpc";
+import { trpc } from "@repo/trpc";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 

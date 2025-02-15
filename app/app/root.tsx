@@ -11,7 +11,8 @@ import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
 import figtree from "@fontsource-variable/figtree?url";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient, client, trpc } from "./lib/trpc";
+import { queryClient, client } from "./lib/trpc";
+import { Provider } from "@repo/trpc";
 
 export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: figtree },
@@ -38,11 +39,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <trpc.Provider client={client} queryClient={queryClient}>
+    <Provider client={client} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <Outlet />
       </QueryClientProvider>
-    </trpc.Provider>
+    </Provider>
   );
 }
 

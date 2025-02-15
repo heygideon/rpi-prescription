@@ -1,5 +1,5 @@
 import { StatusTag } from "@/lib/status";
-import { trpc } from "@/lib/trpc";
+import { trpc } from "@repo/trpc";
 import { Link } from "react-router";
 
 export default function Home() {

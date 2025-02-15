@@ -1,4 +1,4 @@
-import { tokens, trpc } from "@/lib/trpc";
+import { tokens, trpc } from "@repo/trpc";
 import {
   ArrowLeft,
   ArrowRight,

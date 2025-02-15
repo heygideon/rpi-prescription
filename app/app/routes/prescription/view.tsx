@@ -6,7 +6,7 @@ import paracetamolSrc from "@/assets/paracetamol.png";
 import CollectModal from "./collect.modal";
 import { StatusProgress } from "@/lib/status";
 import { Transition, TransitionChild } from "@headlessui/react";
-import { trpc } from "@/lib/trpc";
+import { trpc } from "@repo/trpc";
 
 export default function PrescriptionView({ params }: Route.ComponentProps) {
   const { data: order } = trpc.prescriptions.getOne.useQuery({

@@ -52,7 +52,7 @@ const authRoute = new Hono()
       "json",
       z.object({
         sessionId: z.string(),
-        code: z.string().length(6),
+        code: z.string().length(6).toUpperCase(),
       })
     ),
     async (c) => {

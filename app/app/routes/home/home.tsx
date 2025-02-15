@@ -13,7 +13,10 @@ export default function Home() {
 
   return (
     <>
-      <div className="-mb-6 bg-gradient-to-br from-emerald-100 to-emerald-200 p-6 pb-12">
+      <div className="relative isolate -mb-6 bg-white p-6 pb-12">
+        <div className="absolute inset-x-0 top-0 -z-10 h-12 [mask-image:linear-gradient(black,transparent)]">
+          <div className="size-full bg-gradient-to-r from-emerald-100 to-teal-100"></div>
+        </div>
         <h1 className="text-3xl font-bold tracking-tight">
           Hey {user?.firstName}!
         </h1>

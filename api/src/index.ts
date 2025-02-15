@@ -12,6 +12,7 @@ import { createContext, router } from "./lib/trpc";
 import prescriptionsRouter from "./routers/prescriptions";
 import { trpcServer } from "@hono/trpc-server";
 import authRouter from "./routers/auth";
+import authRoute from "./auth";
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ const app = new Hono()
       createContext,
     })
   )
+  .route("/auth", authRoute)
   .get("/", (c) => {
     return c.text("Hello Hono!");
   });

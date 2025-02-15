@@ -1,0 +1,19 @@
+{
+  "name": "@repo/trpc",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "main": "src/index.tsx",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@repo/api": "workspace:^",
+    "@repo/auth": "workspace:^",
+    "@trpc/react-query": "11.0.0-rc.666"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.66.0",
+    "react": "^18.0.0 || ^19.0.0"
+  }
+}

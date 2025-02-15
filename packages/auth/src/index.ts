@@ -2,7 +2,10 @@ import { hc, type InferRequestType } from "hono/client";
 import type { AuthRoute } from "@repo/api";
 import { fromUnixTime, isAfter, subSeconds } from "date-fns";
 
-const client = hc<AuthRoute>("http://localhost:3000/auth");
+function createAuthClient(url: string) {
+  return hc<AuthRoute>(url);
+}
+type AuthClient = ReturnType<typeof createAuthClient>;
 
 class TokenStorage {
   get accessToken() {
@@ -29,20 +32,24 @@ class TokenStorage {
 
 class Auth {
   private tokens: TokenStorage;
+  private client: AuthClient;
 
-  constructor(tokenStorage?: TokenStorage) {
+  constructor(url: string, tokenStorage?: TokenStorage) {
+    this.client = createAuthClient(url);
     this.tokens = tokenStorage ?? new TokenStorage();
   }
 
-  async login(json: InferRequestType<typeof client.login.$post>["json"]) {
-    const res = await client.login.$post({ json });
+  async login(json: InferRequestType<typeof this.client.login.$post>["json"]) {
+    const res = await this.client.login.$post({ json });
     if (!res.ok) {
       throw new Error(await res.text());
     }
     return await res.json();
   }
-  async verify(json: InferRequestType<typeof client.verify.$post>["json"]) {
-    const res = await client.verify.$post({ json });
+  async verify(
+    json: InferRequestType<typeof this.client.verify.$post>["json"]
+  ) {
+    const res = await this.client.verify.$post({ json });
     if (!res.ok) {
       throw new Error(await res.text());
     }
@@ -59,7 +66,7 @@ class Auth {
       throw new Error("No refresh token");
     }
 
-    const res = await client.refresh.$post({
+    const res = await this.client.refresh.$post({
       json: { refreshToken },
     });
     if (!res.ok) {

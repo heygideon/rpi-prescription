@@ -8,15 +8,15 @@ import type Auth from "@repo/auth";
 import type { QueryClient } from "@tanstack/react-query";
 
 export const trpc = createTRPCReact<AppRouter>();
-export function createClient(url: string, auth?: Auth) {
+export function createClient(url: string, opts: { auth: Auth }) {
   return trpc.createClient({
     links: [
       httpBatchLink({
         url,
         async headers() {
-          if (auth) {
+          if (opts.auth) {
             return {
-              Authorization: `Bearer ${await auth.getAccessToken()}`,
+              Authorization: `Bearer ${await opts.auth.getAccessToken()}`,
             };
           }
           return {};

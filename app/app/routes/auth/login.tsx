@@ -1,4 +1,4 @@
-import { tokens, trpc } from "@repo/trpc";
+import { trpc } from "@repo/trpc";
 import {
   ArrowLeft,
   ArrowRight,
@@ -13,6 +13,8 @@ import {
 } from "input-otp";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { auth } from "@/lib/auth";
 
 function OTPSlot({ char, hasFakeCaret, isActive }: SlotProps) {
   return (
@@ -38,29 +40,21 @@ export default function Login() {
 
   const queryUtils = trpc.useUtils();
 
-  const {
-    data,
-    mutate: login,
-    isPending: loginIsPending,
-    reset: resetLogin,
-  } = trpc.auth.login.useMutation({
-    onSuccess: () => {
-      setPassword("");
+  const login = useMutation({
+    mutationFn: (data: Parameters<typeof auth.login>[0]) => auth.login(data),
+  });
+
+  const verify = useMutation({
+    mutationFn: (data: Parameters<typeof auth.verify>[0]) => auth.verify(data),
+    onSuccess: async () => {
+      await queryUtils.auth.me.invalidate();
+      await navigate("/auth/finish");
     },
   });
-  const { mutate: verify, isPending: verifyIsPending } =
-    trpc.auth.verify.useMutation({
-      onSuccess: async ({ accessToken, refreshToken }) => {
-        tokens.accessToken = accessToken;
-        tokens.refreshToken = refreshToken;
-        queryUtils.auth.me.invalidate();
-        await navigate("/auth/finish");
-      },
-    });
 
   return (
     <div className="relative h-full text-center">
-      {!data ? (
+      {!login.data ? (
         <div className="flex h-full flex-col justify-center p-6">
           <Link to="/auth" className="absolute left-4 top-4 p-2">
             <ArrowLeft weight="bold" className="size-5" />
@@ -92,9 +86,9 @@ export default function Login() {
             </div>
           </div>
           <button
-            disabled={loginIsPending || !email || !password}
+            disabled={login.isPending || !email || !password}
             onClick={() =>
-              login({
+              login.mutate({
                 email,
                 password,
               })
@@ -113,7 +107,7 @@ export default function Login() {
           <button
             onClick={() => {
               setVerifyCode("");
-              resetLogin();
+              login.reset();
             }}
             className="absolute left-4 top-4 p-2"
           >
@@ -122,12 +116,12 @@ export default function Login() {
 
           <div className="mx-auto mb-1 grid size-12 place-items-center rounded-full bg-yellow-700 text-white shadow">
             <span className="text-xl font-medium leading-none">
-              {data.user.firstName[0].toUpperCase() +
-                data.user.lastName[0].toUpperCase()}
+              {login.data.user.firstName[0].toUpperCase() +
+                login.data.user.lastName[0].toUpperCase()}
             </span>
           </div>
           <h1 className="text-3xl font-bold tracking-tight">
-            Hey {data.user.firstName}!
+            Hey {login.data.user.firstName}!
           </h1>
           <p className="mt-0.5 text-sm text-gray-600">
             We've sent a code to your phone, to check it's really you.
@@ -135,7 +129,7 @@ export default function Login() {
           <div className="mt-3 space-y-3 text-left">
             <div className="flex items-center justify-center gap-1 rounded-md border border-gray-400 p-2 px-3 text-gray-600">
               <Phone className="size-4" />
-              <span>+44 •••• ••{data.user.phoneNumberPartial}</span>
+              <span>+44 •••• ••{login.data.user.phoneNumberPartial}</span>
             </div>
             <div>
               <p className="mb-0.5 font-semibold">One-time code</p>
@@ -168,9 +162,12 @@ export default function Login() {
           </div>
           <button
             onClick={() =>
-              verify({ sessionId: data.sessionId, code: verifyCode })
+              verify.mutate({
+                sessionId: login.data.sessionId,
+                code: verifyCode,
+              })
             }
-            disabled={verifyIsPending || verifyCode.length !== 6}
+            disabled={verify.isPending || verifyCode.length !== 6}
             className="mt-4 flex h-12 w-full items-center justify-center gap-1.5 rounded-md bg-emerald-700 font-medium text-white shadow-sm transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
           >
             <span>Log in</span>

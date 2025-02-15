@@ -100,17 +100,17 @@ export default function CollectModal({
           <DialogBackdrop className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
         </TransitionChild>
 
-        <div className="fixed inset-0 flex flex-col justify-end p-4">
+        <div className="fixed inset-0 flex flex-col justify-end">
           <TransitionChild
             enter="transition"
-            enterFrom="translate-y-16 opacity-0 scale-95"
-            enterTo="translate-y-0 opacity-100 scale-100"
-            leave="transition"
-            leaveFrom="translate-y-0 opacity-100 scale-100"
-            leaveTo="translate-y-16 opacity-0 scale-95"
+            enterFrom="translate-y-16 opacity-0"
+            enterTo="translate-y-0 opacity-100"
+            leave="transition duration-100"
+            leaveFrom="translate-y-0 opacity-100"
+            leaveTo="translate-y-16 opacity-0"
           >
-            <DialogPanel className="max-h-full overflow-y-auto overflow-x-clip rounded-lg bg-gray-50 text-center shadow-lg">
-              <div className="border-b border-gray-300 bg-white p-4">
+            <DialogPanel className="max-h-full overflow-y-auto overflow-x-clip rounded-t-xl bg-gray-50 text-center shadow-lg">
+              <div className="-mb-6 bg-white p-6 pb-12">
                 <DialogTitle className="text-2xl font-bold tracking-tight">
                   Collect your prescription
                 </DialogTitle>
@@ -120,7 +120,7 @@ export default function CollectModal({
                 </div>
               </div>
 
-              <div className="grid h-64 grid-cols-1 grid-rows-1">
+              <div className="grid h-64 grid-cols-1 grid-rows-1 rounded-t-xl border-t border-gray-200 bg-gray-50">
                 <Transition
                   show={!codeData?.code}
                   enter="transition delay-75"
@@ -130,7 +130,7 @@ export default function CollectModal({
                   leaveFrom="opacity-100 translate-x-0"
                   leaveTo="opacity-0 -translate-x-4"
                 >
-                  <div className="col-start-1 row-start-1 flex h-full flex-col p-4">
+                  <div className="col-start-1 row-start-1 flex h-full flex-col p-6">
                     <div className="flex flex-1 flex-col items-center justify-center">
                       <h3 className="font-semibold tracking-tight">
                         Enter the last part of your postcode
@@ -191,7 +191,7 @@ export default function CollectModal({
                   leaveFrom="opacity-100 translate-x-0"
                   leaveTo="opacity-0 -translate-x-4"
                 >
-                  <div className="col-start-1 row-start-1 flex h-full flex-col p-4">
+                  <div className="col-start-1 row-start-1 flex h-full flex-col p-6">
                     <div className="flex flex-1 items-center justify-center divide-x divide-gray-200">
                       <div className="px-4">
                         <p className="text-sm text-gray-600">Locker no.</p>
@@ -219,6 +219,7 @@ export default function CollectModal({
                         !!unlockData ? "bg-emerald-700" : "bg-gray-400",
                       )}
                     >
+                      {/* @ts-expect-error React 19 not yet supported */}
                       <animated.div
                         {...bind()}
                         style={{ x }}

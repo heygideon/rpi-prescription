@@ -13,47 +13,35 @@ export const payloadSchema = z.object({
   exp: z.number(),
   nbf: z.number(),
   iat: z.number(),
-
   sub: z.number(),
 });
-type Payload = z.infer<typeof payloadSchema>;
 
 export const JWT = {
   async verify(token: string) {
-    const payload = await _verify(token, process.env.JWT_SECRET!);
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET not set in .env");
+    }
+    const payload = await _verify(token, process.env.JWT_SECRET);
     return await payloadSchema.parseAsync(payload);
   },
 };
-
-/** @deprecated */
-export async function sign(
-  payload: Payload,
-  privateKey: SignatureKey
-): Promise<string> {
-  return await _sign(payload, privateKey);
-}
-/** @deprecated */
-export async function verify(
-  token: string,
-  publicKey: SignatureKey
-): Promise<Payload> {
-  const payload = await _verify(token, publicKey);
-  return await payloadSchema.parseAsync(payload);
-}
 
 export const Tokens = {
   _genRefreshToken: init({
     length: 32,
   }),
   async createAccessToken(user: Pick<typeof db.users.$inferSelect, "id">) {
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET not set in .env");
+    }
     return await _sign(
       {
         iat: getUnixTime(new Date()),
         exp: getUnixTime(addMinutes(new Date(), 15)),
         nbf: getUnixTime(new Date()),
         sub: user.id,
-      },
-      process.env.JWT_SECRET!
+      } satisfies z.infer<typeof payloadSchema>,
+      process.env.JWT_SECRET
     );
   },
   async createRefreshToken(user: Pick<typeof db.users.$inferSelect, "id">) {
@@ -92,38 +80,6 @@ export const Tokens = {
     return await this.createTokenPair({ id: row.userId });
   },
 };
-
-/** @deprecated */
-export async function createAccessToken(
-  user: Pick<typeof db.users.$inferSelect, "id">
-) {
-  return await sign(
-    {
-      iat: getUnixTime(new Date()),
-      exp: getUnixTime(addMinutes(new Date(), 15)),
-      nbf: getUnixTime(new Date()),
-      sub: user.id,
-    },
-    process.env.JWT_SECRET!
-  );
-}
-/** @deprecated */
-export async function createRefreshToken(
-  user: Pick<typeof db.users.$inferSelect, "id">
-) {
-  const genRefreshToken = init({
-    length: 32,
-  });
-  const refreshToken = genRefreshToken();
-  const refreshTokenHash = await sha256(refreshToken);
-  await db.insert(db.refreshTokens).values({
-    tokenHash: refreshTokenHash!,
-    userId: user.id,
-    expiresAt: addDays(new Date(), 7),
-  });
-
-  return refreshToken;
-}
 
 export const VerificationCodes = {
   _genSessionId: init({

@@ -4,11 +4,10 @@ import { MinusCircle, PlusCircle } from "@phosphor-icons/react";
 export default function Home() {
   return (
     <>
-      <div className="-mb-6 bg-gray-100 p-6 pb-12">
+      <div className="-mb-6 bg-white p-6 pb-12">
         <h1 className="text-3xl font-bold tracking-tight">Order</h1>
       </div>
       <div className="relative isolate overflow-clip rounded-t-xl border-t border-gray-200 bg-gray-100 p-6">
-        <div className="absolute inset-x-0 top-0 -z-10 h-64 bg-gradient-to-b from-white to-gray-100"></div>
         <div className="space-y-6">
           <section>
             <h2 className="text-xl font-bold tracking-tight">

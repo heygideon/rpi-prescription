@@ -17,7 +17,7 @@ export default function PrescriptionView({ params }: Route.ComponentProps) {
 
   return (
     <>
-      <div className="-mb-6 bg-gray-100 p-6 pb-12">
+      <div className="-mb-6 bg-white p-6 pb-12">
         <button
           onClick={() => navigate(-1)}
           className="-m-2 grid p-2 transition active:scale-95 active:opacity-75"
@@ -57,7 +57,6 @@ export default function PrescriptionView({ params }: Route.ComponentProps) {
         )}
       </div>
       <div className="relative isolate min-h-64 overflow-clip rounded-t-xl border-t border-gray-200 bg-gray-100 p-6 pb-24">
-        <div className="absolute inset-x-0 top-0 -z-10 h-64 bg-gradient-to-b from-white to-gray-100"></div>
         <div className="space-y-6">
           {!!order && (
             <>

@@ -1,14 +1,26 @@
-import { Navigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 import { trpc } from "@repo/trpc";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { SignOut } from "@phosphor-icons/react";
+import { useMutation } from "@tanstack/react-query";
+import { auth } from "@/lib/auth";
 
 dayjs.extend(relativeTime);
 
 export default function Home() {
+  const queryUtils = trpc.useUtils();
+  const navigate = useNavigate();
   const { data, error, isPending } = trpc.auth.me.useQuery(undefined, {
     // retry: (_, e) => e.data?.code !== "UNAUTHORIZED",
     retry: false,
+  });
+  const logout = useMutation({
+    mutationFn: () => auth.logout(),
+    onSuccess: async () => {
+      await queryUtils.auth.me.invalidate();
+      await navigate("/auth");
+    },
   });
 
   if (isPending)
@@ -139,6 +151,17 @@ export default function Home() {
             </p>
           </div>
         </section>
+        {/* TODO: move to settings drawer */}
+        <div>
+          <button
+            onClick={() => logout.mutate()}
+            disabled={logout.isPending}
+            className="-m-2 mx-auto flex items-center gap-2 p-2 text-red-700 transition active:scale-95 active:text-red-900 disabled:scale-100 disabled:text-gray-400"
+          >
+            <SignOut weight="bold" className="size-4" />
+            <span>Logout</span>
+          </button>
+        </div>
       </div>
     </>
   );

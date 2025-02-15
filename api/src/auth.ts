@@ -94,6 +94,29 @@ const authRoute = new Hono()
         }
       }
     }
+  )
+  .post(
+    "/logout",
+    zValidator(
+      "json",
+      z.object({
+        refreshToken: z.string(),
+      })
+    ),
+    async (c) => {
+      const { refreshToken } = c.req.valid("json");
+
+      try {
+        await Tokens.revokeRefreshToken(refreshToken);
+        return c.text("", 200);
+      } catch (e) {
+        if (e instanceof Error) {
+          return c.text(e.message, 401);
+        } else {
+          return c.text("Invalid refresh token", 401);
+        }
+      }
+    }
   );
 
 export type AuthRoute = typeof authRoute;

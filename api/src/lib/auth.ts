@@ -79,6 +79,12 @@ export const Tokens = {
 
     return await this.createTokenPair({ id: row.userId });
   },
+  async revokeRefreshToken(refreshToken: string) {
+    const refreshTokenHash = await sha256(refreshToken);
+    await db
+      .delete(db.refreshTokens)
+      .where(eq(db.refreshTokens.tokenHash, refreshTokenHash!));
+  },
 };
 
 export const VerificationCodes = {

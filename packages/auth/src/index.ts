@@ -79,6 +79,24 @@ class Auth {
 
     return { success: true };
   }
+  async logout() {
+    const refreshToken = this.tokens.refreshToken;
+    if (!refreshToken) {
+      throw new Error("No refresh token");
+    }
+
+    const res = await this.client.logout.$post({
+      json: { refreshToken },
+    });
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+
+    this.tokens.accessToken = null;
+    this.tokens.refreshToken = null;
+
+    return { success: true };
+  }
 
   private shouldRefreshTokens() {
     const accessToken = this.tokens.accessToken;

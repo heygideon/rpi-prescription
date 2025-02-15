@@ -11,7 +11,11 @@ dayjs.extend(relativeTime);
 export default function Home() {
   const queryUtils = trpc.useUtils();
   const navigate = useNavigate();
-  const { data, error, isPending } = trpc.auth.me.useQuery(undefined, {
+  const {
+    data: user,
+    error,
+    isPending,
+  } = trpc.auth.me.useQuery(undefined, {
     // retry: (_, e) => e.data?.code !== "UNAUTHORIZED",
     retry: false,
   });
@@ -33,11 +37,9 @@ export default function Home() {
     );
   if (error) return <Navigate to="/auth" />;
 
-  const { user } = data;
-
   return (
     <>
-      <div className="p-6 text-center">
+      <div className="-mb-6 bg-gray-100 p-6 pb-12 text-center">
         <div className="mx-auto grid size-20 place-items-center rounded-full bg-cyan-700 text-white shadow">
           <span className="text-3xl font-medium leading-none">
             {user.firstName.charAt(0).toUpperCase() +
@@ -61,106 +63,112 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="mx-6 border-b border-dashed border-gray-400"></div>
-      <div className="space-y-6 p-6">
-        <section>
-          <h2 className="text-xl font-bold tracking-tight">
-            Nominated pharmacy
-          </h2>
-          <div className="mt-3 rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75">
-            <h3 className="text-lg font-bold tracking-tight">Cohens Chemist</h3>
-            <p className="truncate text-sm text-gray-600">
-              4 Privet Drive, Little Whinging, Surrey GU1 3SX
-            </p>
-            <div className="mt-1.5 space-y-1">
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Monday</p>
-                <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
+      <div className="relative isolate overflow-clip rounded-t-xl border-t border-gray-200 bg-gray-100 p-6">
+        <div className="absolute inset-x-0 top-0 -z-10 h-64 bg-gradient-to-b from-white to-gray-100"></div>
+        <div className="space-y-6">
+          <section>
+            <h2 className="text-xl font-bold tracking-tight">
+              Nominated pharmacy
+            </h2>
+            <div className="mt-3 rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75">
+              <h3 className="text-lg font-bold tracking-tight">
+                Cohens Chemist
+              </h3>
+              <p className="truncate text-sm text-gray-600">
+                4 Privet Drive, Little Whinging, Surrey GU1 3SX
+              </p>
+              <div className="mt-1.5 space-y-1">
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Monday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
+                </div>
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Tuesday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
+                </div>
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Wednesday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
+                </div>
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Thursday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
+                </div>
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Friday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
+                </div>
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Saturday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">9am - 1pm</p>
+                </div>
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Sunday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">Closed</p>
+                </div>
               </div>
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Tuesday</p>
-                <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
-              </div>
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Wednesday</p>
-                <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
-              </div>
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Thursday</p>
-                <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
-              </div>
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Friday</p>
-                <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
-              </div>
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Saturday</p>
-                <p className="min-w-0 flex-1 text-gray-600">9am - 1pm</p>
-              </div>
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Sunday</p>
-                <p className="min-w-0 flex-1 text-gray-600">Closed</p>
-              </div>
+              <p className="mt-1.5 text-xs italic text-gray-600">
+                To change pharmacies, contact your GP.
+              </p>
             </div>
-            <p className="mt-1.5 text-xs italic text-gray-600">
-              To change pharmacies, contact your GP.
-            </p>
-          </div>
-        </section>
-        <section>
-          <h2 className="text-xl font-bold tracking-tight">Your GP practice</h2>
-          <div className="mt-3 rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75">
-            <h3 className="text-lg font-bold tracking-tight">
-              Milky Way Medical Centre
-            </h3>
-            <p className="truncate text-sm text-gray-600">
-              5 Milky Way, Little Whinging, Surrey GU1 3SX
-            </p>
-            <div className="mt-1.5 space-y-1">
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Monday</p>
-                <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
+          </section>
+          <section>
+            <h2 className="text-xl font-bold tracking-tight">
+              Your GP practice
+            </h2>
+            <div className="mt-3 rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75">
+              <h3 className="text-lg font-bold tracking-tight">
+                Milky Way Medical Centre
+              </h3>
+              <p className="truncate text-sm text-gray-600">
+                5 Milky Way, Little Whinging, Surrey GU1 3SX
+              </p>
+              <div className="mt-1.5 space-y-1">
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Monday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
+                </div>
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Tuesday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
+                </div>
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Wednesday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
+                </div>
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Thursday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
+                </div>
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Friday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
+                </div>
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Saturday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">9am - 1pm</p>
+                </div>
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <p className="w-20">Sunday</p>
+                  <p className="min-w-0 flex-1 text-gray-600">Closed</p>
+                </div>
               </div>
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Tuesday</p>
-                <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
-              </div>
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Wednesday</p>
-                <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
-              </div>
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Thursday</p>
-                <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
-              </div>
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Friday</p>
-                <p className="min-w-0 flex-1 text-gray-600">9am - 6pm</p>
-              </div>
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Saturday</p>
-                <p className="min-w-0 flex-1 text-gray-600">9am - 1pm</p>
-              </div>
-              <div className="flex gap-2 text-sm text-gray-600">
-                <p className="w-20">Sunday</p>
-                <p className="min-w-0 flex-1 text-gray-600">Closed</p>
-              </div>
+              <p className="mt-1.5 text-xs italic text-gray-600">
+                If you've moved, contact your new GP to change.
+              </p>
             </div>
-            <p className="mt-1.5 text-xs italic text-gray-600">
-              If you've moved, contact your new GP to change.
-            </p>
+          </section>
+          {/* TODO: move to settings drawer */}
+          <div>
+            <button
+              onClick={() => logout.mutate()}
+              disabled={logout.isPending}
+              className="-m-2 mx-auto flex items-center gap-2 p-2 text-red-700 transition active:scale-95 active:text-red-900 disabled:scale-100 disabled:text-gray-400"
+            >
+              <SignOut weight="bold" className="size-4" />
+              <span>Logout</span>
+            </button>
           </div>
-        </section>
-        {/* TODO: move to settings drawer */}
-        <div>
-          <button
-            onClick={() => logout.mutate()}
-            disabled={logout.isPending}
-            className="-m-2 mx-auto flex items-center gap-2 p-2 text-red-700 transition active:scale-95 active:text-red-900 disabled:scale-100 disabled:text-gray-400"
-          >
-            <SignOut weight="bold" className="size-4" />
-            <span>Logout</span>
-          </button>
         </div>
       </div>
     </>

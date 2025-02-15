@@ -1,0 +1,14 @@
+{
+  "name": "@repo/auth",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@repo/api": "workspace:^",
+    "hono": "^4.6.12"
+  }
+}

@@ -156,6 +156,9 @@ importers:
       '@react-spring/web':
         specifier: ^9.7.5
         version: 9.7.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@repo/api':
+        specifier: workspace:^
+        version: link:../api
       '@tanstack/react-query':
         specifier: ^5.66.0
         version: 5.66.0(react@19.0.0)
@@ -165,9 +168,6 @@ importers:
       '@use-gesture/react':
         specifier: ^10.3.1
         version: 10.3.1(react@19.0.0)
-      api:
-        specifier: workspace:^
-        version: link:../api
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -230,7 +230,14 @@ importers:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.7.3)(vite@6.1.0(@types/node@22.13.4)(jiti@1.21.6)(lightningcss@1.27.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.6.1))
 
-  packages/auth: {}
+  packages/auth:
+    dependencies:
+      '@repo/api':
+        specifier: workspace:^
+        version: link:../../api
+      hono:
+        specifier: ^4.6.12
+        version: 4.7.1
 
 packages:
 

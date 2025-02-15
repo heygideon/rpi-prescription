@@ -5,7 +5,7 @@ import {
   ShoppingBagOpen,
   type Icon,
 } from "@phosphor-icons/react";
-import type { Table } from "api";
+import type { Table } from "@repo/api";
 import clsx from "clsx";
 
 type StatusInfo = {

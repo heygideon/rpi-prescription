@@ -6,7 +6,7 @@ import {
   httpBatchLink,
   httpLink,
 } from "@trpc/react-query";
-import type { AppRouter } from "api/trpc";
+import type { AppRouter } from "@repo/api";
 import dayjs from "dayjs";
 
 export const tokens = {

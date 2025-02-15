@@ -1,6 +1,7 @@
 import type { Schema } from "./db";
 
 export type { AppRouter } from ".";
+export type { AuthRoute } from "./auth";
 
 export type Table<
   K extends keyof Schema,

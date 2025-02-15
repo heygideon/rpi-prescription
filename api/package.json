@@ -1,14 +1,14 @@
 {
-  "name": "api",
+  "name": "@repo/api",
   "type": "module",
   "exports": {
     ".": {
-      "import": "./src/client.ts",
-      "types": "./src/client.ts"
+      "import": "./src/types.ts",
+      "types": "./src/types.ts"
     },
     "./trpc": {
-      "import": "./src/client.ts",
-      "types": "./src/client.ts"
+      "import": "./src/types.ts",
+      "types": "./src/types.ts"
     }
   },
   "scripts": {

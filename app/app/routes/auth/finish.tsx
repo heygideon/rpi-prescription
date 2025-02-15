@@ -8,13 +8,14 @@ export default function Login() {
 
   return (
     <div className="relative flex h-full flex-col justify-center p-6 text-center">
-      <div className="mx-auto mb-1 grid size-12 place-items-center rounded-full bg-yellow-700 text-white shadow">
+      <div className="mx-auto mb-2 grid size-12 place-items-center rounded-full bg-yellow-700 text-white shadow">
         <span className="text-xl font-medium leading-none">JB</span>
       </div>
       <h1 className="text-3xl font-bold tracking-tight">You're logged in</h1>
-      <p className="mt-0.5 text-sm text-gray-600">
+      <p className="mt-1 leading-snug text-gray-600">
         Before you finish, here are some extra features. If you need these
-        later, they're in <strong>You &gt; Settings</strong>.
+        later, they're in{" "}
+        <strong className="font-bold text-black">You &gt; Settings</strong>.
       </p>
       <div className="mt-4 space-y-4 text-left">
         <div className="flex">

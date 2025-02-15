@@ -4,6 +4,7 @@ import {
   ArrowRight,
   HandWaving,
   Phone,
+  Warning,
 } from "@phosphor-icons/react";
 import clsx from "clsx";
 import {
@@ -20,13 +21,18 @@ function OTPSlot({ char, hasFakeCaret, isActive }: SlotProps) {
   return (
     <div
       className={clsx(
-        "flex h-16 min-w-0 flex-1 items-center justify-center text-3xl outline-2 outline-emerald-600 first:rounded-l-md last:rounded-r-md",
+        "flex h-16 min-w-0 flex-1 items-center justify-center text-2xl outline-2 outline-emerald-600 first:rounded-l-md last:rounded-r-md",
         isActive && "!border-transparent outline",
       )}
     >
-      {char !== null && <span className="font-medium uppercase">{char}</span>}
-      {hasFakeCaret && (
-        <span className="animate-caret-blink text-gray-500">|</span>
+      {char ? (
+        <span className="font-medium uppercase">{char}</span>
+      ) : hasFakeCaret ? (
+        <span className="animate-caret-blink col-start-1 row-start-1 text-gray-800">
+          |
+        </span>
+      ) : (
+        <span className="text-gray-300">-</span>
       )}
     </div>
   );
@@ -65,6 +71,12 @@ export default function Login() {
             className="mx-auto size-8 text-amber-700"
           />
           <h1 className="text-3xl font-bold tracking-tight">Welcome back!</h1>
+          {login.error && (
+            <div className="mt-3 flex gap-2 border-l-2 border-l-red-500 bg-red-100 p-2 px-3">
+              <Warning weight="bold" className="mt-1 size-4 text-red-600" />
+              <p className="text-red-700">{login.error.message}</p>
+            </div>
+          )}
           <div className="mt-3 space-y-3 text-left">
             <div>
               <p className="mb-0.5 font-semibold">Email</p>
@@ -114,7 +126,7 @@ export default function Login() {
             <ArrowLeft weight="bold" className="size-5" />
           </button>
 
-          <div className="mx-auto mb-1 grid size-12 place-items-center rounded-full bg-yellow-700 text-white shadow">
+          <div className="mx-auto mb-2 grid size-12 place-items-center rounded-full bg-yellow-700 text-white shadow">
             <span className="text-xl font-medium leading-none">
               {login.data.user.firstName[0].toUpperCase() +
                 login.data.user.lastName[0].toUpperCase()}
@@ -123,14 +135,20 @@ export default function Login() {
           <h1 className="text-3xl font-bold tracking-tight">
             Hey {login.data.user.firstName}!
           </h1>
-          <p className="mt-0.5 text-sm text-gray-600">
-            We've sent a code to your phone, to check it's really you.
+          <p className="mt-1 leading-snug text-gray-600">
+            We've sent a code to your mobile phone, ending&nbsp;
+            <strong className="font-bold text-black">
+              {login.data.user.phoneNumberPartial}
+            </strong>{" "}
+            - enter it below to log in.
           </p>
           <div className="mt-3 space-y-3 text-left">
-            <div className="flex items-center justify-center gap-1 rounded-md border border-gray-400 p-2 px-3 text-gray-600">
-              <Phone className="size-4" />
-              <span>+44 •••• ••{login.data.user.phoneNumberPartial}</span>
-            </div>
+            {verify.error && (
+              <div className="flex gap-2 border-l-2 border-l-red-500 bg-red-100 p-2 px-3">
+                <Warning weight="bold" className="mt-1 size-4 text-red-600" />
+                <p className="text-red-700">{verify.error.message}</p>
+              </div>
+            )}
             <div>
               <p className="mb-0.5 font-semibold">One-time code</p>
               <OTPInput
@@ -144,15 +162,24 @@ export default function Login() {
                 autoFocus={true}
                 render={({ slots }) => (
                   <>
-                    <div className="flex min-w-0 flex-1 gap-px divide-x divide-gray-400 rounded-md border border-gray-400 bg-white shadow-sm">
+                    <div className="flex min-w-0 flex-1 gap-2">
                       {slots.slice(0, 3).map((slot, i) => (
-                        <OTPSlot key={i} {...slot} />
+                        <div className="min-w-0 flex-1 rounded-md border border-gray-400 bg-white shadow-sm">
+                          <OTPSlot key={i} {...slot} />
+                        </div>
                       ))}
                     </div>
-                    <p className="text-3xl font-medium text-gray-400">-</p>
-                    <div className="flex min-w-0 flex-1 gap-px divide-x divide-gray-400 rounded-md border border-gray-400 bg-white shadow-sm">
+                    {/* <p className="mx-1 text-3xl font-medium text-gray-400">-</p> */}
+                    {/* <div className="flex min-w-0 flex-1 gap-px divide-x divide-gray-400 rounded-md border border-gray-400 bg-white shadow-sm">
                       {slots.slice(3).map((slot, i) => (
                         <OTPSlot key={i} {...slot} />
+                      ))}
+                    </div> */}
+                    <div className="flex min-w-0 flex-1 gap-2">
+                      {slots.slice(3).map((slot, i) => (
+                        <div className="min-w-0 flex-1 rounded-md border border-gray-400 bg-white shadow-sm">
+                          <OTPSlot key={i} {...slot} />
+                        </div>
                       ))}
                     </div>
                   </>

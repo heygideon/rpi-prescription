@@ -109,7 +109,7 @@ export default function CollectModal({
             leaveFrom="translate-y-0 opacity-100"
             leaveTo="translate-y-16 opacity-0"
           >
-            <DialogPanel className="max-h-full overflow-y-auto overflow-x-clip rounded-t-xl bg-gray-50 text-center shadow-lg">
+            <DialogPanel className="pb-safe-area-b max-h-full overflow-y-auto overflow-x-clip rounded-t-xl bg-gray-50 text-center shadow-lg">
               <div className="-mb-6 bg-white p-6 pb-12">
                 <DialogTitle className="text-2xl font-bold tracking-tight">
                   Collect your prescription

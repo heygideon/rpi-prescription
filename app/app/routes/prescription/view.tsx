@@ -241,6 +241,7 @@ export default function PrescriptionView({ params }: Route.ComponentProps) {
               <span>Collect order</span>
             </button>
           </TransitionChild>
+          <div className="h-safe-area-b"></div>
         </div>
       </Transition>
       <CollectModal params={params} />

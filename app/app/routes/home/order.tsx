@@ -90,7 +90,7 @@ export default function Home() {
           </section>
         </div>
       </div>
-      <div className="pointer-events-none fixed inset-x-0 bottom-16 isolate p-6 pt-0">
+      <div className="mb-safe-area-b pointer-events-none fixed inset-x-0 bottom-16 isolate p-6 pt-0">
         <div className="mask-gradient absolute inset-0 -z-10 bg-gray-100/50 backdrop-blur"></div>
 
         <button className="pointer-events-auto flex h-14 w-full items-center justify-center gap-1.5 rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900">

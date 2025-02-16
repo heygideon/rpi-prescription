@@ -27,7 +27,7 @@ export default function Login() {
           </div>
           <Switch>
             {({ checked }) => (
-              <button
+              <div
                 className={clsx(
                   "group inline-flex h-6 w-11 items-center rounded-full",
                   checked ? "bg-blue-600" : "bg-gray-300",
@@ -39,7 +39,7 @@ export default function Login() {
                     checked ? "translate-x-6" : "translate-x-1",
                   )}
                 />
-              </button>
+              </div>
             )}
           </Switch>
         </div>

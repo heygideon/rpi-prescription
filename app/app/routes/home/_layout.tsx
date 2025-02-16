@@ -24,6 +24,7 @@ export default function HomeLayout() {
 
           <NavLink
             to="/"
+            replace={true}
             className={({ isActive }) =>
               clsx(
                 "flex min-w-0 flex-1 flex-col items-center justify-center transition active:scale-95 active:opacity-75",
@@ -43,6 +44,7 @@ export default function HomeLayout() {
           </NavLink>
           <NavLink
             to="/order"
+            replace={true}
             className={({ isActive }) =>
               clsx(
                 "flex min-w-0 flex-1 flex-col items-center justify-center transition active:scale-95 active:opacity-75",
@@ -62,6 +64,7 @@ export default function HomeLayout() {
           </NavLink>
           <NavLink
             to="/account"
+            replace={true}
             className={({ isActive }) =>
               clsx(
                 "flex min-w-0 flex-1 flex-col items-center justify-center transition active:scale-95 active:opacity-75",

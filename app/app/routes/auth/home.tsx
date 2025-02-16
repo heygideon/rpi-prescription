@@ -1,14 +1,34 @@
 import background from "@/assets/pexels-olly-3769022.jpg";
-import {
-  HandWaving,
-  Pill,
-  ShootingStar,
-  Smiley,
-  Star,
-} from "@phosphor-icons/react";
+import { SafeArea } from "@capacitor-community/safe-area";
+import { HandWaving, Pill } from "@phosphor-icons/react";
+import { useEffect } from "react";
 import { Link } from "react-router";
 
 export default function AuthHome() {
+  useEffect(() => {
+    SafeArea.enable({
+      config: {
+        customColorsForSystemBars: true,
+        statusBarColor: "#00000000",
+        statusBarContent: "light",
+        navigationBarColor: "#00000000",
+        navigationBarContent: "light",
+      },
+    });
+
+    return () => {
+      SafeArea.enable({
+        config: {
+          customColorsForSystemBars: true,
+          statusBarColor: "#00000000",
+          statusBarContent: "dark",
+          navigationBarColor: "#00000000",
+          navigationBarContent: "dark",
+        },
+      });
+    };
+  });
+
   return (
     <>
       <div className="relative isolate h-full">

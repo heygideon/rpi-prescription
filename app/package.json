@@ -9,6 +9,7 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@capacitor-community/safe-area": "7.0.0-alpha.1",
     "@capacitor/android": "^7.0.1",
     "@capacitor/core": "^7.0.1",
     "@fontsource-variable/figtree": "^5.1.2",

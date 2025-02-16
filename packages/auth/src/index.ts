@@ -34,7 +34,7 @@ class Auth {
   private tokens: TokenStorage;
   private client: AuthClient;
 
-  constructor(url: string, tokenStorage?: TokenStorage) {
+  constructor(url: "http://localhost:3000/auth" | (string & {}), tokenStorage?: TokenStorage) {
     this.client = createAuthClient(url);
     this.tokens = tokenStorage ?? new TokenStorage();
   }

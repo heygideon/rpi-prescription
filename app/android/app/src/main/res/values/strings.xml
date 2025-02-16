@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SuperCoolApp</string>
+    <string name="title_activity_main">SuperCoolApp</string>
+    <string name="package_name">com.synapse</string>
+    <string name="custom_url_scheme">com.synapse</string>
+</resources>

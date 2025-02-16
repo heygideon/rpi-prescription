@@ -38,6 +38,7 @@ export default function AuthHome() {
           className="absolute inset-0 -z-10 size-full object-cover"
         />
         <div className="flex h-full flex-col bg-gradient-to-t from-black/75 p-6 text-white">
+          <div className="h-safe-area-t"></div>
           <h1 className="text-center text-3xl font-light tracking-tighter">
             SuperCoolApp
           </h1>
@@ -66,6 +67,7 @@ export default function AuthHome() {
           >
             Login
           </Link>
+          <div className="h-safe-area-b"></div>
         </div>
       </div>
     </>

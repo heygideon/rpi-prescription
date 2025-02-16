@@ -10,6 +10,8 @@ import { trpc } from "@repo/trpc";
 import { useIntersection } from "@mantine/hooks";
 import clsx from "clsx";
 
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
+
 export default function PrescriptionView({ params }: Route.ComponentProps) {
   const { data: order } = trpc.prescriptions.getOne.useQuery({
     id: parseInt(params.id),
@@ -235,7 +237,10 @@ export default function PrescriptionView({ params }: Route.ComponentProps) {
             enterTo="opacity-100 translate-y-0 scale-100"
           >
             <button
-              onClick={() => setSearchParams({ collect: "" })}
+              onClick={() => {
+                Haptics.impact({ style: ImpactStyle.Light });
+                setSearchParams({ collect: "" });
+              }}
               className="pointer-events-auto flex h-14 w-full items-center justify-center rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900"
             >
               <span>Collect order</span>

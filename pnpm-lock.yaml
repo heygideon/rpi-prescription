@@ -157,6 +157,9 @@ importers:
       '@capacitor/core':
         specifier: ^7.0.1
         version: 7.0.1
+      '@capacitor/haptics':
+        specifier: ^7.0.0
+        version: 7.0.0(@capacitor/core@7.0.1)
       '@fontsource-variable/figtree':
         specifier: ^5.1.2
         version: 5.1.2
@@ -454,6 +457,11 @@ packages:
 
   '@capacitor/core@7.0.1':
     resolution: {integrity: sha512-1Ob9bvA/p8g8aNwK6VesxEekGXowLVf6APjkW4LRnr05H+7z/bke+Q5pn9zqh/GgTbIxAQ/rwZrAZvvxkdm1UA==}
+
+  '@capacitor/haptics@7.0.0':
+    resolution: {integrity: sha512-8uI8rWyAbq8EzkjS+sHZSncyzujHzVbuLKgj8J5H0yUL6+r26F16gVA2iuQuIBvzbSMy7Y0/pUuWlwZr/H8AKg==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
@@ -3650,6 +3658,10 @@ snapshots:
   '@capacitor/core@7.0.1':
     dependencies:
       tslib: 2.8.1
+
+  '@capacitor/haptics@7.0.0(@capacitor/core@7.0.1)':
+    dependencies:
+      '@capacitor/core': 7.0.1
 
   '@drizzle-team/brocli@0.10.2': {}
 

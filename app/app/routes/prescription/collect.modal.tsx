@@ -20,8 +20,10 @@ import { useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import clsx from "clsx";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { trpc } from "@repo/trpc";
+
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 export default function CollectModal({
   params,
@@ -59,6 +61,7 @@ export default function CollectModal({
       });
     },
     onSuccess: () => {
+      Haptics.vibrate({ duration: 100 });
       queryUtils.prescriptions.invalidate();
       setTimeout(() => navigate(-1), 1500);
     },
@@ -72,8 +75,11 @@ export default function CollectModal({
   const [{ x }, api] = useSpring(() => ({ x: 0, y: 0 }));
   const bind = useDrag(
     ({ down, first, last, overflow: [overflowX], movement: [mx] }) => {
-      if (first) setIsMouseDown(true);
+      if (first) {
+        setIsMouseDown(true);
+      }
       if (last) {
+        Haptics.impact({ style: ImpactStyle.Light });
         setIsMouseDown(false);
         if (overflowX === 1) {
           unlock();
@@ -161,12 +167,13 @@ export default function CollectModal({
 
                     <button
                       disabled={postcode.length < 3 || codePending}
-                      onClick={() =>
+                      onClick={() => {
+                        Haptics.impact({ style: ImpactStyle.Light });
                         genCode({
                           id: parseInt(params.id),
                           postcodeHalf: postcode,
-                        })
-                      }
+                        });
+                      }}
                       className="pointer-events-auto mt-4 flex h-14 w-full flex-none items-center justify-center rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
                     >
                       <span>Collect</span>

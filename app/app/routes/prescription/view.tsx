@@ -26,19 +26,22 @@ export default function PrescriptionView({ params }: Route.ComponentProps) {
     <>
       <div
         className={clsx(
-          "fixed inset-x-0 -top-2 z-10 flex h-16 items-center border-b border-gray-200 bg-white px-6 pt-2 shadow-md transition",
+          "fixed inset-x-0 -top-2 z-10 border-b border-gray-200 bg-white pt-2 shadow-md transition",
           !showHeader && "pointer-events-none translate-y-2 opacity-0",
         )}
       >
-        <button
-          onClick={() => navigate(-1)}
-          className="-ml-2 grid p-2 transition active:scale-95 active:opacity-75"
-        >
-          <ArrowLeft weight="bold" className="size-5 text-gray-600" />
-        </button>
-        <p className="text-xl font-bold tracking-tight">#{order?.id ?? ""}</p>
-        <div className="flex-1"></div>
-        {!!order && <StatusTag status={order.status} />}
+        <div className="h-safe-area-t"></div>
+        <div className="flex h-14 items-center px-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="-ml-2 grid p-2 transition active:scale-95 active:opacity-75"
+          >
+            <ArrowLeft weight="bold" className="size-5 text-gray-600" />
+          </button>
+          <p className="text-xl font-bold tracking-tight">#{order?.id ?? ""}</p>
+          <div className="flex-1"></div>
+          {!!order && <StatusTag status={order.status} />}
+        </div>
       </div>
       <div className="relative -mb-6 bg-white p-6 pb-12">
         <button

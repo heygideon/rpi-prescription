@@ -48,17 +48,20 @@ export default function Home() {
     <>
       <div
         className={clsx(
-          "fixed inset-x-0 -top-2 z-10 flex h-16 items-center border-b border-gray-200 bg-white px-6 pt-2 shadow-md transition",
+          "fixed inset-x-0 -top-2 z-10 border-b border-gray-200 bg-white pt-2 shadow-md transition",
           !showHeader && "pointer-events-none translate-y-2 opacity-0",
         )}
       >
-        <div className="mr-2 grid size-6 place-items-center rounded-full bg-cyan-700 text-white shadow">
-          <span className="text-xs font-medium leading-none">
-            {user.firstName.charAt(0).toUpperCase() +
-              user.lastName.charAt(0).toUpperCase()}
-          </span>
+        <div className="h-safe-area-t"></div>
+        <div className="flex h-14 items-center px-6">
+          <div className="mr-2 grid size-6 place-items-center rounded-full bg-cyan-700 text-white shadow">
+            <span className="text-xs font-medium leading-none">
+              {user.firstName.charAt(0).toUpperCase() +
+                user.lastName.charAt(0).toUpperCase()}
+            </span>
+          </div>
+          <p className="text-xl font-bold tracking-tight">Account</p>
         </div>
-        <p className="text-xl font-bold tracking-tight">Account</p>
       </div>
       <div className="-mb-6 bg-white p-6 pb-12 text-center">
         <div className="relative">

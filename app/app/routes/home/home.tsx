@@ -22,11 +22,14 @@ export default function Home() {
     <>
       <div
         className={clsx(
-          "fixed inset-x-0 -top-2 z-10 flex h-16 items-center border-b border-gray-200 bg-white px-6 pt-2 shadow-md transition",
+          "fixed inset-x-0 -top-2 z-10 border-b border-gray-200 bg-white pt-2 shadow-md transition",
           !showHeader && "pointer-events-none translate-y-2 opacity-0",
         )}
       >
-        <p className="text-xl font-bold tracking-tight">Prescriptions</p>
+        <div className="h-safe-area-t"></div>
+        <div className="flex h-14 items-center px-6">
+          <p className="text-xl font-bold tracking-tight">Prescriptions</p>
+        </div>
       </div>
       <div className="relative isolate -mb-6 bg-white p-6 pb-12">
         <div className="absolute inset-x-0 top-0 -z-10 h-12 [mask-image:linear-gradient(black,transparent)]">

@@ -14,12 +14,22 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient, client } from "./lib/trpc";
 import { Provider } from "@repo/trpc";
 
-import "@capacitor-community/safe-area";
+import { SafeArea } from "@capacitor-community/safe-area";
 
 export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: figtree },
   { rel: "stylesheet", href: stylesheet },
 ];
+
+SafeArea.enable({
+  config: {
+    customColorsForSystemBars: true,
+    statusBarColor: "#00000000",
+    statusBarContent: "dark",
+    navigationBarColor: "#00000000",
+    navigationBarContent: "dark",
+  },
+});
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

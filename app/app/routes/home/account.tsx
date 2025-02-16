@@ -63,30 +63,32 @@ export default function Home() {
           <p className="text-xl font-bold tracking-tight">Account</p>
         </div>
       </div>
-      <div className="-mb-6 bg-white p-6 pb-12 text-center">
-        <div className="relative">
-          <div className="mx-auto grid size-20 place-items-center rounded-full bg-cyan-700 text-white shadow">
-            <span className="text-3xl font-medium leading-none">
-              {user.firstName.charAt(0).toUpperCase() +
-                user.lastName.charAt(0).toUpperCase()}
-            </span>
+      <div className="pt-safe-area-t -mb-6 bg-white pb-6">
+        <div className="p-6 text-center">
+          <div className="relative">
+            <div className="mx-auto grid size-20 place-items-center rounded-full bg-cyan-700 text-white shadow">
+              <span className="text-3xl font-medium leading-none">
+                {user.firstName.charAt(0).toUpperCase() +
+                  user.lastName.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <h2 className="mt-2 text-4xl font-bold tracking-tight">
+              {user.firstName} {user.lastName}
+            </h2>
+            <p className="mt-1 text-gray-600">
+              Joined {dayjs(user.createdAt).fromNow()}
+            </p>
+            <div ref={ref} className="absolute inset-x-0 bottom-14"></div>
           </div>
-          <h2 className="mt-2 text-4xl font-bold tracking-tight">
-            {user.firstName} {user.lastName}
-          </h2>
-          <p className="mt-1 text-gray-600">
-            Joined {dayjs(user.createdAt).fromNow()}
-          </p>
-          <div ref={ref} className="absolute inset-x-0 bottom-14"></div>
-        </div>
-        <div className="mt-4 flex gap-3">
-          <div className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white py-4 text-center">
-            <p className="text-2xl font-semibold">5</p>
-            <p className="text-sm text-gray-600">prescriptions collected</p>
-          </div>
-          <div className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white py-4 text-center">
-            <p className="text-2xl font-semibold">50min</p>
-            <p className="text-sm text-gray-600">time saved</p>
+          <div className="mt-4 flex gap-3">
+            <div className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white py-4 text-center">
+              <p className="text-2xl font-semibold">5</p>
+              <p className="text-sm text-gray-600">prescriptions collected</p>
+            </div>
+            <div className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white py-4 text-center">
+              <p className="text-2xl font-semibold">50min</p>
+              <p className="text-sm text-gray-600">time saved</p>
+            </div>
           </div>
         </div>
       </div>

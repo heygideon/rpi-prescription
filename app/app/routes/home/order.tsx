@@ -24,9 +24,12 @@ export default function Home() {
       </div>
 
       <div className="pt-safe-area-t -mb-6 bg-white pb-6">
-        <div className="p-6">
+        <div className="relative p-6">
           <h1 className="text-3xl font-bold tracking-tight">Order</h1>
-          <div ref={ref} className="absolute inset-x-0 bottom-20"></div>
+          <div
+            ref={ref}
+            className="mb-safe-area-t absolute inset-x-0 bottom-14"
+          ></div>
         </div>
       </div>
       <div className="relative isolate overflow-clip rounded-t-xl border-t border-gray-200 bg-gray-100 p-6">

@@ -78,7 +78,10 @@ export default function Home() {
             <p className="mt-1 text-gray-600">
               Joined {dayjs(user.createdAt).fromNow()}
             </p>
-            <div ref={ref} className="absolute inset-x-0 bottom-14"></div>
+            <div
+              ref={ref}
+              className="mb-safe-area-t absolute inset-x-0 bottom-14"
+            ></div>
           </div>
           <div className="mt-4 flex gap-3">
             <div className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white py-4 text-center">

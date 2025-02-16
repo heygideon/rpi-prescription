@@ -35,11 +35,14 @@ export default function Home() {
         <div className="absolute inset-x-0 top-0 -z-10 h-2/5 [mask-image:linear-gradient(black,transparent)]">
           <div className="size-full bg-gradient-to-r from-emerald-100 to-teal-100"></div>
         </div>
-        <div className="p-6">
+        <div className="relative p-6">
           <h1 className="text-3xl font-bold tracking-tight">
             Hey {user?.firstName}!
           </h1>
-          <div ref={ref} className="absolute inset-x-0 bottom-20"></div>
+          <div
+            ref={ref}
+            className="mb-safe-area-t absolute inset-x-0 bottom-14"
+          ></div>
         </div>
       </div>
       <div className="relative isolate overflow-clip rounded-t-xl border-t border-gray-200 bg-gray-100 p-6">

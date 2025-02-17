@@ -165,8 +165,11 @@ export default function Login() {
                     <>
                       <div className="flex min-w-0 flex-1 gap-2">
                         {slots.slice(0, 3).map((slot, i) => (
-                          <div className="min-w-0 flex-1 rounded-md border border-gray-400 bg-white shadow-sm">
-                            <OTPSlot key={i} {...slot} />
+                          <div
+                            key={i}
+                            className="min-w-0 flex-1 rounded-md border border-gray-400 bg-white shadow-sm"
+                          >
+                            <OTPSlot {...slot} />
                           </div>
                         ))}
                       </div>
@@ -178,8 +181,11 @@ export default function Login() {
                     </div> */}
                       <div className="flex min-w-0 flex-1 gap-2">
                         {slots.slice(3).map((slot, i) => (
-                          <div className="min-w-0 flex-1 rounded-md border border-gray-400 bg-white shadow-sm">
-                            <OTPSlot key={i} {...slot} />
+                          <div
+                            key={i}
+                            className="min-w-0 flex-1 rounded-md border border-gray-400 bg-white shadow-sm"
+                          >
+                            <OTPSlot {...slot} />
                           </div>
                         ))}
                       </div>

@@ -1,14 +1,34 @@
 import background from "@/assets/pexels-olly-3769022.jpg";
-import {
-  HandWaving,
-  Pill,
-  ShootingStar,
-  Smiley,
-  Star,
-} from "@phosphor-icons/react";
+import { SafeArea } from "@capacitor-community/safe-area";
+import { HandWaving, Pill } from "@phosphor-icons/react";
+import { useEffect } from "react";
 import { Link } from "react-router";
 
 export default function AuthHome() {
+  useEffect(() => {
+    SafeArea.enable({
+      config: {
+        customColorsForSystemBars: true,
+        statusBarColor: "#00000000",
+        statusBarContent: "light",
+        navigationBarColor: "#00000000",
+        navigationBarContent: "light",
+      },
+    });
+
+    return () => {
+      SafeArea.enable({
+        config: {
+          customColorsForSystemBars: true,
+          statusBarColor: "#00000000",
+          statusBarContent: "dark",
+          navigationBarColor: "#00000000",
+          navigationBarContent: "dark",
+        },
+      });
+    };
+  });
+
   return (
     <>
       <div className="relative isolate h-full">
@@ -18,6 +38,7 @@ export default function AuthHome() {
           className="absolute inset-0 -z-10 size-full object-cover"
         />
         <div className="flex h-full flex-col bg-gradient-to-t from-black/75 p-6 text-white">
+          <div className="h-safe-area-t"></div>
           <h1 className="text-center text-3xl font-light tracking-tighter">
             SuperCoolApp
           </h1>
@@ -46,6 +67,7 @@ export default function AuthHome() {
           >
             Login
           </Link>
+          <div className="h-safe-area-b"></div>
         </div>
       </div>
     </>

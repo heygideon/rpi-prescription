@@ -13,15 +13,24 @@ export default function Home() {
     <>
       <div
         className={clsx(
-          "fixed inset-x-0 -top-2 z-10 flex h-16 items-center border-b border-gray-200 bg-white px-6 pt-2 shadow-md transition",
+          "fixed inset-x-0 -top-2 z-10 border-b border-gray-200 bg-white pt-2 shadow-md transition",
           !showHeader && "pointer-events-none translate-y-2 opacity-0",
         )}
       >
-        <p className="text-xl font-bold tracking-tight">Order</p>
+        <div className="h-safe-area-t"></div>
+        <div className="flex h-14 items-center px-6">
+          <p className="text-xl font-bold tracking-tight">Order</p>
+        </div>
       </div>
-      <div className="relative -mb-6 bg-white p-6 pb-12">
-        <h1 className="text-3xl font-bold tracking-tight">Order</h1>
-        <div ref={ref} className="absolute inset-x-0 bottom-20"></div>
+
+      <div className="pt-safe-area-t -mb-6 bg-white pb-6">
+        <div className="relative p-6">
+          <h1 className="text-3xl font-bold tracking-tight">Order</h1>
+          <div
+            ref={ref}
+            className="mb-safe-area-t absolute inset-x-0 bottom-14"
+          ></div>
+        </div>
       </div>
       <div className="relative isolate overflow-clip rounded-t-xl border-t border-gray-200 bg-gray-100 p-6">
         <div className="space-y-6">
@@ -81,7 +90,7 @@ export default function Home() {
           </section>
         </div>
       </div>
-      <div className="pointer-events-none fixed inset-x-0 bottom-16 isolate p-6 pt-0">
+      <div className="mb-safe-area-b pointer-events-none fixed inset-x-0 bottom-16 isolate p-6 pt-0">
         <div className="mask-gradient absolute inset-0 -z-10 bg-gray-100/50 backdrop-blur"></div>
 
         <button className="pointer-events-auto flex h-14 w-full items-center justify-center gap-1.5 rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900">

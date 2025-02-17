@@ -14,6 +14,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient, client } from "./lib/trpc";
 import { Provider } from "@repo/trpc";
 
+import "./init.client";
+
 export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: figtree },
   { rel: "stylesheet", href: stylesheet },
@@ -24,7 +26,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
         <Meta />
         <Links />
       </head>
@@ -37,7 +42,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
+export default function Root() {
   return (
     <Provider client={client} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>

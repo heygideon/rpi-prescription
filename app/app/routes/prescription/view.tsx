@@ -10,6 +10,8 @@ import { trpc } from "@repo/trpc";
 import { useIntersection } from "@mantine/hooks";
 import clsx from "clsx";
 
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
+
 export default function PrescriptionView({ params }: Route.ComponentProps) {
   const { data: order } = trpc.prescriptions.getOne.useQuery({
     id: parseInt(params.id),
@@ -26,59 +28,67 @@ export default function PrescriptionView({ params }: Route.ComponentProps) {
     <>
       <div
         className={clsx(
-          "fixed inset-x-0 -top-2 z-10 flex h-16 items-center border-b border-gray-200 bg-white px-6 pt-2 shadow-md transition",
+          "fixed inset-x-0 -top-2 z-10 border-b border-gray-200 bg-white pt-2 shadow-md transition",
           !showHeader && "pointer-events-none translate-y-2 opacity-0",
         )}
       >
-        <button
-          onClick={() => navigate(-1)}
-          className="-ml-2 grid p-2 transition active:scale-95 active:opacity-75"
-        >
-          <ArrowLeft weight="bold" className="size-5 text-gray-600" />
-        </button>
-        <p className="text-xl font-bold tracking-tight">#{order?.id ?? ""}</p>
-        <div className="flex-1"></div>
-        {!!order && <StatusTag status={order.status} />}
+        <div className="h-safe-area-t"></div>
+        <div className="flex h-14 items-center px-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="-ml-2 grid p-2 transition active:scale-95 active:opacity-75"
+          >
+            <ArrowLeft weight="bold" className="size-5 text-gray-600" />
+          </button>
+          <p className="text-xl font-bold tracking-tight">#{order?.id ?? ""}</p>
+          <div className="flex-1"></div>
+          {!!order && <StatusTag status={order.status} />}
+        </div>
       </div>
-      <div className="relative -mb-6 bg-white p-6 pb-12">
-        <button
-          onClick={() => navigate(-1)}
-          className="-m-2 grid p-2 transition active:scale-95 active:opacity-75"
-        >
-          <ArrowLeft weight="bold" className="size-5 text-gray-600" />
-        </button>
+      <div className="pt-safe-area-t -mb-6 bg-white pb-6">
+        <div className="relative p-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="-m-2 grid p-2 transition active:scale-95 active:opacity-75"
+          >
+            <ArrowLeft weight="bold" className="size-5 text-gray-600" />
+          </button>
 
-        {order ? (
-          <>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight">
-              #{order.id}
-            </h1>
-            <p className="text-gray-600">Mr John Doe</p>
-            <div className="mt-4 pb-6">
-              <StatusProgress status={order.status} />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="mt-2.5 h-8 w-16 animate-pulse rounded bg-gray-300"></div>
-            <div className="mt-1 h-5 w-28 animate-pulse rounded bg-gray-300"></div>
-            <div className="h-px"></div>
-            <div className="mt-4 pb-6">
-              <div className="flex items-center">
-                <div className="h-0.5 w-8 flex-none overflow-clip rounded-r-full bg-gray-300"></div>
-                <div className="size-10 rounded-full border-2 border-gray-300 text-gray-300"></div>
-                <div className="h-0.5 min-w-0 flex-1 overflow-clip bg-gray-300"></div>
-                <div className="size-10 rounded-full border-2 border-gray-300 text-gray-300"></div>
-                <div className="h-0.5 min-w-0 flex-1 overflow-clip bg-gray-300"></div>
-                <div className="size-10 rounded-full border-2 border-gray-300 text-gray-300"></div>
-                <div className="h-0.5 min-w-0 flex-1 overflow-clip bg-gray-300"></div>
-                <div className="size-10 rounded-full border-2 border-gray-300 text-gray-300"></div>
-                <div className="h-0.5 w-8 flex-none overflow-clip rounded-r-full bg-gray-300"></div>
+          {order ? (
+            <>
+              <h1 className="mt-2 text-3xl font-bold tracking-tight">
+                #{order.id}
+              </h1>
+              <p className="text-gray-600">Mr John Doe</p>
+              <div className="mt-4 pb-6">
+                <StatusProgress status={order.status} />
               </div>
-            </div>
-          </>
-        )}
-        <div ref={ref} className="absolute inset-x-0 bottom-20"></div>
+            </>
+          ) : (
+            <>
+              <div className="mt-2.5 h-8 w-16 animate-pulse rounded bg-gray-300"></div>
+              <div className="mt-1 h-5 w-28 animate-pulse rounded bg-gray-300"></div>
+              <div className="h-px"></div>
+              <div className="mt-4 pb-6">
+                <div className="flex items-center">
+                  <div className="h-0.5 w-8 flex-none overflow-clip rounded-r-full bg-gray-300"></div>
+                  <div className="size-10 rounded-full border-2 border-gray-300 text-gray-300"></div>
+                  <div className="h-0.5 min-w-0 flex-1 overflow-clip bg-gray-300"></div>
+                  <div className="size-10 rounded-full border-2 border-gray-300 text-gray-300"></div>
+                  <div className="h-0.5 min-w-0 flex-1 overflow-clip bg-gray-300"></div>
+                  <div className="size-10 rounded-full border-2 border-gray-300 text-gray-300"></div>
+                  <div className="h-0.5 min-w-0 flex-1 overflow-clip bg-gray-300"></div>
+                  <div className="size-10 rounded-full border-2 border-gray-300 text-gray-300"></div>
+                  <div className="h-0.5 w-8 flex-none overflow-clip rounded-r-full bg-gray-300"></div>
+                </div>
+              </div>
+            </>
+          )}
+          <div
+            ref={ref}
+            className="mb-safe-area-t absolute inset-x-0 bottom-14"
+          ></div>
+        </div>
       </div>
       <div className="relative isolate min-h-64 overflow-clip rounded-t-xl border-t border-gray-200 bg-gray-100 p-6">
         <div className="space-y-6">
@@ -227,12 +237,16 @@ export default function PrescriptionView({ params }: Route.ComponentProps) {
             enterTo="opacity-100 translate-y-0 scale-100"
           >
             <button
-              onClick={() => setSearchParams({ collect: "" })}
+              onClick={() => {
+                Haptics.impact({ style: ImpactStyle.Light });
+                setSearchParams({ collect: "" });
+              }}
               className="pointer-events-auto flex h-14 w-full items-center justify-center rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900"
             >
               <span>Collect order</span>
             </button>
           </TransitionChild>
+          <div className="h-safe-area-b"></div>
         </div>
       </Transition>
       <CollectModal params={params} />

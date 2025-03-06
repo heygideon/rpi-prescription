@@ -1,18 +1,16 @@
 /*
  -----------------------
- | New Postgres schema |
+ |  Old SQLite schema  |
  -----------------------
 */
-import { relations } from "drizzle-orm";
+
+import { relations, sql } from "drizzle-orm";
 import {
-  pgTable,
+  sqliteTable,
   text,
   integer,
-  timestamp,
-  boolean,
-  jsonb,
-  pgEnum,
-} from "drizzle-orm/pg-core";
+  uniqueIndex,
+} from "drizzle-orm/sqlite-core";
 
 export type OpeningHours = {
   [day in "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun"]: {
@@ -21,14 +19,14 @@ export type OpeningHours = {
   };
 };
 
-export const users = pgTable("auth_users", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
-  createdAt: timestamp("created_at")
+  createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
-    .defaultNow()
+    .default(sql`(unixepoch())`)
     .$onUpdate(() => new Date()),
 
   email: text("email").notNull().unique(),
@@ -36,13 +34,15 @@ export const users = pgTable("auth_users", {
   phoneNumber: text("phone_number").notNull(),
 });
 
-export const verificationCodes = pgTable("auth_verification_codes", {
+export const verificationCodes = sqliteTable("verification_codes", {
   id: text("id").notNull().primaryKey(),
   userId: integer("user_id")
     .notNull()
     .references(() => users.id),
   codeHash: text("code_hash").notNull(),
-  codeHashExpiresAt: timestamp("code_hash_expires_at").notNull(),
+  codeHashExpiresAt: integer("code_hash_expires_at", {
+    mode: "timestamp",
+  }).notNull(),
 });
 export const verificationCodesRelations = relations(
   verificationCodes,
@@ -54,12 +54,12 @@ export const verificationCodesRelations = relations(
   })
 );
 
-export const refreshTokens = pgTable("auth_refresh_tokens", {
+export const refreshTokens = sqliteTable("refresh_tokens", {
   tokenHash: text("token_hash").notNull().primaryKey(),
   userId: integer("user_id")
     .notNull()
     .references(() => users.id),
-  expiresAt: timestamp("expires_at").notNull(),
+  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
 });
 export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
   user: one(users, {
@@ -68,24 +68,26 @@ export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
   }),
 }));
 
-export const orderStatusEnum = pgEnum("order_status", [
+export const orderStatusValues = [
   "checking",
   "with_gp",
   "preparing",
   "ready",
   "collected",
-]);
+] as const;
 
-export const orders = pgTable("orders", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+export const orders = sqliteTable("orders", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   userId: integer("user_id")
     .notNull()
     .references(() => users.id),
   pharmacyId: integer("pharmacy_id")
     .notNull()
     .references(() => pharmacies.id),
-  status: orderStatusEnum("status").notNull().default("checking"),
-  collectedAt: timestamp("collected_at"),
+  status: text("status", { enum: orderStatusValues })
+    .notNull()
+    .default("checking"),
+  collectedAt: integer("collected_at", { mode: "timestamp" }),
 });
 export const orderRelations = relations(orders, ({ one }) => ({
   user: one(users, {
@@ -98,26 +100,32 @@ export const orderRelations = relations(orders, ({ one }) => ({
   }),
 }));
 
-export const orderCollections = pgTable(
+export const orderCollections = sqliteTable(
   "order_collections",
   {
     orderId: integer("order_id")
-      .primaryKey()
+      .primaryKey({ autoIncrement: true })
       .references(() => orders.id),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
     collectedBy: integer("collected_by")
       .notNull()
       .references(() => users.id),
-    isAboutToCollect: boolean("is_about_to_collect").notNull().default(false),
+    isAboutToCollect: integer("is_about_to_collect", { mode: "boolean" })
+      .notNull()
+      .default(false),
     codeHash: text("code_hash").notNull(),
-    codeHashExpiresAt: timestamp("code_hash_expires_at").notNull(),
-  }
-  // (t) => [uniqueIndex("order_collections_order_id").on(t.orderId)]
+    codeHashExpiresAt: integer("code_hash_expires_at", {
+      mode: "timestamp",
+    }).notNull(),
+  },
+  (t) => [uniqueIndex("order_collections_order_id").on(t.orderId)]
 );
 
-export const pharmacies = pgTable("pharmacies", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+export const pharmacies = sqliteTable("pharmacies", {
+  id: integer().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
   address: text().notNull(),
-  openingHours: jsonb("opening_hours").$type<OpeningHours>(),
+  openingHours: text({ mode: "json" }).$type<OpeningHours>(),
 });

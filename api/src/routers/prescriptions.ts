@@ -1,5 +1,5 @@
 import db from "../db";
-import { orderStatusValues } from "../db/schema";
+import { orderStatusEnum } from "../db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { init } from "@paralleldrive/cuid2";
@@ -18,9 +18,9 @@ const prescriptionsRouter = router({
     .input(
       z.object({
         status: z
-          .enum(orderStatusValues)
+          .enum(orderStatusEnum.enumValues)
           .array()
-          .default([...orderStatusValues]),
+          .default([...orderStatusEnum.enumValues]),
       })
     )
     .query(async ({ input }) => {
@@ -36,8 +36,8 @@ const prescriptionsRouter = router({
 
       return rows.toSorted(
         (a, b) =>
-          orderStatusValues.indexOf(b.status) -
-          orderStatusValues.indexOf(a.status)
+          orderStatusEnum.enumValues.indexOf(b.status) -
+          orderStatusEnum.enumValues.indexOf(a.status)
       );
     }),
 

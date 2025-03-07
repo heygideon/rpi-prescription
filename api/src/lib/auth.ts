@@ -109,8 +109,9 @@ export const VerificationCodes = {
 
     console.log("");
     console.log(chalk.bold.blue(`Verification code for user ${user.id}`));
-    console.log(chalk.gray(` | Code: ${code}`));
-    console.log(chalk.gray(` | Saved hash: ${chalk.bold.white(codeHash)}`));
+    console.log(chalk.gray(` | code: ${chalk.bold.white(code)}`));
+    console.log(chalk.gray(` | codeHash: ${codeHash}`));
+    console.log("");
 
     return { id, expiresAt };
   },

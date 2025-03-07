@@ -5,7 +5,7 @@ import { z } from "zod";
 import { init } from "@paralleldrive/cuid2";
 import { sha256 } from "hono/utils/crypto";
 import chalk from "chalk";
-import { addHours, isAfter } from "date-fns";
+import { addHours, format, isAfter } from "date-fns";
 import { publicProcedure, router } from "../lib/trpc";
 import { TRPCError } from "@trpc/server";
 
@@ -85,7 +85,6 @@ const prescriptionsRouter = router({
         const code = createCollectCode();
         const codeHash = await sha256(code);
         const expiresAt = addHours(new Date(), 1);
-        console.log(code, codeHash);
 
         // TODO: if order collection item does not exist, return 404
         // to wait for a locker to be assigned
@@ -111,8 +110,9 @@ const prescriptionsRouter = router({
 
         console.log("");
         console.log(chalk.bold.yellow(`Generated code for #${id}`));
-        console.log(chalk.gray(` | Code: ${code}`));
-        console.log(chalk.gray(` | Saved hash: ${codeHash}`));
+        console.log(chalk.gray(` | code: ${code}`));
+        console.log(chalk.gray(` | codeHash: ${codeHash}`));
+        console.log("");
 
         return { code };
       }),
@@ -140,6 +140,7 @@ const prescriptionsRouter = router({
           chalk.bold.yellow(`About to unlock #${orderCollection.orderId}`)
         );
         console.log(chalk.gray(" | Set isAboutToCollect to true"));
+        console.log("");
 
         return { success: true };
       }),
@@ -172,6 +173,8 @@ const prescriptionsRouter = router({
           throw new TRPCError({ code: "BAD_REQUEST" });
         }
 
+        const collectedAt = new Date();
+
         await db
           .delete(db.orderCollections)
           .where(eq(db.orderCollections.orderId, id));
@@ -184,13 +187,16 @@ const prescriptionsRouter = router({
         console.log(
           chalk.bold.yellow(`Test unlocking #${orderCollection.orderId}`)
         );
-        console.log(chalk.gray(` | Code: ${code}`));
-        console.log(chalk.gray(` | Code hash: ${codeHash}`));
-        console.log(chalk.gray(` | Saved hash: ${orderCollection.codeHash}`));
-        console.log(chalk.green(" ✓ Matches"));
+        console.log(chalk.gray(` | code: ${code}`));
+        console.log(chalk.gray(` | codeHash: ${codeHash}`));
+        console.log(chalk.gray(` | savedHash: ${orderCollection.codeHash}`));
+        console.log(chalk.green(" ✓ matches"));
         console.log(
-          chalk.gray(` | Collected at: ${new Date().toDateString()}`)
+          chalk.gray(
+            ` | collectedAt: ${format(collectedAt, "yyyy-MM-dd HH:mm:ss")}`
+          )
         );
+        console.log("");
 
         setTimeout(async () => {
           // revert updates to order
@@ -198,7 +204,9 @@ const prescriptionsRouter = router({
             .update(db.orders)
             .set({ status: "ready", collectedAt: null })
             .where(eq(db.orders.id, id));
-          console.log(chalk.gray(` | Order status reverted to ready`));
+          console.log("");
+          console.log(chalk.gray(` | order status reverted to ready`));
+          console.log("");
         }, 2000);
 
         return { success: true };

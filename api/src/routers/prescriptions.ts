@@ -84,6 +84,7 @@ const prescriptionsRouter = router({
 
         const code = createCollectCode();
         const codeHash = await sha256(code);
+        const expiresAt = addHours(new Date(), 1);
         console.log(code, codeHash);
 
         // TODO: if order collection item does not exist, return 404
@@ -94,7 +95,7 @@ const prescriptionsRouter = router({
           .values({
             orderId: id,
             codeHash: codeHash!,
-            codeHashExpiresAt: addHours(new Date(), 1),
+            expiresAt,
             collectedBy: 1,
             isAboutToCollect: false,
           })
@@ -102,7 +103,7 @@ const prescriptionsRouter = router({
             target: [db.orderCollections.orderId],
             set: {
               codeHash: codeHash!,
-              codeHashExpiresAt: addHours(new Date(), 1),
+              expiresAt,
               collectedBy: 1,
               isAboutToCollect: false,
             },
@@ -165,8 +166,8 @@ const prescriptionsRouter = router({
           throw new TRPCError({ code: "BAD_REQUEST" });
         }
         if (
-          !orderCollection.codeHashExpiresAt ||
-          isAfter(new Date(), orderCollection.codeHashExpiresAt)
+          !orderCollection.expiresAt ||
+          isAfter(new Date(), orderCollection.expiresAt)
         ) {
           throw new TRPCError({ code: "BAD_REQUEST" });
         }

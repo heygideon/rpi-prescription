@@ -104,7 +104,7 @@ export const VerificationCodes = {
       id,
       userId: user.id,
       codeHash: codeHash!,
-      codeHashExpiresAt: expiresAt,
+      expiresAt,
     });
 
     console.log("");
@@ -123,7 +123,7 @@ export const VerificationCodes = {
     if (!row) {
       throw new Error("Invalid code");
     }
-    if (isBefore(row.codeHashExpiresAt, new Date())) {
+    if (isBefore(row.expiresAt, new Date())) {
       throw new Error("Code expired");
     }
 

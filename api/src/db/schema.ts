@@ -45,7 +45,7 @@ export const verificationCodes = authSchema.table("verification_codes", {
     .notNull()
     .references(() => users.id),
   codeHash: text("code_hash").notNull(),
-  codeHashExpiresAt: timestamp("code_hash_expires_at").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
 });
 export const verificationCodesRelations = relations(
   verificationCodes,
@@ -101,26 +101,22 @@ export const orderRelations = relations(orders, ({ one }) => ({
   }),
 }));
 
-export const orderCollections = pgTable(
-  "order_collections",
-  {
-    orderId: integer("order_id")
-      .primaryKey()
-      .references(() => orders.id),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-    collectedBy: integer("collected_by")
-      .notNull()
-      .references(() => users.id),
-    isAboutToCollect: boolean("is_about_to_collect").notNull().default(false),
-    codeHash: text("code_hash").notNull(),
-    codeHashExpiresAt: timestamp("code_hash_expires_at").notNull(),
-  }
-  // (t) => [uniqueIndex("order_collections_order_id").on(t.orderId)]
-);
+export const orderCollections = pgTable("order_collections", {
+  orderId: integer("order_id")
+    .primaryKey()
+    .references(() => orders.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  collectedBy: integer("collected_by")
+    .notNull()
+    .references(() => users.id),
+  isAboutToCollect: boolean("is_about_to_collect").notNull().default(false),
+  codeHash: text("code_hash").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+});
 
 export const pharmacies = pgTable("pharmacies", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: text().notNull(),
-  address: text().notNull(),
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  name: text("name").notNull(),
+  address: text("address").notNull(),
   openingHours: jsonb("opening_hours").$type<OpeningHours>(),
 });

@@ -19,9 +19,10 @@ const authRoute = new Hono()
     async (c) => {
       const { email, password } = c.req.valid("json");
 
-      const user = await db.query.users.findFirst({
-        where: eq(db.users.email, email),
-      });
+      const [user] = await db
+        .select()
+        .from(db.users)
+        .where(eq(db.users.email, email));
 
       if (!user) {
         await hash(password);

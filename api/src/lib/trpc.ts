@@ -40,9 +40,10 @@ export const createContext = async (
   try {
     const session = await JWT.verify(token);
 
-    const user = await db.query.users.findFirst({
-      where: eq(db.users.id, session.sub),
-    });
+    const [user] = await db
+      .select()
+      .from(db.users)
+      .where(eq(db.users.id, session.sub));
     if (!user) throw null;
 
     console.log(chalk.green("Valid token:"), session);

@@ -6,6 +6,7 @@
 import { relations } from "drizzle-orm";
 import {
   pgTable,
+  pgSchema,
   text,
   integer,
   timestamp,
@@ -21,7 +22,9 @@ export type OpeningHours = {
   };
 };
 
-export const users = pgTable("auth_users", {
+export const authSchema = pgSchema("auth");
+
+export const users = authSchema.table("users", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   title: text("title").notNull(),
   firstName: text("first_name").notNull(),
@@ -36,7 +39,7 @@ export const users = pgTable("auth_users", {
   phoneNumber: text("phone_number").notNull(),
 });
 
-export const verificationCodes = pgTable("auth_verification_codes", {
+export const verificationCodes = authSchema.table("verification_codes", {
   id: text("id").notNull().primaryKey(),
   userId: integer("user_id")
     .notNull()
@@ -54,7 +57,7 @@ export const verificationCodesRelations = relations(
   })
 );
 
-export const refreshTokens = pgTable("auth_refresh_tokens", {
+export const refreshTokens = authSchema.table("refresh_tokens", {
   tokenHash: text("token_hash").notNull().primaryKey(),
   userId: integer("user_id")
     .notNull()

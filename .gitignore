@@ -14,3 +14,6 @@ yarn-error.*
 
 # secrets
 ideas.md
+
+# turbo
+.turbo

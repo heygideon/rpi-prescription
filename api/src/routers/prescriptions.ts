@@ -6,7 +6,7 @@ import { init } from "@paralleldrive/cuid2";
 import { sha256 } from "hono/utils/crypto";
 import chalk from "chalk";
 import { addHours, format, isAfter } from "date-fns";
-import { publicProcedure, router } from "../lib/trpc";
+import { authProcedure, router } from "../lib/trpc";
 import { TRPCError } from "@trpc/server";
 
 const createCollectCode = init({
@@ -14,7 +14,7 @@ const createCollectCode = init({
 });
 
 const prescriptionsRouter = router({
-  getAll: publicProcedure
+  getAll: authProcedure
     .input(
       z.object({
         status: z
@@ -41,7 +41,7 @@ const prescriptionsRouter = router({
       );
     }),
 
-  getOne: publicProcedure
+  getOne: authProcedure
     .input(
       z.object({
         id: z.coerce.number(),
@@ -58,14 +58,14 @@ const prescriptionsRouter = router({
     }),
 
   collect: {
-    generateCode: publicProcedure
+    generateCode: authProcedure
       .input(
         z.object({
           id: z.coerce.number(),
           postcodeHalf: z.string().toUpperCase(),
         })
       )
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
         await new Promise((r) => setTimeout(r, 500));
         const { id, postcodeHalf } = input;
 
@@ -95,7 +95,7 @@ const prescriptionsRouter = router({
             orderId: id,
             codeHash: codeHash!,
             expiresAt,
-            collectedBy: 1,
+            collectedBy: ctx.user.id,
             isAboutToCollect: false,
           })
           .onConflictDoUpdate({
@@ -103,7 +103,7 @@ const prescriptionsRouter = router({
             set: {
               codeHash: codeHash!,
               expiresAt,
-              collectedBy: 1,
+              collectedBy: ctx.user.id,
               isAboutToCollect: false,
             },
           });
@@ -117,7 +117,7 @@ const prescriptionsRouter = router({
         return { code };
       }),
 
-    beforeUnlock: publicProcedure
+    beforeUnlock: authProcedure
       .input(
         z.object({
           id: z.coerce.number(),
@@ -145,7 +145,7 @@ const prescriptionsRouter = router({
         return { success: true };
       }),
 
-    testUnlock: publicProcedure
+    testUnlock: authProcedure
       .input(
         z.object({
           id: z.coerce.number(),

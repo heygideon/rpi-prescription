@@ -1,16 +1,26 @@
+import { trpcUtils } from "@/lib/trpc";
 import { Switch } from "@headlessui/react";
-import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
+import { ArrowRight } from "@phosphor-icons/react";
+import { trpc } from "@repo/trpc";
 import clsx from "clsx";
-import { href, Link, useNavigate } from "react-router";
+import { href, redirect, useNavigate } from "react-router";
 
 export default function Login() {
   const navigate = useNavigate();
+
+  const { data: user } = trpc.auth.me.useQuery(undefined, {
+    retry: false,
+  });
+
+  if (!user) return null;
 
   return (
     <div className="h-full pb-safe-area-b pt-safe-area-t">
       <div className="relative flex h-full flex-col justify-center p-6 text-center">
         <div className="mx-auto mb-2 grid size-12 place-items-center rounded-full bg-yellow-700 text-white shadow">
-          <span className="text-xl font-medium leading-none">JB</span>
+          <span className="text-xl font-medium leading-none">
+            {user.firstName[0].toUpperCase() + user.lastName[0].toUpperCase()}
+          </span>
         </div>
         <h1 className="text-3xl font-bold tracking-tight">You're logged in</h1>
         <p className="mt-1 leading-snug text-gray-600">
@@ -80,4 +90,12 @@ export default function Login() {
       </div>
     </div>
   );
+}
+
+export async function clientLoader() {
+  try {
+    await trpcUtils.auth.me.ensureData();
+  } catch (e) {
+    throw redirect("/auth");
+  }
 }

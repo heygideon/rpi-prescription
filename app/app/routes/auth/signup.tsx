@@ -6,13 +6,13 @@ import {
   Key,
   ShootingStar,
 } from "@phosphor-icons/react";
-import { Link } from "react-router";
+import { href, Link } from "react-router";
 
 export default function Signup() {
   return (
-    <div className="pt-safe-area-t pb-safe-area-b h-full">
+    <div className="h-full pb-safe-area-b pt-safe-area-t">
       <div className="relative flex h-full flex-col justify-center p-6 text-center">
-        <Link to="/auth" className="absolute left-4 top-4 p-2">
+        <Link to={href("/auth")} className="absolute left-4 top-4 p-2">
           <ArrowLeft weight="bold" className="size-5" />
         </Link>
 

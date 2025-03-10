@@ -1,4 +1,4 @@
-import { Navigate, useNavigate } from "react-router";
+import { href, Navigate, useNavigate } from "react-router";
 import { trpc } from "@repo/trpc";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -25,7 +25,7 @@ export default function Home() {
     mutationFn: () => auth.logout(),
     onSuccess: async () => {
       await queryUtils.auth.me.invalidate();
-      await navigate("/auth");
+      await navigate(href("/auth"));
     },
   });
 
@@ -42,7 +42,7 @@ export default function Home() {
         <div className="mx-auto mt-2.5 h-5 w-32 rounded bg-gray-300"></div>
       </div>
     );
-  if (error) return <Navigate to="/auth" />;
+  if (error) return <Navigate to={href("/auth")} />;
 
   return (
     <>
@@ -63,7 +63,7 @@ export default function Home() {
           <p className="text-xl font-bold tracking-tight">Account</p>
         </div>
       </div>
-      <div className="pt-safe-area-t -mb-6 bg-white pb-6">
+      <div className="-mb-6 bg-white pb-6 pt-safe-area-t">
         <div className="p-6 text-center">
           <div className="relative">
             <div className="mx-auto grid size-20 place-items-center rounded-full bg-cyan-700 text-white shadow">
@@ -80,7 +80,7 @@ export default function Home() {
             </p>
             <div
               ref={ref}
-              className="mb-safe-area-t absolute inset-x-0 bottom-14"
+              className="absolute inset-x-0 bottom-14 mb-safe-area-t"
             ></div>
           </div>
           <div className="mt-4 flex gap-3">

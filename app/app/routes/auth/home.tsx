@@ -2,7 +2,7 @@ import background from "@/assets/pexels-olly-3769022.jpg";
 import { SafeArea } from "@capacitor-community/safe-area";
 import { HandWaving, Pill } from "@phosphor-icons/react";
 import { useEffect } from "react";
-import { Link } from "react-router";
+import { Link, href } from "react-router";
 
 export default function AuthHome() {
   useEffect(() => {
@@ -56,13 +56,13 @@ export default function AuthHome() {
             </div>
           </div>
           <Link
-            to="/auth/signup"
+            to={href("/auth/signup")}
             className="mt-8 flex h-14 w-full items-center justify-center rounded-full bg-emerald-700 text-lg font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900"
           >
             Get started
           </Link>
           <Link
-            to="/auth/login"
+            to={href("/auth/login")}
             className="mt-3 flex h-14 w-full items-center justify-center rounded-full border border-white/40 bg-white/10 text-lg font-medium text-white shadow-md transition active:scale-95 active:opacity-75"
           >
             Login

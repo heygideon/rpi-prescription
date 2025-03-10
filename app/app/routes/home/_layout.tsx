@@ -1,6 +1,6 @@
 import { House, ShoppingBag, UserCircle } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { NavLink, Outlet, useLocation } from "react-router";
+import { href, NavLink, Outlet, useLocation } from "react-router";
 
 const order = ["/", "/order", "/account"];
 
@@ -13,7 +13,7 @@ export default function HomeLayout() {
       <div className="min-h-0 flex-1 overflow-y-auto">
         <Outlet />
       </div>
-      <div className="pb-safe-area-b relative flex-none border-t border-gray-300 bg-white shadow-lg">
+      <div className="relative flex-none border-t border-gray-300 bg-white pb-safe-area-b shadow-lg">
         <div className="flex h-16">
           <div
             style={{
@@ -23,7 +23,7 @@ export default function HomeLayout() {
           ></div>
 
           <NavLink
-            to="/"
+            to={href("/")}
             replace={true}
             className={({ isActive }) =>
               clsx(
@@ -43,7 +43,7 @@ export default function HomeLayout() {
             )}
           </NavLink>
           <NavLink
-            to="/order"
+            to={href("/order")}
             replace={true}
             className={({ isActive }) =>
               clsx(
@@ -63,7 +63,7 @@ export default function HomeLayout() {
             )}
           </NavLink>
           <NavLink
-            to="/account"
+            to={href("/account")}
             replace={true}
             className={({ isActive }) =>
               clsx(

@@ -13,7 +13,7 @@ import {
   type SlotProps,
 } from "input-otp";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { href, Link, useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { auth } from "@/lib/auth";
 
@@ -54,16 +54,16 @@ export default function Login() {
     mutationFn: (data: Parameters<typeof auth.verify>[0]) => auth.verify(data),
     onSuccess: async () => {
       await queryUtils.auth.me.invalidate();
-      await navigate("/auth/finish");
+      await navigate(href("/auth/finish"));
     },
   });
 
   return (
-    <div className="pt-safe-area-t pb-safe-area-b h-full">
+    <div className="h-full pb-safe-area-b pt-safe-area-t">
       <div className="relative h-full text-center">
         {!login.data ? (
           <div className="flex h-full flex-col justify-center p-6">
-            <Link to="/auth" className="absolute left-4 top-4 p-2">
+            <Link to={href("/auth")} className="absolute left-4 top-4 p-2">
               <ArrowLeft weight="bold" className="size-5" />
             </Link>
 

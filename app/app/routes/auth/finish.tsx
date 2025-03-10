@@ -1,13 +1,13 @@
 import { Switch } from "@headlessui/react";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { Link, useNavigate } from "react-router";
+import { href, Link, useNavigate } from "react-router";
 
 export default function Login() {
   const navigate = useNavigate();
 
   return (
-    <div className="pt-safe-area-t pb-safe-area-b h-full">
+    <div className="h-full pb-safe-area-b pt-safe-area-t">
       <div className="relative flex h-full flex-col justify-center p-6 text-center">
         <div className="mx-auto mb-2 grid size-12 place-items-center rounded-full bg-yellow-700 text-white shadow">
           <span className="text-xl font-medium leading-none">JB</span>
@@ -71,7 +71,7 @@ export default function Login() {
           </div>
         </div>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate(href("/"))}
           className="mt-5 flex h-12 w-full items-center justify-center gap-1.5 rounded-md bg-emerald-700 font-medium text-white shadow-sm transition active:scale-95 active:bg-emerald-900"
         >
           <span>Finish</span>

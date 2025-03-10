@@ -2,7 +2,7 @@ import { StatusTag } from "@/lib/status";
 import { useIntersection } from "@mantine/hooks";
 import { trpc } from "@repo/trpc";
 import clsx from "clsx";
-import { Link } from "react-router";
+import { href, Link } from "react-router";
 
 export default function Home() {
   const { data: user } = trpc.auth.me.useQuery();
@@ -31,7 +31,7 @@ export default function Home() {
           <p className="text-xl font-bold tracking-tight">Prescriptions</p>
         </div>
       </div>
-      <div className="pt-safe-area-t relative isolate -mb-6 bg-white pb-6">
+      <div className="relative isolate -mb-6 bg-white pb-6 pt-safe-area-t">
         <div className="absolute inset-x-0 top-0 -z-10 h-2/5 [mask-image:linear-gradient(black,transparent)]">
           <div className="size-full bg-gradient-to-r from-emerald-100 to-teal-100"></div>
         </div>
@@ -41,7 +41,7 @@ export default function Home() {
           </h1>
           <div
             ref={ref}
-            className="mb-safe-area-t absolute inset-x-0 bottom-14"
+            className="absolute inset-x-0 bottom-14 mb-safe-area-t"
           ></div>
         </div>
       </div>
@@ -55,7 +55,7 @@ export default function Home() {
               orders.map(({ user, ...order }) => (
                 <Link
                   key={order.id}
-                  to={`/prescription/${order.id}`}
+                  to={href("/prescription/:id", { id: order.id.toString() })}
                   className="block rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75"
                 >
                   <h3 className="text-lg font-bold tracking-tight">
@@ -87,7 +87,7 @@ export default function Home() {
               collectedOrders.map(({ user, ...order }) => (
                 <Link
                   key={order.id}
-                  to={`/prescription/${order.id}`}
+                  to={href("/prescription/:id", { id: order.id.toString() })}
                   className="block rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75"
                 >
                   <h3 className="text-lg font-bold tracking-tight">

@@ -32,14 +32,16 @@ const app = new Hono()
       createContext,
     })
   )
-  .route("/auth", authRoute);
+  .route("/auth", authRoute)
+  .get("/", (c) => c.json({ success: true }));
+
 export type App = typeof app;
 
 const port = Number(process.env.PORT) || 3000;
 console.log(
   chalk.yellow(
     `🔥 Server running on ${
-      process.env.NODE_ENV === "production" ? "" : "http://localhost:3000"
+      process.env.NODE_ENV === "production" ? "" : "http://localhost"
     }:${port}`
   )
 );

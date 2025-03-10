@@ -35,8 +35,14 @@ const app = new Hono()
   .route("/auth", authRoute);
 export type App = typeof app;
 
-const port = 3000;
-console.log(chalk.yellow(`🔥 Server running on http://localhost:${port}`));
+const port = Number(process.env.PORT) || 3000;
+console.log(
+  chalk.yellow(
+    `🔥 Server running on ${
+      process.env.NODE_ENV === "production" ? "" : "http://localhost:3000"
+    }:${port}`
+  )
+);
 
 serve({
   fetch: app.fetch,

@@ -113,7 +113,7 @@ export const VerificationCodes = {
     console.log(chalk.gray(` | codeHash: ${codeHash}`));
     console.log("");
 
-    return { id, expiresAt };
+    return { id, expiresAt, unsafe_code: code };
   },
 
   async verify(id: string, code: string) {

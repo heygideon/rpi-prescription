@@ -143,6 +143,13 @@ export default function Login() {
               </strong>{" "}
               - enter it below to log in.
             </p>
+            <div className="mt-3 border border-gray-300 p-2 text-gray-600">
+              For this demo, the code is&nbsp;
+              <strong className="font-bold text-black">
+                {login.data.unsafe_code}
+              </strong>
+              .
+            </div>
             <div className="mt-3 space-y-3 text-left">
               {verify.error && (
                 <div className="flex gap-2 border-l-2 border-l-red-500 bg-red-100 p-2 px-3">

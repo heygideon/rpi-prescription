@@ -34,11 +34,13 @@ const authRoute = new Hono()
         return c.text("Invalid email or password", 401);
       }
 
-      const { id, expiresAt } = await VerificationCodes.create(user);
+      const { id, expiresAt, unsafe_code } =
+        await VerificationCodes.create(user);
 
       return c.json({
         sessionId: id,
         expiresAt: expiresAt.toISOString(),
+        unsafe_code,
         user: {
           firstName: user.firstName,
           lastName: user.lastName,

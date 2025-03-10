@@ -32,10 +32,7 @@ const app = new Hono()
       createContext,
     })
   )
-  .route("/auth", authRoute)
-  .get("/", (c) => {
-    return c.text("Hello Hono!");
-  });
+  .route("/auth", authRoute);
 export type App = typeof app;
 
 const port = 3000;

@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "react-router build && cap sync",
+    "build-cf": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "check-types": "react-router typegen && tsc --noEmit"

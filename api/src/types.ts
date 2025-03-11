@@ -1,6 +1,6 @@
 import type { Schema } from "./db";
 
-export type { AppRouter } from ".";
+export type { AppRouter } from "./app";
 export type { AuthRoute } from "./auth";
 
 export type Table<

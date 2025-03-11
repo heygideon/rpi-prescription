@@ -33,3 +33,7 @@ lerna-debug.log*
 
 # scripts
 scripts/
+
+# build
+dist/
+.vercel

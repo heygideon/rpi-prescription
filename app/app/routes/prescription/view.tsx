@@ -3,7 +3,7 @@ import type { Route } from "./+types/view";
 import { useNavigate, useSearchParams } from "react-router";
 
 import paracetamolSrc from "@/assets/paracetamol.png";
-import CollectModal from "./collect.modal";
+import CollectModal from "./collect-copy.modal";
 import { StatusProgress, StatusTag } from "@/lib/status";
 import { Transition, TransitionChild } from "@headlessui/react";
 import { trpc } from "@repo/trpc";
@@ -45,7 +45,7 @@ export default function PrescriptionView({ params }: Route.ComponentProps) {
           {!!order && <StatusTag status={order.status} />}
         </div>
       </div>
-      <div className="pt-safe-area-t -mb-6 bg-white pb-6">
+      <div className="-mb-6 bg-white pb-6 pt-safe-area-t">
         <div className="relative p-6">
           <button
             onClick={() => navigate(-1)}
@@ -86,7 +86,7 @@ export default function PrescriptionView({ params }: Route.ComponentProps) {
           )}
           <div
             ref={ref}
-            className="mb-safe-area-t absolute inset-x-0 bottom-14"
+            className="absolute inset-x-0 bottom-14 mb-safe-area-t"
           ></div>
         </div>
       </div>

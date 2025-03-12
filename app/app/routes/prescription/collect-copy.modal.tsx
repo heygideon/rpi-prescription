@@ -1,5 +1,4 @@
-import { useNavigate, useSearchParams } from "react-router";
-import type { Route } from "./+types/view";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import {
   Transition,
   TransitionChild,
@@ -9,16 +8,10 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import {
-  ArrowBendLeftDown,
-  ArrowBendRightDown,
   ArrowDown,
   ArrowRight,
-  CaretRight,
   CellSignalHigh,
   Check,
-  Lock,
-  LockOpen,
-  MapPin,
 } from "@phosphor-icons/react";
 import { useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
@@ -30,8 +23,9 @@ import paracetamolSrc from "@/assets/paracetamol.png";
 
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
-function StageVerify({ onSuccess }: { onSuccess: () => void }) {
+function StageVerify({ setCode }: { setCode: (code: string) => void }) {
   const [postcode, setPostcode] = useState("");
+  const params = useParams<{ id: string }>();
 
   const { data: user } = trpc.auth.me.useQuery();
 
@@ -39,14 +33,10 @@ function StageVerify({ onSuccess }: { onSuccess: () => void }) {
     data,
     mutate: verify,
     isPending,
-  } = useMutation({
-    mutationFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return { success: true };
-    },
-    onSuccess: () => {
+  } = trpc.prescriptions.collect.generateCode.useMutation({
+    onSuccess: (data) => {
       Haptics.vibrate({ duration: 100 });
-      onSuccess();
+      setCode(data.code);
     },
   });
 
@@ -86,7 +76,10 @@ function StageVerify({ onSuccess }: { onSuccess: () => void }) {
         disabled={postcode.length < 3 || isPending}
         onClick={() => {
           Haptics.impact({ style: ImpactStyle.Light });
-          verify();
+          verify({
+            id: parseInt(params.id!),
+            postcodeHalf: postcode,
+          });
         }}
         className="pointer-events-auto mt-6 flex h-14 w-full flex-none items-center justify-center rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
       >
@@ -96,19 +89,28 @@ function StageVerify({ onSuccess }: { onSuccess: () => void }) {
   );
 }
 
-function StageCollect() {
+function StageCollect({ code }: { code: string }) {
+  const queryUtils = trpc.useUtils();
+  const params = useParams<{ id: string }>();
+
   const {
     data,
     mutate: unlock,
     isPending,
   } = useMutation({
     mutationFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // throw new Error("Failed to unlock");
-      return { success: true };
+      await queryUtils.client.prescriptions.collect.beforeUnlock.mutate({
+        id: parseInt(params.id!),
+      });
+
+      return await queryUtils.client.prescriptions.collect.testUnlock.mutate({
+        id: parseInt(params.id!),
+        code,
+      });
     },
     onSuccess: () => {
       Haptics.vibrate({ duration: 100 });
+      queryUtils.prescriptions.invalidate();
     },
     onError: () => {
       api.start({ x: 0, immediate: true });
@@ -247,7 +249,7 @@ function StageCollect() {
 }
 
 function Modal() {
-  const [success, setSuccess] = useState(false);
+  const [code, setCode] = useState("");
 
   const { data: bleData } = useQuery({
     queryKey: ["ble", "scan"],
@@ -317,7 +319,7 @@ function Modal() {
                 <div className="overflow-y-auto">
                   <div className="grid grid-cols-1 grid-rows-1">
                     <Transition
-                      show={!success}
+                      show={!code}
                       enter="transition delay-75"
                       enterFrom="opacity-0 translate-x-4"
                       enterTo="opacity-100 translate-x-0"
@@ -326,15 +328,11 @@ function Modal() {
                       leaveTo="opacity-0 -translate-x-4"
                     >
                       <div className="col-start-1 row-start-1">
-                        <StageVerify
-                          onSuccess={() => {
-                            setSuccess(true);
-                          }}
-                        />
+                        <StageVerify setCode={(code) => setCode(code)} />
                       </div>
                     </Transition>
                     <Transition
-                      show={success}
+                      show={!!code}
                       enter="transition delay-75"
                       enterFrom="opacity-0 translate-x-4"
                       enterTo="opacity-100 translate-x-0"
@@ -343,7 +341,7 @@ function Modal() {
                       leaveTo="opacity-0 -translate-x-4"
                     >
                       <div className="col-start-1 row-start-1">
-                        <StageCollect />
+                        <StageCollect code={code!} />
                       </div>
                     </Transition>
                   </div>

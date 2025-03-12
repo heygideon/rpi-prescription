@@ -249,7 +249,7 @@ export default function PrescriptionView({ params }: Route.ComponentProps) {
           <div className="h-safe-area-b"></div>
         </div>
       </Transition>
-      <CollectModal params={params} />
+      <CollectModal />
     </>
   );
 }

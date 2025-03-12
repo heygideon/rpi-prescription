@@ -1,0 +1,5 @@
+# sample dev block in the toml
+# note: each of these fields are optional and should only be used if you need an override
+[dev]
+  port = 8888 # The port that the Netlify Dev will be accessible on
+  publish = "public" # If you use a _redirect file, provide the path to your static content folder

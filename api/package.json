@@ -24,6 +24,7 @@
     "@hono/trpc-server": "^0.3.4",
     "@hono/zod-validator": "^0.4.3",
     "@neondatabase/serverless": "^0.10.4",
+    "@netlify/functions": "^3.0.1",
     "@node-rs/argon2": "^2.0.2",
     "@paralleldrive/cuid2": "^2.2.2",
     "@trpc/server": "11.0.0-rc.666",

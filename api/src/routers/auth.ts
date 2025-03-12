@@ -7,6 +7,7 @@ const authRouter = router({
 
     return {
       id: user.id,
+      title: user.title,
       firstName: user.firstName,
       lastName: user.lastName,
       createdAt: user.createdAt,

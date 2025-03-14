@@ -16,3 +16,5 @@ const lockerApiRoute = new Hono().post(
     return c.json({ success: true, data: { id, code }, message: "Hi :)" });
   }
 );
+
+export default lockerApiRoute;

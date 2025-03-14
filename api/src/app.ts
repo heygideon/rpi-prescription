@@ -9,6 +9,7 @@ import prescriptionsRouter from "./routers/prescriptions";
 import { trpcServer } from "@hono/trpc-server";
 import authRouter from "./routers/auth";
 import authRoute from "./auth";
+import lockerApiRoute from "./locker-api";
 
 const appRouter = router({
   prescriptions: prescriptionsRouter,
@@ -27,6 +28,7 @@ export const app = new Hono()
       createContext,
     })
   )
+  .route("/locker-api", lockerApiRoute)
   .route("/auth", authRoute)
   .get("/", (c) => c.json({ success: true }));
 

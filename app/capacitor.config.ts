@@ -10,6 +10,7 @@ const config: CapacitorConfig = {
     allowMixedContent: true,
   },
   server: {
+    // url: "http://ubuntu:5173",
     cleartext: true,
   },
 };

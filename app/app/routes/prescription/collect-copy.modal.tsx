@@ -13,14 +13,14 @@ import {
   CellSignalHigh,
   Check,
 } from "@phosphor-icons/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import clsx from "clsx";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc } from "@repo/trpc";
 import paracetamolSrc from "@/assets/paracetamol.png";
-
+import { BleClient, type BleDevice } from "@capacitor-community/bluetooth-le";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 function StageVerify({ setCode }: { setCode: (code: string) => void }) {
@@ -259,6 +259,33 @@ function Modal() {
     },
   });
 
+  const [devices, setDevices] = useState<BleDevice[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        await BleClient.initialize();
+
+        await BleClient.requestLEScan({}, (result) => {
+          console.log("received new scan result", result);
+          setDevices((devices) => {
+            if (devices.some((d) => d.deviceId === result.device.deviceId)) {
+              return devices;
+            }
+            return [...devices, result.device];
+          });
+        });
+
+        setTimeout(async () => {
+          await BleClient.stopLEScan();
+          console.log("stopped scanning");
+        }, 5000);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, []);
+
   return (
     <>
       <TransitionChild
@@ -309,6 +336,15 @@ function Modal() {
                   </>
                 )}
               </div>
+              <div className="space-y-2 rounded-lg bg-white p-4">
+                {devices.map((device) => (
+                  <div key={device.deviceId} className="space-y-1">
+                    <p className="text-lg">{device.name || "No name"}</p>
+                    <p className="text-sm text-gray-600">{device.deviceId}</p>
+                  </div>
+                ))}
+              </div>
+
               <div className="flex min-h-0 flex-1 flex-col overflow-clip rounded-lg bg-gray-50 shadow-md">
                 <div className="border-b border-gray-200 bg-white p-6 py-4">
                   <DialogTitle className="text-center text-2xl font-bold tracking-tight">

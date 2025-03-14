@@ -20,7 +20,11 @@ import clsx from "clsx";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc } from "@repo/trpc";
 import paracetamolSrc from "@/assets/paracetamol.png";
-import { BleClient, type BleDevice } from "@capacitor-community/bluetooth-le";
+import {
+  BleClient,
+  type BleDevice,
+  textToDataView,
+} from "@capacitor-community/bluetooth-le";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 function StageVerify({ setCode }: { setCode: (code: string) => void }) {
@@ -89,7 +93,13 @@ function StageVerify({ setCode }: { setCode: (code: string) => void }) {
   );
 }
 
-function StageCollect({ code }: { code: string }) {
+function StageCollect({
+  code,
+  device,
+}: {
+  code: string;
+  device: BleDevice | null;
+}) {
   const queryUtils = trpc.useUtils();
   const params = useParams<{ id: string }>();
 
@@ -99,9 +109,20 @@ function StageCollect({ code }: { code: string }) {
     isPending,
   } = useMutation({
     mutationFn: async () => {
+      if (!device) throw new Error("No locker");
+
       await queryUtils.client.prescriptions.collect.beforeUnlock.mutate({
         id: parseInt(params.id!),
       });
+
+      await BleClient.connect(device.deviceId);
+      await BleClient.write(
+        device.deviceId,
+        "A07498CA-AD5B-474E-940D-16F1FBE7E8CD",
+        "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B",
+        textToDataView(`id:${params.id!};code:${code}`),
+      );
+      await BleClient.disconnect(device.deviceId);
 
       return await queryUtils.client.prescriptions.collect.testUnlock.mutate({
         id: parseInt(params.id!),
@@ -251,39 +272,30 @@ function StageCollect({ code }: { code: string }) {
 function Modal() {
   const [code, setCode] = useState("");
 
-  const { data: bleData } = useQuery({
-    queryKey: ["ble", "scan"],
-    queryFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      return { success: true };
-    },
-  });
-
-  const [devices, setDevices] = useState<BleDevice[]>([]);
+  const [device, setDevice] = useState<BleDevice | null>(null);
 
   useEffect(() => {
     (async () => {
       try {
         await BleClient.initialize();
 
-        await BleClient.requestLEScan({}, (result) => {
-          console.log("received new scan result", result);
-          setDevices((devices) => {
-            if (devices.some((d) => d.deviceId === result.device.deviceId)) {
-              return devices;
-            }
-            return [...devices, result.device];
-          });
-        });
-
-        setTimeout(async () => {
-          await BleClient.stopLEScan();
-          console.log("stopped scanning");
-        }, 5000);
+        await BleClient.requestLEScan(
+          {
+            services: ["A07498CA-AD5B-474E-940D-16F1FBE7E8CD"],
+          },
+          async (result) => {
+            setDevice(result.device);
+            await BleClient.stopLEScan();
+          },
+        );
       } catch (e) {
         console.error(e);
       }
     })();
+
+    return () => {
+      BleClient.stopLEScan();
+    };
   }, []);
 
   return (
@@ -311,13 +323,13 @@ function Modal() {
           >
             <DialogPanel className="flex h-fit max-h-full flex-col gap-y-2">
               <div className="flex h-12 items-center gap-1.5 overflow-clip rounded-lg bg-white px-4">
-                {bleData?.success ? (
+                {device ? (
                   <>
                     <CellSignalHigh
                       weight={"fill"}
                       className="size-5 text-lime-600"
                     />
-                    <span className="text-sm">Cohens Chemist</span>
+                    <span className="text-sm">{device.name}</span>
                     <div className="flex-1"></div>
                     <span className="-mr-1 rounded-sm border border-gray-200 bg-gray-100 px-1 py-0.5 font-mono text-xs text-gray-500">
                       avocet
@@ -335,14 +347,6 @@ function Modal() {
                     </span>
                   </>
                 )}
-              </div>
-              <div className="space-y-2 rounded-lg bg-white p-4">
-                {devices.map((device) => (
-                  <div key={device.deviceId} className="space-y-1">
-                    <p className="text-lg">{device.name || "No name"}</p>
-                    <p className="text-sm text-gray-600">{device.deviceId}</p>
-                  </div>
-                ))}
               </div>
 
               <div className="flex min-h-0 flex-1 flex-col overflow-clip rounded-lg bg-gray-50 shadow-md">
@@ -377,7 +381,7 @@ function Modal() {
                       leaveTo="opacity-0 -translate-x-4"
                     >
                       <div className="col-start-1 row-start-1">
-                        <StageCollect code={code!} />
+                        <StageCollect code={code!} device={device} />
                       </div>
                     </Transition>
                   </div>

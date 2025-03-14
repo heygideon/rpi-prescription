@@ -7,7 +7,7 @@ const lockerApiRoute = new Hono().post(
   zValidator(
     "json",
     z.object({
-      id: z.number().int().positive(),
+      id: z.coerce.number().int().positive(),
       code: z.string().min(1),
     })
   ),

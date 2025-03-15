@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b --noCheck && vite build && cap sync",
-    "build-cf": "tsc -b --noCheck && vite build",
-    "preview": "vite preview",
+    "dev": "rsbuild dev",
+    "build": "tsc -b --noCheck && rsbuild build && cap sync",
+    "build-cf": "tsc -b --noCheck && rsbuild build",
+    "preview": "rsbuild preview",
     "check-types": "react-router typegen && tsc --noEmit",
     "lint": "eslint ."
   },
@@ -39,11 +39,12 @@
     "@capacitor/cli": "^7.0.1",
     "@eslint/js": "^9.22.0",
     "@repo/api": "workspace:^",
+    "@rsbuild/core": "^1.2.19",
+    "@rsbuild/plugin-react": "^1.1.1",
     "@tailwindcss/forms": "^0.5.10",
     "@types/node": "^22.13.10",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
-    "@vitejs/plugin-react-swc": "^3.8.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.22.0",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -53,8 +54,6 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.24.1",
-    "vite": "^6.2.1",
-    "vite-tsconfig-paths": "^5.1.4"
+    "typescript-eslint": "^8.24.1"
   }
 }

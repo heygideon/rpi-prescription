@@ -3,7 +3,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 const config: CapacitorConfig = {
   appId: "com.synapse",
   appName: "SuperCoolApp",
-  webDir: "build/client",
+  webDir: "dist",
 
   // for dev only
   android: {

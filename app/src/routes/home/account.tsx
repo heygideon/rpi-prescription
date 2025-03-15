@@ -10,7 +10,7 @@ import clsx from "clsx";
 
 dayjs.extend(relativeTime);
 
-export default function Home() {
+export default function Account() {
   const queryUtils = trpc.useUtils();
   const navigate = useNavigate();
   const {

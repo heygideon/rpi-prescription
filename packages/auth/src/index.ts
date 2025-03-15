@@ -34,7 +34,10 @@ class Auth {
   private tokens: TokenStorage;
   private client: AuthClient;
 
-  constructor(url: "http://localhost:3000/auth" | (string & {}), tokenStorage?: TokenStorage) {
+  constructor(
+    url: "http://localhost:3000/auth" | (string & {}),
+    tokenStorage?: TokenStorage
+  ) {
     this.client = createAuthClient(url);
     this.tokens = tokenStorage ?? new TokenStorage();
   }
@@ -118,6 +121,7 @@ class Auth {
       throw new Error("Not logged in");
     }
 
+    // TODO: store this promise to avoid multiple refreshes / race conditions
     if (this.shouldRefreshTokens()) {
       await this.refresh();
     }

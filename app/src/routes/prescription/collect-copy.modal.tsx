@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import clsx from "clsx";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { trpc } from "@repo/trpc";
 import paracetamolSrc from "@/assets/paracetamol.png";
 import {
@@ -31,18 +31,13 @@ function StageVerify({ setCode }: { setCode: (code: string) => void }) {
   const [postcode, setPostcode] = useState("");
   const params = useParams<{ id: string }>();
 
-  const { data: user } = trpc.auth.me.useQuery();
-
-  const {
-    data,
-    mutate: verify,
-    isPending,
-  } = trpc.prescriptions.collect.generateCode.useMutation({
-    onSuccess: (data) => {
-      Haptics.vibrate({ duration: 100 });
-      setCode(data.code);
-    },
-  });
+  const { mutate: verify, isPending } =
+    trpc.prescriptions.collect.generateCode.useMutation({
+      onSuccess: (data) => {
+        Haptics.vibrate({ duration: 100 });
+        setCode(data.code);
+      },
+    });
 
   return (
     <div className="flex h-full flex-col p-6">

@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   ArrowRight,
   HandWaving,
-  Phone,
   Warning,
 } from "@phosphor-icons/react";
 import clsx from "clsx";

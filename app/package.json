@@ -21,8 +21,6 @@
     "@headlessui/react": "^2.2.0",
     "@mantine/hooks": "^7.17.1",
     "@phosphor-icons/react": "^2.1.7",
-    "@react-router/node": "^7.3.0",
-    "@react-router/serve": "^7.3.0",
     "@react-spring/web": "^9.7.5",
     "@repo/auth": "workspace:^",
     "@repo/trpc": "workspace:^",
@@ -40,7 +38,6 @@
   "devDependencies": {
     "@capacitor/cli": "^7.0.1",
     "@eslint/js": "^9.22.0",
-    "@react-router/dev": "^7.3.0",
     "@repo/api": "workspace:^",
     "@tailwindcss/forms": "^0.5.10",
     "@types/node": "^22.13.10",

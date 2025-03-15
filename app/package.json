@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && cap sync",
-    "build-cf": "tsc -b && vite build",
+    "build-cf": "tsc -b --noCheck && vite build",
     "preview": "vite preview",
     "check-types": "react-router typegen && tsc --noEmit",
     "lint": "eslint ."

@@ -1,14 +1,11 @@
-import { trpcUtils } from "@/lib/trpc";
-import { Outlet, redirect } from "react-router";
+import { trpc } from "@repo/trpc";
+import { Navigate, Outlet } from "react-router";
 
 export default function AuthLayout() {
-  return <Outlet />;
-}
+  const { data, isPending } = trpc.auth.me.useQuery();
 
-export async function clientLoader() {
-  try {
-    await trpcUtils.auth.me.ensureData();
-  } catch (e) {
-    throw redirect("/auth");
-  }
+  if (isPending) return null;
+  if (!data) return <Navigate to="/auth" />;
+
+  return <Outlet />;
 }

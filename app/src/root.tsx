@@ -7,6 +7,10 @@ import {
   ScrollRestoration,
 } from "react-router";
 
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient, client } from "./lib/trpc";
+import { Provider } from "@repo/trpc";
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">

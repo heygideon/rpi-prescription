@@ -3,11 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "react-router build && cap sync",
-    "build-cf": "react-router build",
-    "dev": "react-router dev",
-    "start": "react-router-serve ./build/server/index.js",
-    "check-types": "react-router typegen && tsc --noEmit"
+    "dev": "vite",
+    "build": "tsc -b && vite build && cap sync",
+    "build-cf": "tsc -b && vite build",
+    "preview": "vite preview",
+    "check-types": "react-router typegen && tsc --noEmit",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "^7.0.0",

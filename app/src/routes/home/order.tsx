@@ -3,7 +3,7 @@ import { useIntersection } from "@mantine/hooks";
 import { MinusCircle, PlusCircle } from "@phosphor-icons/react";
 import clsx from "clsx";
 
-export default function Home() {
+export default function Order() {
   const { ref, entry } = useIntersection({
     threshold: 1,
   });
@@ -23,12 +23,12 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="pt-safe-area-t -mb-6 bg-white pb-6">
+      <div className="-mb-6 bg-white pb-6 pt-safe-area-t">
         <div className="relative p-6">
           <h1 className="text-3xl font-bold tracking-tight">Order</h1>
           <div
             ref={ref}
-            className="mb-safe-area-t absolute inset-x-0 bottom-14"
+            className="absolute inset-x-0 bottom-14 mb-safe-area-t"
           ></div>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default function Home() {
           </section>
         </div>
       </div>
-      <div className="mb-safe-area-b pointer-events-none fixed inset-x-0 bottom-16 isolate p-6 pt-0">
+      <div className="pointer-events-none fixed inset-x-0 bottom-16 isolate mb-safe-area-b p-6 pt-0">
         <div className="mask-gradient absolute inset-0 -z-10 bg-gray-100/50 backdrop-blur"></div>
 
         <button className="pointer-events-auto flex h-14 w-full items-center justify-center gap-1.5 rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900">

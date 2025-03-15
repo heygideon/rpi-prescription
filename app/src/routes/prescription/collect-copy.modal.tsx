@@ -26,6 +26,7 @@ import {
   textToDataView,
 } from "@capacitor-community/bluetooth-le";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import { Capacitor } from "@capacitor/core";
 
 function StageVerify({ setCode }: { setCode: (code: string) => void }) {
   const [postcode, setPostcode] = useState("");
@@ -274,22 +275,30 @@ function Modal() {
       try {
         await BleClient.initialize();
 
-        await BleClient.requestLEScan(
-          {
+        if (Capacitor.getPlatform() === "web") {
+          // Cannot scan for devices on web
+          const device = await BleClient.requestDevice({
             services: ["A07498CA-AD5B-474E-940D-16F1FBE7E8CD"],
-          },
-          async (result) => {
-            setDevice(result.device);
-            await BleClient.stopLEScan();
-          },
-        );
+          });
+          setDevice(device);
+        } else {
+          await BleClient.requestLEScan(
+            {
+              services: ["A07498CA-AD5B-474E-940D-16F1FBE7E8CD"],
+            },
+            async (result) => {
+              setDevice(result.device);
+              await BleClient.stopLEScan();
+            },
+          );
+        }
       } catch (e) {
         console.error(e);
       }
     })();
 
     return () => {
-      BleClient.stopLEScan();
+      BleClient.stopLEScan().catch(console.error);
     };
   }, []);
 

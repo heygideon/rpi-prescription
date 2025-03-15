@@ -7,20 +7,6 @@ import {
   ScrollRestoration,
 } from "react-router";
 
-import type { Route } from "./+types/root";
-import stylesheet from "./app.css?url";
-import figtree from "@fontsource-variable/figtree?url";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient, client } from "./lib/trpc";
-import { Provider } from "@repo/trpc";
-
-import "./init.client";
-
-export const links: Route.LinksFunction = () => [
-  { rel: "stylesheet", href: figtree },
-  { rel: "stylesheet", href: stylesheet },
-];
-
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">

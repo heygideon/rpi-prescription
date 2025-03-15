@@ -1,6 +1,5 @@
 import { ArrowLeft } from "@phosphor-icons/react";
-import type { Route } from "./+types/view";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
 import paracetamolSrc from "@/assets/paracetamol.png";
 import CollectModal from "./collect-copy.modal";
@@ -12,9 +11,10 @@ import clsx from "clsx";
 
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
-export default function PrescriptionView({ params }: Route.ComponentProps) {
+export default function PrescriptionView() {
+  const params = useParams<{ id: string }>();
   const { data: order } = trpc.prescriptions.getOne.useQuery({
-    id: parseInt(params.id),
+    id: parseInt(params.id!),
   });
   const [, setSearchParams] = useSearchParams();
   const navigate = useNavigate();

@@ -1,5 +1,4 @@
-import { useNavigate, useSearchParams } from "react-router";
-import type { Route } from "./+types/view";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import {
   Transition,
   TransitionChild,
@@ -25,9 +24,8 @@ import { trpc } from "@repo/trpc";
 
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
-export default function CollectModal({
-  params,
-}: Pick<Route.ComponentProps, "params">) {
+export default function CollectModal() {
+  const params = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const show = searchParams.has("collect");
   const navigate = useNavigate();
@@ -115,7 +113,7 @@ export default function CollectModal({
             leaveFrom="translate-y-0 opacity-100"
             leaveTo="translate-y-16 opacity-0"
           >
-            <DialogPanel className="pb-safe-area-b max-h-full overflow-y-auto overflow-x-clip rounded-t-xl bg-gray-50 text-center shadow-lg">
+            <DialogPanel className="max-h-full overflow-y-auto overflow-x-clip rounded-t-xl bg-gray-50 pb-safe-area-b text-center shadow-lg">
               <div className="-mb-6 bg-white p-6 pb-12">
                 <DialogTitle className="text-2xl font-bold tracking-tight">
                   Collect your prescription
@@ -170,7 +168,7 @@ export default function CollectModal({
                       onClick={() => {
                         Haptics.impact({ style: ImpactStyle.Light });
                         genCode({
-                          id: parseInt(params.id),
+                          id: parseInt(params.id!),
                           postcodeHalf: postcode,
                         });
                       }}

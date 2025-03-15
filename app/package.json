@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b --noCheck && vite build && cap sync",
-    "build-cf": "tsc -b --noCheck && vite build",
-    "preview": "vite preview",
+    "dev": "rsbuild dev",
+    "build": "tsc -b --noCheck && rsbuild build && cap sync",
+    "build-cf": "tsc -b --noCheck && rsbuild build",
+    "preview": "rsbuild preview",
     "check-types": "react-router typegen && tsc --noEmit",
     "lint": "eslint ."
   },
@@ -39,6 +39,8 @@
     "@capacitor/cli": "^7.0.1",
     "@eslint/js": "^9.22.0",
     "@repo/api": "workspace:^",
+    "@rsbuild/core": "^1.2.19",
+    "@rsbuild/plugin-react": "^1.1.1",
     "@tailwindcss/forms": "^0.5.10",
     "@types/node": "^22.13.10",
     "@types/react": "^19.0.10",

@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && cap sync",
+    "build": "tsc -b --noCheck && vite build && cap sync",
     "build-cf": "tsc -b --noCheck && vite build",
     "preview": "vite preview",
     "check-types": "react-router typegen && tsc --noEmit",

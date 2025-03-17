@@ -28,6 +28,14 @@ import {
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { Capacitor } from "@capacitor/core";
 
+function logWithLabel(label: string, value: unknown, color: string) {
+  console.log(
+    `%c${label}`,
+    `color:#fff;font-weight:bold;background-color:${color};border-radius:3px;padding:1px 4px;`,
+    value,
+  );
+}
+
 function StageVerify({ setCode }: { setCode: (code: string) => void }) {
   const [postcode, setPostcode] = useState("");
   const params = useParams<{ id: string }>();
@@ -111,19 +119,51 @@ function StageCollect({
         id: parseInt(params.id!),
       });
 
+      const bleConnectTime = performance.now();
       await BleClient.connect(device.deviceId);
-      await BleClient.write(
-        device.deviceId,
-        "A07498CA-AD5B-474E-940D-16F1FBE7E8CD",
-        "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B",
-        textToDataView(`id:${params.id!};code:${code}`),
-      );
-      await BleClient.disconnect(device.deviceId);
+      const bleConnectDuration = performance.now() - bleConnectTime;
 
-      return await queryUtils.client.prescriptions.collect.testUnlock.mutate({
-        id: parseInt(params.id!),
-        code,
-      });
+      logWithLabel("connect", bleConnectDuration.toFixed(1) + "ms", "#0e7490");
+
+      const bleWriteTime = performance.now();
+      try {
+        await BleClient.write(
+          device.deviceId,
+          "A07498CA-AD5B-474E-940D-16F1FBE7E8CD",
+          "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B",
+          textToDataView(`id:${params.id!};code:${code}`),
+        );
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+      const bleWriteDuration = performance.now() - bleWriteTime;
+
+      logWithLabel("write", bleWriteDuration.toFixed(1) + "ms", "#0e7490");
+
+      const bleDisconnectTime = performance.now();
+      await BleClient.disconnect(device.deviceId);
+      const bleDisconnectDuration = performance.now() - bleDisconnectTime;
+
+      logWithLabel(
+        "disconnect",
+        bleDisconnectDuration.toFixed(1) + "ms",
+        "#0e7490",
+      );
+
+      logWithLabel(
+        "Total",
+        (bleConnectDuration + bleWriteDuration + bleDisconnectDuration).toFixed(
+          1,
+        ) + "ms",
+        "#1d4ed8",
+      );
+
+      // return await queryUtils.client.prescriptions.collect.testUnlock.mutate({
+      //   id: parseInt(params.id!),
+      //   code,
+      // });
+      return { success: true };
     },
     onSuccess: () => {
       Haptics.vibrate({ duration: 100 });
@@ -147,7 +187,6 @@ function StageCollect({
         setIsMouseDown(false);
         if (overflowX === 1) {
           unlock();
-          console.log(overflowX);
           return;
         }
       }
@@ -226,7 +265,7 @@ function StageCollect({
           ref={buttonRef}
           className={clsx(
             "pointer-events-auto relative h-16 w-full flex-none rounded-full shadow-md transition",
-            !!data ? "bg-emerald-700 text-white" : "bg-gray-500 text-white",
+            data ? "bg-emerald-700 text-white" : "bg-gray-500 text-white",
           )}
         >
           {/* @ts-expect-error React 19 not yet supported */}
@@ -236,7 +275,7 @@ function StageCollect({
             className="absolute inset-y-0 left-0 z-10 aspect-square h-full touch-none p-2"
           >
             <div className="grid size-full place-items-center rounded-full bg-white shadow">
-              {!!data?.success ? (
+              {data?.success ? (
                 <Check weight="bold" className="size-4 text-emerald-700" />
               ) : isPending ? (
                 <span className="size-4 animate-spin rounded-full border-2 border-transparent border-r-gray-500"></span>
@@ -251,7 +290,7 @@ function StageCollect({
               (isMouseDown || isPending) && "opacity-25",
             )}
           >
-            {!!data?.success ? (
+            {data?.success ? (
               <span className="font-medium">open!</span>
             ) : isPending ? (
               <span>unlocking...</span>

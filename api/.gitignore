@@ -31,9 +31,6 @@ lerna-debug.log*
 *.db
 .drizzle/
 
-# scripts
-scripts/
-
 # build
 dist/
 .vercel

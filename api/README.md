@@ -17,8 +17,9 @@ Make sure you have Node.js and pnpm installed, then run:
 pnpm install
 ```
 
-You'll need a Postgres database - if you don't have one already, [Neon](https://neon.tech/home) is free and works well.
-Next, find your connection string starting with `postgresql://` (for Neon, look for a _Connect_ button). Then, create a file called `.env` here and add:
+You'll need a Postgres database - this project uses [Neon](https://neon.tech/home), so you should sign up there.
+
+Next, find your connection string starting with `postgresql://` (on Neon, look for a _Connect_ button on the home screen). Then, create a file called `.env` here and add:
 
 ```env
 # replace with your actual connection string
@@ -28,13 +29,15 @@ DATABASE_URL="postgresql://user:password@my-db-somewhere.com/my-db"
 JWT_SECRET="something-random"
 ```
 
-Then, run this to set up your db:
+> [!INFO]
+> If you're not using Neon, you'll need to switch the database adapter in `src/db/index.ts` - learn more [here](https://orm.drizzle.team/docs/get-started-postgresql).
+> You also may not be able to deploy to serverless functions like Netlify (which are cheaper than running your own server)
+
+Then, run this to set up your database tables and add some sample data:
 
 ```
-pnpm db:push
+pnpm db:setup
 ```
-
-_TODO: seed sample data_
 
 Finally, run this to start the server:
 

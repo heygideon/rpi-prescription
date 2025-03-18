@@ -15,6 +15,7 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc && tsc-alias",
     "start": "node dist/src/index.js",
+    "db:setup": "tsx scripts/setup.ts",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "check-types": "tsc --noEmit"

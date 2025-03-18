@@ -6,12 +6,12 @@ Entry for _PA Raspberry Pi Competition 2025_
 
 ## Contents
 
-🍓 `pi-server/` - bluetooth server that runs on the Raspberry Pi
+🍓 [`pi-server/`](https://github.com/heygideon/rpi-prescription/tree/main/pi-server) - bluetooth server that runs on the Raspberry Pi
 
-🌐 `api/` - api for the app
+📲 [`app/`](https://github.com/heygideon/rpi-prescription/tree/main/app) - mobile app
 
-💻 `admin/` - admin dashboard (wip)
+🌐 [`api/`](https://github.com/heygideon/rpi-prescription/tree/main/api) - api for the app
 
-📲 `app/` - mobile app
+💻 [`admin/`](https://github.com/heygideon/rpi-prescription/tree/main/admin) - admin dashboard (wip)
 
-📦 `packages/{auth,trpc}/` - auth/api for apps, not much to see
+📦 [`packages/`](https://github.com/heygideon/rpi-prescription/tree/main/packages)`{auth,trpc}/` - auth/api for apps, not much to see

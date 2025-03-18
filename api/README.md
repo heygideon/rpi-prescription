@@ -29,7 +29,7 @@ DATABASE_URL="postgresql://user:password@my-db-somewhere.com/my-db"
 JWT_SECRET="something-random"
 ```
 
-> [!INFO]
+> [!NOTE]
 > If you're not using Neon, you'll need to switch the database adapter in `src/db/index.ts` - learn more [here](https://orm.drizzle.team/docs/get-started-postgresql).
 > You also may not be able to deploy to serverless functions like Netlify (which are cheaper than running your own server)
 

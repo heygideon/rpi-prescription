@@ -5,6 +5,7 @@ import { resolve } from "path";
 
 const pyPath = resolve(import.meta.dirname, "locker.py");
 
+const API_URL = "https://rpi-prescription-api.netlify.app";
 const DEVICE_NAME = "Prescription";
 
 // Regex for matching "id:123;code:abc"
@@ -33,7 +34,7 @@ const prescriptionService = new Bleno.PrimaryService({
 
         const { id, code } = match.groups;
 
-        fetch("https://rpi-prescription-api.netlify.app/locker-api/verify", {
+        fetch(`${API_URL}/locker-api/verify`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

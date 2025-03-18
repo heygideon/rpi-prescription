@@ -5,7 +5,7 @@ This is the code that runs on the Raspberry Pi, that communicates with the app +
 ## Core libraries
 
 - **JavaScript + Python**
-- _wip_
+- bleno
 
 ## Running
 
@@ -16,5 +16,3 @@ This is the code that runs on the Raspberry Pi, that communicates with the app +
 pnpm --ignore-workspace install
 sudo node ./index.js
 ```
-
-_wip_

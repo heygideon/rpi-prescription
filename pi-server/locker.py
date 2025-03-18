@@ -1,2 +1,5 @@
 # called by index.js
-print("This is where the locker would be opened")
+import sys
+
+locker_no = sys.argv[1]
+print(f"This is where locker {locker_no} would be opened")

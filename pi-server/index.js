@@ -1,6 +1,9 @@
 import Bleno from "bleno";
 import chalk from "chalk";
 import { exec } from "child_process";
+import { resolve } from "path";
+
+const pyPath = resolve(import.meta.dirname, "locker.py");
 
 const DEVICE_NAME = "Prescription";
 
@@ -47,7 +50,8 @@ const prescriptionService = new Bleno.PrimaryService({
 
             callback(Bleno.Characteristic.RESULT_SUCCESS);
 
-            exec("python3 locker.py", (err, stdout) => {
+            // TODO: this is unsafe
+            exec(`python3 ${pyPath} ${data.lockerNo}`, (err, stdout) => {
               if (err) {
                 console.error(err);
                 return;

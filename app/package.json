@@ -7,7 +7,7 @@
     "build": "tsc -b --noCheck && rsbuild build && cap sync",
     "build-cf": "tsc -b --noCheck && rsbuild build",
     "preview": "rsbuild preview",
-    "check-types": "react-router typegen && tsc --noEmit",
+    "check-types": "tsc --noEmit",
     "lint": "eslint ."
   },
   "dependencies": {

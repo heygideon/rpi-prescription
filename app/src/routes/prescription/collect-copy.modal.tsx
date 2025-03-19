@@ -13,11 +13,11 @@ import {
   CellSignalHigh,
   Check,
 } from "@phosphor-icons/react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import clsx from "clsx";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc } from "@repo/trpc";
 import paracetamolSrc from "@/assets/paracetamol.png";
 import {
@@ -102,7 +102,7 @@ function StageCollect({
   device,
 }: {
   code: string;
-  device: BleDevice | null;
+  device: BleDevice | null | undefined;
 }) {
   const queryUtils = trpc.useUtils();
   const params = useParams<{ id: string }>();
@@ -307,39 +307,34 @@ function StageCollect({
 function Modal() {
   const [code, setCode] = useState("");
 
-  const [device, setDevice] = useState<BleDevice | null>(null);
+  const { data: device, isFetching } = useQuery({
+    queryKey: ["ble", "device"],
+    queryFn: async ({ signal }) => {
+      await BleClient.initialize();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        await BleClient.initialize();
-
-        if (Capacitor.getPlatform() === "web") {
-          // Cannot scan for devices on web
-          const device = await BleClient.requestDevice({
-            services: ["A07498CA-AD5B-474E-940D-16F1FBE7E8CD"],
-          });
-          setDevice(device);
-        } else {
-          await BleClient.requestLEScan(
+      if (Capacitor.getPlatform() === "web") {
+        // Cannot scan for devices on web
+        return await BleClient.requestDevice({
+          services: ["A07498CA-AD5B-474E-940D-16F1FBE7E8CD"],
+        });
+      } else {
+        signal.addEventListener("abort", () => BleClient.stopLEScan());
+        return await new Promise<BleDevice>((resolve) => {
+          BleClient.requestLEScan(
             {
               services: ["A07498CA-AD5B-474E-940D-16F1FBE7E8CD"],
             },
             async (result) => {
-              setDevice(result.device);
               await BleClient.stopLEScan();
+              resolve(result.device);
             },
           );
-        }
-      } catch (e) {
-        console.error(e);
+        });
       }
-    })();
-
-    return () => {
-      BleClient.stopLEScan().catch(console.error);
-    };
-  }, []);
+    },
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <>
@@ -366,7 +361,7 @@ function Modal() {
           >
             <DialogPanel className="flex h-fit max-h-full flex-col gap-y-2">
               <div className="flex h-12 items-center gap-1.5 overflow-clip rounded-lg bg-white px-4">
-                {device ? (
+                {device && !isFetching ? (
                   <>
                     <CellSignalHigh
                       weight={"fill"}

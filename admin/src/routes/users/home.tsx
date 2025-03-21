@@ -49,45 +49,53 @@ export default function UsersHome() {
           </span>
         </div>
         <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
-          <span className="flex w-2/5 flex-auto gap-2">
+          <span className="flex w-2/5 min-w-0 flex-auto gap-2">
             <div className="size-6 flex-none rounded-full bg-gradient-to-br from-red-600 to-amber-600"></div>
-            <span className="min-w-0 flex-1">Mr Joe Bloggs</span>
+            <span className="min-w-0 flex-1 truncate">Mr Joe Bloggs</span>
           </span>
-          <span className="w-2/5 flex-auto">01234 567890</span>
-          <span className="w-3/5 flex-auto">Milky Way Medical Centre</span>
+          <span className="w-2/5 flex-auto truncate">01234 567890</span>
+          <span className="w-3/5 flex-auto truncate">
+            Milky Way Medical Centre
+          </span>
           <div className="flex w-12 flex-none items-center justify-end">
             <Check className="size-4 text-green-700" />
           </div>
         </div>
         <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
-          <span className="flex w-2/5 flex-auto gap-2">
+          <span className="flex w-2/5 min-w-0 flex-auto gap-2">
             <div className="size-6 flex-none rounded-full bg-gradient-to-br from-lime-600 to-emerald-600"></div>
-            <span className="min-w-0 flex-1">Mr John Doe</span>
+            <span className="min-w-0 flex-1 truncate">Mr John Doe</span>
           </span>
-          <span className="w-2/5 flex-auto">01234 567890</span>
-          <span className="w-3/5 flex-auto">Milky Way Medical Centre</span>
+          <span className="w-2/5 flex-auto truncate">01234 567890</span>
+          <span className="w-3/5 flex-auto truncate">
+            Milky Way Medical Centre
+          </span>
           <div className="flex w-12 flex-none items-center justify-end">
             <X className="size-4 text-red-700" />
           </div>
         </div>
         <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
-          <span className="flex w-2/5 flex-auto gap-2">
+          <span className="flex w-2/5 min-w-0 flex-auto gap-2">
             <div className="size-6 flex-none rounded-full bg-gradient-to-br from-cyan-600 to-blue-600"></div>
-            <span className="min-w-0 flex-1">Mrs Jane Doe</span>
+            <span className="min-w-0 flex-1 truncate">Mrs Jane Doe</span>
           </span>
-          <span className="w-2/5 flex-auto">01234 567890</span>
-          <span className="w-3/5 flex-auto">Milky Way Medical Centre</span>
+          <span className="w-2/5 flex-auto truncate">01234 567890</span>
+          <span className="w-3/5 flex-auto truncate">
+            Milky Way Medical Centre
+          </span>
           <div className="flex w-12 flex-none items-center justify-end">
             <Check className="size-4 text-green-700" />
           </div>
         </div>
         <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
-          <span className="flex w-2/5 flex-auto gap-2">
+          <span className="flex w-2/5 min-w-0 flex-auto gap-2">
             <div className="size-6 flex-none rounded-full bg-gradient-to-br from-indigo-600 to-violet-600"></div>
-            <span className="min-w-0 flex-1">Mrs Jane Appleseed</span>
+            <span className="min-w-0 flex-1 truncate">Mrs Jane Appleseed</span>
           </span>
-          <span className="w-2/5 flex-auto">01234 567890</span>
-          <span className="w-3/5 flex-auto">Milky Way Medical Centre</span>
+          <span className="w-2/5 flex-auto truncate">01234 567890</span>
+          <span className="w-3/5 flex-auto truncate">
+            Milky Way Medical Centre
+          </span>
           <div className="flex w-12 flex-none items-center justify-end">
             <X className="size-4 text-red-700" />
           </div>

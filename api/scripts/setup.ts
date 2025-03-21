@@ -57,7 +57,7 @@ console.log(`Email: ${chalk.bold("joe@example.com")}`);
 console.log(`Password: ${chalk.bold(password)}`);
 console.log("");
 
-console.log("[1/3] Seeding auth.users...");
+console.log("[1/2] Seeding auth.users...");
 const [{ id: userId }] = await db
   .insert(db.users)
   .values({
@@ -71,45 +71,27 @@ const [{ id: userId }] = await db
   .returning({ id: db.users.id });
 console.log(chalk.green("      Seeded auth.users\n"));
 
-console.log("[2/3] Seeding pharmacies...");
-const [{ id: pharmacyId }] = await db
-  .insert(db.pharmacies)
-  .values({
-    name: "Cohens Chemist",
-    address: "4 Privet Drive, Little Whinging, Surrey",
-  })
-  .returning({ id: db.pharmacies.id });
-console.log(chalk.green("      Seeded pharmacies\n"));
-
-console.log("[3/3] Seeding orders...");
-await db
-  .insert(db.orders)
-  .values([
-    {
-      pharmacyId,
-      userId,
-      status: "checking",
-    },
-    {
-      pharmacyId,
-      userId,
-      status: "with_gp",
-    },
-    {
-      pharmacyId,
-      userId,
-      status: "preparing",
-    },
-    {
-      pharmacyId,
-      userId,
-      status: "ready",
-    },
-    {
-      pharmacyId,
-      userId,
-      status: "collected",
-    },
-  ])
-  .returning({ id: db.pharmacies.id });
+console.log("[2/2] Seeding orders...");
+await db.insert(db.orders).values([
+  {
+    userId,
+    status: "checking",
+  },
+  {
+    userId,
+    status: "with_gp",
+  },
+  {
+    userId,
+    status: "preparing",
+  },
+  {
+    userId,
+    status: "ready",
+  },
+  {
+    userId,
+    status: "collected",
+  },
+]);
 console.log(chalk.green("      Seeded orders\n"));

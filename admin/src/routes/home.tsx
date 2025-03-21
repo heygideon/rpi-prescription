@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useDate } from "@/lib/dayjs";
+import { useDate } from "src/lib/dayjs";
 
 function Greeting() {
   const date = useDate(1000 * 60 * 5);

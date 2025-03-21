@@ -6,7 +6,7 @@ import {
 } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Link } from "react-router";
-import { useDate } from "@/lib/dayjs";
+import { useDate } from "src/lib/dayjs";
 
 function DateLine() {
   const date = useDate();

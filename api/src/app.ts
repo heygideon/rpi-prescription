@@ -10,10 +10,14 @@ import { trpcServer } from "@hono/trpc-server";
 import authRouter from "./routers/auth";
 import authRoute from "./auth";
 import lockerApiRoute from "./locker-api";
+import adminOrdersRouter from "./routers/admin/orders";
 
 const appRouter = router({
   prescriptions: prescriptionsRouter,
   auth: authRouter,
+  admin: {
+    orders: adminOrdersRouter,
+  },
 });
 export type AppRouter = typeof appRouter;
 

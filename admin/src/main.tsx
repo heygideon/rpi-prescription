@@ -5,11 +5,18 @@ import "./index.css";
 
 import { AppRoutes } from "./routes";
 import { BrowserRouter } from "react-router";
+import { Provider } from "@repo/trpc";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { client, queryClient } from "./lib/trpc";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
+    <Provider client={client} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </Provider>
   </StrictMode>,
 );

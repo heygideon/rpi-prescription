@@ -10,7 +10,7 @@ import type { QueryClient } from "@tanstack/react-query";
 export const trpc = createTRPCReact<AppRouter>();
 export function createClient(
   url: "http://localhost:3000/trpc" | (string & {}),
-  opts: { auth: Auth }
+  opts: { auth?: Auth } = {}
 ) {
   return trpc.createClient({
     links: [

@@ -130,9 +130,9 @@ function StageCollect({
     mutationFn: async () => {
       if (!device) throw new Error("No locker");
 
-      await queryUtils.client.prescriptions.collect.beforeUnlock.mutate({
-        id: parseInt(params.id!),
-      });
+      // await queryUtils.client.prescriptions.collect.beforeUnlock.mutate({
+      //   id: parseInt(params.id!),
+      // });
 
       const bleConnectTime = performance.now();
       await BleClient.connect(device.deviceId);

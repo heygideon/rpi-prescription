@@ -13,7 +13,10 @@
     "@fontsource-variable/figtree": "^5.1.2",
     "@headlessui/react": "^2.2.0",
     "@phosphor-icons/react": "^2.1.7",
+    "@repo/trpc": "workspace:^",
+    "@tanstack/react-query": "^5.67.2",
     "clsx": "^2.1.1",
+    "cva": "1.0.0-beta.3",
     "dayjs": "^1.11.13",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -21,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@repo/api": "workspace:^",
     "@rsbuild/core": "^1.2.19",
     "@rsbuild/plugin-react": "^1.1.1",
     "@tailwindcss/forms": "^0.5.10",

@@ -5,6 +5,7 @@ import {
   Info,
   MagnifyingGlass,
 } from "@phosphor-icons/react";
+import { Link } from "react-router";
 
 export default function OrdersHome() {
   return (
@@ -55,7 +56,10 @@ export default function OrdersHome() {
             Status
           </span>
         </div>
-        <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
+        <Link
+          to="/orders/1"
+          className="flex gap-4 px-2 py-3 transition hover:bg-gray-200"
+        >
           <span className="w-24 flex-none">#16</span>
           <span className="w-24 flex-none text-gray-600">24/1/25</span>
           <span className="w-2/5 flex-auto truncate">Mr Joe Bloggs</span>
@@ -67,7 +71,7 @@ export default function OrdersHome() {
               Sent to GP
             </span>
           </div>
-        </div>
+        </Link>
         <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
           <span className="w-24 flex-none">#15</span>
           <span className="w-24 flex-none text-gray-600">22/1/25</span>

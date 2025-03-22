@@ -4,6 +4,7 @@ import AppLayout from "./routes/_layout";
 import Home from "./routes/home";
 
 import OrdersHome from "./routes/orders/home";
+import OrderItem from "./routes/orders/order";
 
 import UsersHome from "./routes/users/home";
 import UserLayout from "./routes/users/user/_layout";
@@ -23,6 +24,7 @@ export const AppRoutes = () => (
     <Route element={<AppLayout />}>
       <Route index element={<Home />} />
       <Route path="orders" element={<OrdersHome />} />
+      <Route path="orders/:id" element={<OrderItem />} />
       <Route path="users" element={<UsersHome />} />
       <Route path="users/:id" element={<UserLayout />}>
         <Route index element={<UserOrders />} />

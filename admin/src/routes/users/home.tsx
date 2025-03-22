@@ -6,6 +6,7 @@ import {
   MagnifyingGlass,
   X,
 } from "@phosphor-icons/react";
+import { Link } from "react-router";
 
 export default function UsersHome() {
   return (
@@ -48,7 +49,10 @@ export default function UsersHome() {
             App
           </span>
         </div>
-        <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
+        <Link
+          to="/users/1"
+          className="flex gap-4 px-2 py-3 transition hover:bg-gray-200"
+        >
           <span className="flex w-2/5 min-w-0 flex-auto gap-2">
             <div className="size-6 flex-none rounded-full bg-gradient-to-br from-red-600 to-amber-600"></div>
             <span className="min-w-0 flex-1 truncate">Mr Joe Bloggs</span>
@@ -60,7 +64,7 @@ export default function UsersHome() {
           <div className="flex w-12 flex-none items-center justify-end">
             <Check className="size-4 text-green-700" />
           </div>
-        </div>
+        </Link>
         <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
           <span className="flex w-2/5 min-w-0 flex-auto gap-2">
             <div className="size-6 flex-none rounded-full bg-gradient-to-br from-lime-600 to-emerald-600"></div>

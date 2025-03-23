@@ -59,27 +59,31 @@ export default function UserOrders() {
             Status
           </span>
         </div>
-        {user.orders.map((order) => (
-          <Link
-            key={order.id}
-            to={`/orders/${order.id}`}
-            className="flex gap-4 px-2 py-3 transition hover:bg-gray-200"
-          >
-            <span className="w-24 flex-none">#{order.id}</span>
-            <span className="w-24 flex-none text-gray-600">
-              {dayjs(order.createdAt).format("DD/MM/YY")}
-            </span>
-            <span className="w-2/5 flex-auto truncate">
-              {user.title} {user.firstName} {user.lastName}
-            </span>
-            <span className="w-3/5 flex-auto truncate">
-              Paracetamol 500mg capsules + 1
-            </span>
-            <div className="flex w-32 flex-none items-center justify-end">
-              <StatusTag status={order.status} />
-            </div>
-          </Link>
-        ))}
+        {user.orders.length > 0 ? (
+          user.orders.map((order) => (
+            <Link
+              key={order.id}
+              to={`/orders/${order.id}`}
+              className="flex gap-4 px-2 py-3 transition hover:bg-gray-200"
+            >
+              <span className="w-24 flex-none">#{order.id}</span>
+              <span className="w-24 flex-none text-gray-600">
+                {dayjs(order.createdAt).format("DD/MM/YY")}
+              </span>
+              <span className="w-2/5 flex-auto truncate">
+                {user.title} {user.firstName} {user.lastName}
+              </span>
+              <span className="w-3/5 flex-auto truncate">
+                Paracetamol 500mg capsules + 1
+              </span>
+              <div className="flex w-32 flex-none items-center justify-end">
+                <StatusTag status={order.status} />
+              </div>
+            </Link>
+          ))
+        ) : (
+          <p className="px-2 py-3 text-sm text-gray-500">No orders</p>
+        )}
       </div>
     </div>
   );

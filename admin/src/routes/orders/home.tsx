@@ -61,8 +61,9 @@ export default function OrdersHome() {
             Status
           </span>
         </div>
-        {orders
-          ? orders.map((order) => (
+        {orders ? (
+          orders.length > 0 ? (
+            orders.map((order) => (
               <Link
                 key={order.id}
                 to={`/orders/${order.id}`}
@@ -84,25 +85,30 @@ export default function OrdersHome() {
                 </div>
               </Link>
             ))
-          : Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="flex h-12 items-center gap-4 px-2">
-                <div className="flex w-24 flex-none items-center">
-                  <div className="h-4 w-full max-w-8 animate-pulse rounded bg-gray-200"></div>
-                </div>
-                <div className="flex w-24 flex-none items-center">
-                  <div className="h-4 w-full max-w-16 animate-pulse rounded bg-gray-200"></div>
-                </div>
-                <div className="flex w-2/5 flex-auto items-center">
-                  <div className="h-4 w-full max-w-28 animate-pulse rounded bg-gray-200"></div>
-                </div>
-                <div className="flex w-3/5 flex-auto items-center">
-                  <div className="h-4 w-full max-w-36 animate-pulse rounded bg-gray-200"></div>
-                </div>
-                <div className="flex w-32 flex-none items-center justify-end">
-                  <div className="h-6 w-full max-w-20 animate-pulse rounded bg-gray-200"></div>
-                </div>
+          ) : (
+            <p className="px-2 py-3 text-sm text-gray-500">No orders</p>
+          )
+        ) : (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="flex h-12 items-center gap-4 px-2">
+              <div className="flex w-24 flex-none items-center">
+                <div className="h-4 w-full max-w-8 animate-pulse rounded bg-gray-200"></div>
               </div>
-            ))}
+              <div className="flex w-24 flex-none items-center">
+                <div className="h-4 w-full max-w-16 animate-pulse rounded bg-gray-200"></div>
+              </div>
+              <div className="flex w-2/5 flex-auto items-center">
+                <div className="h-4 w-full max-w-28 animate-pulse rounded bg-gray-200"></div>
+              </div>
+              <div className="flex w-3/5 flex-auto items-center">
+                <div className="h-4 w-full max-w-36 animate-pulse rounded bg-gray-200"></div>
+              </div>
+              <div className="flex w-32 flex-none items-center justify-end">
+                <div className="h-6 w-full max-w-20 animate-pulse rounded bg-gray-200"></div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

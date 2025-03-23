@@ -30,6 +30,26 @@ const adminOrdersRouter = router({
         },
       });
     }),
+
+  prepare: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      await new Promise((r) => setTimeout(r, 500));
+
+      const order = await db.query.orders.findFirst({
+        where: eq(db.orders.id, input.id),
+      });
+      if (!order) throw new Error("Order not found");
+
+      await db
+        .update(db.orders)
+        .set({
+          status: "ready",
+        })
+        .where(eq(db.orders.id, input.id));
+
+      return { success: true };
+    }),
 });
 
 export default adminOrdersRouter;

@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@property --progress {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
 @layer base {
   html,
   body,
@@ -66,5 +72,23 @@
       transparent 1px,
       transparent 10px
     );
+  }
+
+  .animate-conic-progress {
+    --progress: 0%;
+    background-image: conic-gradient(
+      currentColor var(--progress),
+      transparent 0 var(--progress)
+    );
+    animation: conic-progress 0.5s ease-out forwards;
+  }
+
+  @keyframes conic-progress {
+    0% {
+      --progress: 0%;
+    }
+    100% {
+      --progress: 100%;
+    }
   }
 }

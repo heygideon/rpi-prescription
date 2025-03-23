@@ -19,6 +19,7 @@ import CounterHome from "./routes/counter/home";
 import CounterUserLayout from "./routes/counter/user/_layout";
 import CounterUserHome from "./routes/counter/user/home";
 import CounterUserOrder from "./routes/counter/user/order";
+import OrderPrepare from "./routes/orders/order/prepare";
 
 export const AppRoutes = () => (
   <Routes>
@@ -27,6 +28,7 @@ export const AppRoutes = () => (
       <Route path="orders" element={<OrdersHome />} />
       <Route path="orders/:id" element={<OrderLayout />}>
         <Route index element={<OrderHome />} />
+        <Route path="prepare" element={<OrderPrepare />} />
       </Route>
       <Route path="users" element={<UsersHome />} />
       <Route path="users/:id" element={<UserLayout />}>

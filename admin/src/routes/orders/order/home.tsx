@@ -1,7 +1,7 @@
 import paracetamolSrc from "@/assets/paracetamol.png";
 import ibuprofenSrc from "@/assets/ibuprofen.png";
 import { trpc } from "@repo/trpc";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 
 export default function OrderHome() {
   const params = useParams<{ id: string }>();
@@ -15,47 +15,49 @@ export default function OrderHome() {
     <>
       <div className="mx-auto max-w-6xl p-8 pt-6">
         <div className="space-y-6">
-          <section>
-            <h3 className="text-lg font-bold tracking-tight">Locker</h3>
-            <div className="mt-3 grid w-full max-w-md grid-cols-4 gap-3">
-              <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                <p className="text-lg">A1</p>
+          {order.status === "ready" && (
+            <section>
+              <h3 className="text-lg font-bold tracking-tight">Locker</h3>
+              <div className="mt-3 grid w-full max-w-md grid-cols-4 gap-3">
+                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
+                  <p className="text-lg">A1</p>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
+                  <p className="text-lg">A2</p>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
+                  <p className="text-lg">A3</p>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
+                  <p className="text-lg">A4</p>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
+                  <p className="text-lg">B1</p>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
+                  <p className="text-lg">B2</p>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
+                  <p className="text-lg">B3</p>
+                </div>
+                <div className="-m-1 flex flex-col items-center justify-center rounded-md bg-emerald-700 p-4 text-center text-white shadow-sm">
+                  <p className="text-xl font-semibold">B4</p>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
+                  <p className="text-lg">C1</p>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
+                  <p className="text-lg">C2</p>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
+                  <p className="text-lg">C3</p>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
+                  <p className="text-lg">C4</p>
+                </div>
               </div>
-              <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                <p className="text-lg">A2</p>
-              </div>
-              <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                <p className="text-lg">A3</p>
-              </div>
-              <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                <p className="text-lg">A4</p>
-              </div>
-              <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                <p className="text-lg">B1</p>
-              </div>
-              <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                <p className="text-lg">B2</p>
-              </div>
-              <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                <p className="text-lg">B3</p>
-              </div>
-              <div className="-m-1 flex flex-col items-center justify-center rounded-md bg-emerald-700 p-4 text-center text-white shadow-sm">
-                <p className="text-xl font-semibold">B4</p>
-              </div>
-              <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                <p className="text-lg">C1</p>
-              </div>
-              <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                <p className="text-lg">C2</p>
-              </div>
-              <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                <p className="text-lg">C3</p>
-              </div>
-              <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                <p className="text-lg">C4</p>
-              </div>
-            </div>
-          </section>
+            </section>
+          )}
           <section>
             <h3 className="text-lg font-bold tracking-tight">Order</h3>
             <div className="mt-2 divide-y divide-gray-300 border-y border-gray-300">
@@ -158,9 +160,12 @@ export default function OrderHome() {
 
       {order.status === "preparing" && (
         <div className="sticky bottom-0 flex justify-end gap-4 bg-gradient-to-t from-white p-8 pt-0">
-          <button className="flex h-12 items-center rounded-full bg-blue-700 px-6 text-white shadow transition hover:bg-blue-800 active:scale-95">
+          <Link
+            to={`/orders/${params.id}/prepare`}
+            className="flex h-12 items-center rounded-full bg-blue-700 px-6 text-white shadow transition hover:bg-blue-800 active:scale-95"
+          >
             <span className="text-lg font-semibold">Assign locker</span>
-          </button>
+          </Link>
         </div>
       )}
       {order.status === "ready" && (

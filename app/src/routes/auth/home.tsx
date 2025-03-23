@@ -39,8 +39,8 @@ export default function AuthHome() {
         />
         <div className="flex h-full flex-col bg-gradient-to-t from-black/75 p-6 text-white">
           <div className="h-safe-area-t"></div>
-          <h1 className="text-center text-3xl font-light tracking-tighter">
-            SuperCoolApp
+          <h1 className="text-center text-2xl font-bold tracking-tight">
+            PharmaPoint
           </h1>
           <div className="min-h-0 flex-1"></div>
           <div className="mx-auto w-full max-w-sm space-y-2 text-[56px] font-bold leading-none">

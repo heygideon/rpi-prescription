@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "bleno": "npm:@abandonware/bleno@^0.6.2",
+    "chalk": "^5.4.1"
+  }
+}

@@ -12,12 +12,13 @@ import {
   ArrowRight,
   CellSignalHigh,
   Check,
+  Warning,
 } from "@phosphor-icons/react";
-import { useEffect, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import clsx from "clsx";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc } from "@repo/trpc";
 import paracetamolSrc from "@/assets/paracetamol.png";
 import {
@@ -28,21 +29,35 @@ import {
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { Capacitor } from "@capacitor/core";
 
+function logWithLabel(label: string, value: unknown, color: string) {
+  console.log(
+    `%c${label}`,
+    `color:#fff;font-weight:bold;background-color:${color};border-radius:3px;padding:1px 4px;`,
+    value,
+  );
+}
+
 function StageVerify({ setCode }: { setCode: (code: string) => void }) {
   const [postcode, setPostcode] = useState("");
+  const isPostcodeValid = useMemo(
+    () => /^\d{1,2}[A-Za-z]{2}$/.test(postcode),
+    [postcode],
+  );
   const params = useParams<{ id: string }>();
 
-  const { mutate: verify, isPending } =
-    trpc.prescriptions.collect.generateCode.useMutation({
-      onSuccess: (data) => {
-        Haptics.vibrate({ duration: 100 });
-        setCode(data.code);
-      },
-    });
+  const {
+    mutate: verify,
+    isPending,
+    error,
+  } = trpc.prescriptions.collect.generateCode.useMutation({
+    onSuccess: (data) => {
+      Haptics.vibrate({ duration: 100 });
+      setCode(data.code);
+    },
+  });
 
   return (
     <div className="flex h-full flex-col p-6">
-      {/* <div className="flex flex-col items-center justify-center text-center"> */}
       <h3 className="text-center font-semibold tracking-tight">
         Enter the last part of your postcode
       </h3>
@@ -68,23 +83,31 @@ function StageVerify({ setCode }: { setCode: (code: string) => void }) {
           }}
         />
       </div>
-      {/* </div> */}
 
       <div className="min-h-0 flex-1"></div>
 
-      <button
-        disabled={postcode.length < 3 || isPending}
-        onClick={() => {
-          Haptics.impact({ style: ImpactStyle.Light });
-          verify({
-            id: parseInt(params.id!),
-            postcodeHalf: postcode,
-          });
-        }}
-        className="pointer-events-auto mt-6 flex h-14 w-full flex-none items-center justify-center rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
-      >
-        <span>Collect</span>
-      </button>
+      <div className="mt-6">
+        {error && (
+          <div className="mb-2 flex justify-center gap-2 p-2 px-3">
+            <Warning weight="bold" className="mt-1 size-4 text-red-700" />
+            <p className="font-medium text-red-700">Incorrect postcode</p>
+          </div>
+        )}
+
+        <button
+          disabled={!isPostcodeValid || isPending}
+          onClick={() => {
+            Haptics.impact({ style: ImpactStyle.Light });
+            verify({
+              id: parseInt(params.id!),
+              postcodeHalf: postcode,
+            });
+          }}
+          className="pointer-events-auto flex h-14 w-full flex-none items-center justify-center rounded-full bg-emerald-700 font-medium text-white shadow-md transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
+        >
+          <span>Collect</span>
+        </button>
+      </div>
     </div>
   );
 }
@@ -94,7 +117,7 @@ function StageCollect({
   device,
 }: {
   code: string;
-  device: BleDevice | null;
+  device: BleDevice | null | undefined;
 }) {
   const queryUtils = trpc.useUtils();
   const params = useParams<{ id: string }>();
@@ -111,19 +134,51 @@ function StageCollect({
         id: parseInt(params.id!),
       });
 
+      const bleConnectTime = performance.now();
       await BleClient.connect(device.deviceId);
-      await BleClient.write(
-        device.deviceId,
-        "A07498CA-AD5B-474E-940D-16F1FBE7E8CD",
-        "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B",
-        textToDataView(`id:${params.id!};code:${code}`),
-      );
-      await BleClient.disconnect(device.deviceId);
+      const bleConnectDuration = performance.now() - bleConnectTime;
 
-      return await queryUtils.client.prescriptions.collect.testUnlock.mutate({
-        id: parseInt(params.id!),
-        code,
-      });
+      logWithLabel("connect", bleConnectDuration.toFixed(1) + "ms", "#0e7490");
+
+      const bleWriteTime = performance.now();
+      try {
+        await BleClient.write(
+          device.deviceId,
+          "A07498CA-AD5B-474E-940D-16F1FBE7E8CD",
+          "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B",
+          textToDataView(`id:${params.id!};code:${code}`),
+        );
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+      const bleWriteDuration = performance.now() - bleWriteTime;
+
+      logWithLabel("write", bleWriteDuration.toFixed(1) + "ms", "#0e7490");
+
+      const bleDisconnectTime = performance.now();
+      await BleClient.disconnect(device.deviceId);
+      const bleDisconnectDuration = performance.now() - bleDisconnectTime;
+
+      logWithLabel(
+        "disconnect",
+        bleDisconnectDuration.toFixed(1) + "ms",
+        "#0e7490",
+      );
+
+      logWithLabel(
+        "Total",
+        (bleConnectDuration + bleWriteDuration + bleDisconnectDuration).toFixed(
+          1,
+        ) + "ms",
+        "#1d4ed8",
+      );
+
+      // return await queryUtils.client.prescriptions.collect.testUnlock.mutate({
+      //   id: parseInt(params.id!),
+      //   code,
+      // });
+      return { success: true };
     },
     onSuccess: () => {
       Haptics.vibrate({ duration: 100 });
@@ -147,7 +202,6 @@ function StageCollect({
         setIsMouseDown(false);
         if (overflowX === 1) {
           unlock();
-          console.log(overflowX);
           return;
         }
       }
@@ -226,7 +280,7 @@ function StageCollect({
           ref={buttonRef}
           className={clsx(
             "pointer-events-auto relative h-16 w-full flex-none rounded-full shadow-md transition",
-            !!data ? "bg-emerald-700 text-white" : "bg-gray-500 text-white",
+            data ? "bg-emerald-700 text-white" : "bg-gray-500 text-white",
           )}
         >
           {/* @ts-expect-error React 19 not yet supported */}
@@ -236,7 +290,7 @@ function StageCollect({
             className="absolute inset-y-0 left-0 z-10 aspect-square h-full touch-none p-2"
           >
             <div className="grid size-full place-items-center rounded-full bg-white shadow">
-              {!!data?.success ? (
+              {data?.success ? (
                 <Check weight="bold" className="size-4 text-emerald-700" />
               ) : isPending ? (
                 <span className="size-4 animate-spin rounded-full border-2 border-transparent border-r-gray-500"></span>
@@ -251,7 +305,7 @@ function StageCollect({
               (isMouseDown || isPending) && "opacity-25",
             )}
           >
-            {!!data?.success ? (
+            {data?.success ? (
               <span className="font-medium">open!</span>
             ) : isPending ? (
               <span>unlocking...</span>
@@ -268,39 +322,34 @@ function StageCollect({
 function Modal() {
   const [code, setCode] = useState("");
 
-  const [device, setDevice] = useState<BleDevice | null>(null);
+  const { data: device, isFetching } = useQuery({
+    queryKey: ["ble", "device"],
+    queryFn: async ({ signal }) => {
+      await BleClient.initialize();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        await BleClient.initialize();
-
-        if (Capacitor.getPlatform() === "web") {
-          // Cannot scan for devices on web
-          const device = await BleClient.requestDevice({
-            services: ["A07498CA-AD5B-474E-940D-16F1FBE7E8CD"],
-          });
-          setDevice(device);
-        } else {
-          await BleClient.requestLEScan(
+      if (Capacitor.getPlatform() === "web") {
+        // Cannot scan for devices on web
+        return await BleClient.requestDevice({
+          services: ["A07498CA-AD5B-474E-940D-16F1FBE7E8CD"],
+        });
+      } else {
+        signal.addEventListener("abort", () => BleClient.stopLEScan());
+        return await new Promise<BleDevice>((resolve) => {
+          BleClient.requestLEScan(
             {
               services: ["A07498CA-AD5B-474E-940D-16F1FBE7E8CD"],
             },
             async (result) => {
-              setDevice(result.device);
               await BleClient.stopLEScan();
+              resolve(result.device);
             },
           );
-        }
-      } catch (e) {
-        console.error(e);
+        });
       }
-    })();
-
-    return () => {
-      BleClient.stopLEScan().catch(console.error);
-    };
-  }, []);
+    },
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <>
@@ -327,7 +376,7 @@ function Modal() {
           >
             <DialogPanel className="flex h-fit max-h-full flex-col gap-y-2">
               <div className="flex h-12 items-center gap-1.5 overflow-clip rounded-lg bg-white px-4">
-                {device ? (
+                {device && !isFetching ? (
                   <>
                     <CellSignalHigh
                       weight={"fill"}

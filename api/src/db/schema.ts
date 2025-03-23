@@ -11,16 +11,8 @@ import {
   integer,
   timestamp,
   boolean,
-  jsonb,
   pgEnum,
 } from "drizzle-orm/pg-core";
-
-export type OpeningHours = {
-  [day in "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun"]: {
-    open: string;
-    close: string;
-  };
-};
 
 export const authSchema = pgSchema("auth");
 
@@ -84,9 +76,6 @@ export const orders = pgTable("orders", {
   userId: integer("user_id")
     .notNull()
     .references(() => users.id),
-  pharmacyId: integer("pharmacy_id")
-    .notNull()
-    .references(() => pharmacies.id),
   status: orderStatusEnum("status").notNull().default("checking"),
   collectedAt: timestamp("collected_at"),
 });
@@ -94,10 +83,6 @@ export const orderRelations = relations(orders, ({ one }) => ({
   user: one(users, {
     fields: [orders.userId],
     references: [users.id],
-  }),
-  pharmacy: one(pharmacies, {
-    fields: [orders.pharmacyId],
-    references: [pharmacies.id],
   }),
 }));
 
@@ -112,11 +97,4 @@ export const orderCollections = pgTable("order_collections", {
   isAboutToCollect: boolean("is_about_to_collect").notNull().default(false),
   codeHash: text("code_hash").notNull(),
   expiresAt: timestamp("expires_at").notNull(),
-});
-
-export const pharmacies = pgTable("pharmacies", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  name: text("name").notNull(),
-  address: text("address").notNull(),
-  openingHours: jsonb("opening_hours").$type<OpeningHours>(),
 });

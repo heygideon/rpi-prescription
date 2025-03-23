@@ -1,4 +1,14 @@
+import { trpc } from "@repo/trpc";
+import { useParams } from "react-router";
+
 export default function UserAbout() {
+  const params = useParams<{ id: string }>();
+  const { data: user } = trpc.admin.users.getOne.useQuery({
+    id: parseInt(params.id!),
+  });
+
+  if (!user) return null;
+
   return (
     <div className="space-y-6 p-8 pt-6">
       <section>
@@ -13,7 +23,7 @@ export default function UserAbout() {
           <div className="flex gap-3 py-3">
             <p className="w-1/2 min-w-0 flex-auto font-medium">Mobile phone</p>
             <p className="w-1/2 min-w-0 flex-auto text-gray-700">
-              07700 900908
+              {user.phoneNumber}
             </p>
           </div>
           <div className="flex gap-3 py-3">
@@ -25,7 +35,7 @@ export default function UserAbout() {
           <div className="flex gap-3 py-3">
             <p className="w-1/2 min-w-0 flex-auto font-medium">Email</p>
             <p className="w-1/2 min-w-0 flex-auto text-gray-700">
-              joe.bloggs@example.com
+              {user.email}
             </p>
           </div>
           <div className="flex gap-3 py-3">

@@ -30,6 +30,9 @@ export const users = authSchema.table("users", {
   passwordHash: text("password_hash").notNull(),
   phoneNumber: text("phone_number").notNull(),
 });
+export const usersRelations = relations(users, ({ many }) => ({
+  orders: many(orders),
+}));
 
 export const verificationCodes = authSchema.table("verification_codes", {
   id: text("id").notNull().primaryKey(),

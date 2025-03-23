@@ -24,8 +24,11 @@ export default function OrderPrepare() {
     },
   });
 
+  const utils = trpc.useUtils();
+
   const complete = trpc.admin.orders.prepare.useMutation({
     onSuccess: async () => {
+      await utils.admin.orders.invalidate();
       await navigate(`/orders/${params.id}`);
     },
   });
@@ -241,7 +244,7 @@ export default function OrderPrepare() {
               hold to unlock
             </p>
             <button
-              disabled={!confirmedItems.every(Boolean)}
+              disabled={!confirmedItems.every(Boolean) || complete.isPending}
               onClick={() => complete.mutate({ id: parseInt(params.id!) })}
               className="mt-4 h-10 rounded-md bg-emerald-700 px-4 text-white transition hover:bg-emerald-800 active:scale-95 disabled:scale-100 disabled:bg-gray-400"
             >

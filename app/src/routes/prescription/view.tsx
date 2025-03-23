@@ -2,6 +2,7 @@ import { ArrowLeft } from "@phosphor-icons/react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 
 import paracetamolSrc from "@/assets/paracetamol.png";
+import ibuprofenSrc from "@/assets/ibuprofen.png";
 import CollectModal from "./collect-copy.modal";
 import { StatusProgress, StatusTag } from "@/lib/status";
 import { Transition, TransitionChild } from "@headlessui/react";
@@ -59,7 +60,9 @@ export default function PrescriptionView() {
               <h1 className="mt-2 text-3xl font-bold tracking-tight">
                 #{order.id}
               </h1>
-              <p className="text-gray-600">Mr John Doe</p>
+              <p className="text-gray-600">
+                {order.user.title} {order.user.firstName} {order.user.lastName}
+              </p>
               <div className="mt-4 pb-6">
                 <StatusProgress status={order.status} />
               </div>
@@ -122,9 +125,6 @@ export default function PrescriptionView() {
                 </h2>
                 <div className="mt-3 space-y-3">
                   <div className="relative flex gap-3 rounded-md border border-gray-300 bg-white p-2 shadow-sm transition active:scale-95 active:opacity-75">
-                    <span className="absolute left-2 top-2 grid size-8 place-items-center rounded-full bg-gray-300 font-semibold leading-none">
-                      2
-                    </span>
                     <img
                       src={paracetamolSrc}
                       alt="Paracetamol"
@@ -149,62 +149,16 @@ export default function PrescriptionView() {
                       2
                     </span>
                     <img
-                      src={paracetamolSrc}
-                      alt="Paracetamol"
+                      src={ibuprofenSrc}
+                      alt="Ibuprofen"
                       className="size-24"
                     />
                     <div className="flex min-w-0 flex-1 flex-col justify-center">
                       <h3 className="truncate text-lg font-bold tracking-tight">
-                        Paracetamol
+                        Ibuprofen
                       </h3>
                       <p className="truncate text-sm text-gray-600">
-                        500mg capsules
-                      </p>
-                      <div className="mt-1.5 flex items-baseline">
-                        <span className="text-sm font-semibold text-emerald-700">
-                          Dosage info
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="relative flex gap-3 rounded-md border border-gray-300 bg-white p-2 shadow-sm transition active:scale-95 active:opacity-75">
-                    <span className="absolute left-2 top-2 grid size-8 place-items-center rounded-full bg-gray-300 font-semibold leading-none">
-                      2
-                    </span>
-                    <img
-                      src={paracetamolSrc}
-                      alt="Paracetamol"
-                      className="size-24"
-                    />
-                    <div className="flex min-w-0 flex-1 flex-col justify-center">
-                      <h3 className="truncate text-lg font-bold tracking-tight">
-                        Paracetamol
-                      </h3>
-                      <p className="truncate text-sm text-gray-600">
-                        500mg capsules
-                      </p>
-                      <div className="mt-1.5 flex items-baseline">
-                        <span className="text-sm font-semibold text-emerald-700">
-                          Dosage info
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="relative flex gap-3 rounded-md border border-gray-300 bg-white p-2 shadow-sm transition active:scale-95 active:opacity-75">
-                    <span className="absolute left-2 top-2 grid size-8 place-items-center rounded-full bg-gray-300 font-semibold leading-none">
-                      2
-                    </span>
-                    <img
-                      src={paracetamolSrc}
-                      alt="Paracetamol"
-                      className="size-24"
-                    />
-                    <div className="flex min-w-0 flex-1 flex-col justify-center">
-                      <h3 className="truncate text-lg font-bold tracking-tight">
-                        Paracetamol
-                      </h3>
-                      <p className="truncate text-sm text-gray-600">
-                        500mg capsules
+                        200mg capsules
                       </p>
                       <div className="mt-1.5 flex items-baseline">
                         <span className="text-sm font-semibold text-emerald-700">

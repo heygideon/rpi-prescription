@@ -1,7 +1,7 @@
 import { z } from "zod";
 import db from "../../db";
 import { publicProcedure, router } from "../../lib/trpc";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 const adminOrdersRouter = router({
   getAll: publicProcedure.query(async () => {
@@ -13,7 +13,7 @@ const adminOrdersRouter = router({
           columns: { title: true, firstName: true, lastName: true },
         },
       },
-      orderBy: db.orders.id,
+      orderBy: [desc(db.orders.createdAt), db.orders.id],
     });
   }),
   getOne: publicProcedure

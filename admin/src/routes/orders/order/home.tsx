@@ -28,32 +28,8 @@ export default function OrderHome() {
                 <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
                   <p className="text-lg">A3</p>
                 </div>
-                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                  <p className="text-lg">A4</p>
-                </div>
-                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                  <p className="text-lg">B1</p>
-                </div>
-                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                  <p className="text-lg">B2</p>
-                </div>
-                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                  <p className="text-lg">B3</p>
-                </div>
                 <div className="-m-1 flex flex-col items-center justify-center rounded-md bg-emerald-700 p-4 text-center text-white shadow-sm">
-                  <p className="text-xl font-semibold">B4</p>
-                </div>
-                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                  <p className="text-lg">C1</p>
-                </div>
-                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                  <p className="text-lg">C2</p>
-                </div>
-                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                  <p className="text-lg">C3</p>
-                </div>
-                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                  <p className="text-lg">C4</p>
+                  <p className="text-xl font-semibold">A4</p>
                 </div>
               </div>
             </section>

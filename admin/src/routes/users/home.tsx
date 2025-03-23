@@ -6,9 +6,12 @@ import {
   MagnifyingGlass,
   X,
 } from "@phosphor-icons/react";
+import { trpc } from "@repo/trpc";
 import { Link } from "react-router";
 
 export default function UsersHome() {
+  const { data: users, isPending } = trpc.admin.users.getAll.useQuery();
+
   return (
     <div className="mx-auto max-w-6xl p-8">
       <h1 className="text-3xl font-bold tracking-tight">Users</h1>
@@ -49,61 +52,45 @@ export default function UsersHome() {
             App
           </span>
         </div>
-        <Link
-          to="/users/1"
-          className="flex gap-4 px-2 py-3 transition hover:bg-gray-200"
-        >
-          <span className="flex w-2/5 min-w-0 flex-auto gap-2">
-            <div className="size-6 flex-none rounded-full bg-gradient-to-br from-red-600 to-amber-600"></div>
-            <span className="min-w-0 flex-1 truncate">Mr Joe Bloggs</span>
-          </span>
-          <span className="w-2/5 flex-auto truncate">01234 567890</span>
-          <span className="w-3/5 flex-auto truncate">
-            Milky Way Medical Centre
-          </span>
-          <div className="flex w-12 flex-none items-center justify-end">
-            <Check className="size-4 text-green-700" />
-          </div>
-        </Link>
-        <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
-          <span className="flex w-2/5 min-w-0 flex-auto gap-2">
-            <div className="size-6 flex-none rounded-full bg-gradient-to-br from-lime-600 to-emerald-600"></div>
-            <span className="min-w-0 flex-1 truncate">Mr John Doe</span>
-          </span>
-          <span className="w-2/5 flex-auto truncate">01234 567890</span>
-          <span className="w-3/5 flex-auto truncate">
-            Milky Way Medical Centre
-          </span>
-          <div className="flex w-12 flex-none items-center justify-end">
-            <X className="size-4 text-red-700" />
-          </div>
-        </div>
-        <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
-          <span className="flex w-2/5 min-w-0 flex-auto gap-2">
-            <div className="size-6 flex-none rounded-full bg-gradient-to-br from-cyan-600 to-blue-600"></div>
-            <span className="min-w-0 flex-1 truncate">Mrs Jane Doe</span>
-          </span>
-          <span className="w-2/5 flex-auto truncate">01234 567890</span>
-          <span className="w-3/5 flex-auto truncate">
-            Milky Way Medical Centre
-          </span>
-          <div className="flex w-12 flex-none items-center justify-end">
-            <Check className="size-4 text-green-700" />
-          </div>
-        </div>
-        <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
-          <span className="flex w-2/5 min-w-0 flex-auto gap-2">
-            <div className="size-6 flex-none rounded-full bg-gradient-to-br from-indigo-600 to-violet-600"></div>
-            <span className="min-w-0 flex-1 truncate">Mrs Jane Appleseed</span>
-          </span>
-          <span className="w-2/5 flex-auto truncate">01234 567890</span>
-          <span className="w-3/5 flex-auto truncate">
-            Milky Way Medical Centre
-          </span>
-          <div className="flex w-12 flex-none items-center justify-end">
-            <X className="size-4 text-red-700" />
-          </div>
-        </div>
+        {users
+          ? users.map((user) => (
+              <Link
+                key={user.id}
+                to={`/users/${user.id}`}
+                className="flex gap-4 px-2 py-3 transition hover:bg-gray-200"
+              >
+                <span className="flex w-2/5 min-w-0 flex-auto gap-2">
+                  <div className="size-6 flex-none rounded-full bg-gradient-to-br from-red-600 to-amber-600"></div>
+                  <span className="min-w-0 flex-1 truncate">
+                    {user.title} {user.firstName} {user.lastName}
+                  </span>
+                </span>
+                <span className="w-2/5 flex-auto truncate">
+                  {user.phoneNumber}
+                </span>
+                <span className="w-3/5 flex-auto truncate">
+                  Milky Way Medical Centre
+                </span>
+                <div className="flex w-12 flex-none items-center justify-end">
+                  <Check className="size-4 text-green-700" />
+                </div>
+              </Link>
+            ))
+          : Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="flex h-12 items-center gap-4 px-2">
+                <span className="flex w-2/5 min-w-0 flex-auto items-center gap-2">
+                  <div className="size-6 flex-none animate-pulse rounded-full bg-gray-200"></div>
+                  <div className="h-4 min-w-0 max-w-32 flex-1 animate-pulse rounded bg-gray-200"></div>
+                </span>
+                <div className="flex w-2/5 flex-auto items-center">
+                  <div className="h-4 w-full max-w-28 animate-pulse rounded bg-gray-200"></div>
+                </div>
+                <div className="flex w-3/5 flex-auto items-center">
+                  <div className="h-4 w-full max-w-40 animate-pulse rounded bg-gray-200"></div>
+                </div>
+                <div className="w-12 flex-none"></div>
+              </div>
+            ))}
       </div>
     </div>
   );

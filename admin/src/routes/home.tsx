@@ -1,5 +1,8 @@
+import StatusTag from "@/components/StatusTag";
+import { trpc } from "@repo/trpc";
 import { useMemo } from "react";
-import { useDate } from "src/lib/dayjs";
+import { Link } from "react-router";
+import dayjs, { useDate } from "src/lib/dayjs";
 
 function Greeting() {
   const date = useDate(1000 * 60 * 5);
@@ -21,10 +24,12 @@ function Greeting() {
 }
 
 export default function Home() {
+  const { data: orders, isPending } = trpc.admin.orders.getAll.useQuery();
+
   return (
     <div className="mx-auto max-w-6xl p-8">
       <h1 className="text-3xl font-bold tracking-tight">
-        <Greeting />, John
+        <Greeting />, Jane
       </h1>
       <div className="mt-8">
         <h2 className="text-lg font-semibold tracking-tight">Overview</h2>
@@ -72,58 +77,54 @@ export default function Home() {
               Status
             </span>
           </div>
-          <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
-            <span className="w-24 flex-none">#16</span>
-            <span className="w-24 flex-none text-gray-600">24/1/25</span>
-            <span className="w-2/5 flex-auto truncate">Mr Joe Bloggs</span>
-            <span className="w-3/5 flex-auto truncate">
-              Paracetamol 500mg capsules + 1
-            </span>
-            <div className="flex w-32 flex-none items-center justify-end">
-              <span className="-my-1.5 rounded bg-amber-200 px-2 py-1.5 text-sm font-semibold leading-none text-amber-700">
-                Sent to GP
-              </span>
-            </div>
-          </div>
-          <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
-            <span className="w-24 flex-none">#15</span>
-            <span className="w-24 flex-none text-gray-600">22/1/25</span>
-            <span className="w-2/5 flex-auto truncate">Mrs Jane Doe</span>
-            <span className="w-3/5 flex-auto truncate">
-              Paracetamol 500mg capsules + 1
-            </span>
-            <div className="flex w-32 flex-none items-center justify-end">
-              <span className="-my-1.5 rounded bg-blue-200 px-2 py-1.5 text-sm font-semibold leading-none text-blue-700">
-                For preparation
-              </span>
-            </div>
-          </div>
-          <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
-            <span className="w-24 flex-none">#14</span>
-            <span className="w-24 flex-none text-gray-600">16/1/25</span>
-            <span className="w-2/5 flex-auto truncate">Mr John Doe</span>
-            <span className="w-3/5 flex-auto truncate">
-              Paracetamol 500mg capsules + 1
-            </span>
-            <div className="flex w-32 flex-none items-center justify-end">
-              <span className="-my-1.5 rounded bg-emerald-200 px-2 py-1.5 text-sm font-semibold leading-none text-emerald-700">
-                Ready to collect
-              </span>
-            </div>
-          </div>
-          <div className="flex gap-4 px-2 py-3 transition hover:bg-gray-200">
-            <span className="w-24 flex-none">#13</span>
-            <span className="w-24 flex-none text-gray-600">8/1/25</span>
-            <span className="w-2/5 flex-auto truncate">Mr Joe Bloggs</span>
-            <span className="w-3/5 flex-auto truncate">
-              Paracetamol 500mg capsules + 1
-            </span>
-            <div className="flex w-32 flex-none items-center justify-end">
-              <span className="-my-1.5 rounded bg-gray-300 px-2 py-1.5 text-sm font-semibold leading-none text-gray-700">
-                Collected 19/1
-              </span>
-            </div>
-          </div>
+          {orders ? (
+            orders.length > 0 ? (
+              orders.map((order) => (
+                <Link
+                  key={order.id}
+                  to={`/orders/${order.id}`}
+                  className="flex gap-4 px-2 py-3 transition hover:bg-gray-200"
+                >
+                  <span className="w-24 flex-none">#{order.id}</span>
+                  <span className="w-24 flex-none text-gray-600">
+                    {dayjs(order.createdAt).format("DD/MM/YY")}
+                  </span>
+                  <span className="w-2/5 flex-auto truncate">
+                    {order.user.title} {order.user.firstName}{" "}
+                    {order.user.lastName}
+                  </span>
+                  <span className="w-3/5 flex-auto truncate">
+                    Paracetamol 500mg capsules + 1
+                  </span>
+                  <div className="flex w-32 flex-none items-center justify-end">
+                    <StatusTag status={order.status} />
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <p className="px-2 py-3 text-sm text-gray-500">No orders</p>
+            )
+          ) : (
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="flex h-12 items-center gap-4 px-2">
+                <div className="flex w-24 flex-none items-center">
+                  <div className="h-4 w-full max-w-8 animate-pulse rounded bg-gray-200"></div>
+                </div>
+                <div className="flex w-24 flex-none items-center">
+                  <div className="h-4 w-full max-w-16 animate-pulse rounded bg-gray-200"></div>
+                </div>
+                <div className="flex w-2/5 flex-auto items-center">
+                  <div className="h-4 w-full max-w-28 animate-pulse rounded bg-gray-200"></div>
+                </div>
+                <div className="flex w-3/5 flex-auto items-center">
+                  <div className="h-4 w-full max-w-36 animate-pulse rounded bg-gray-200"></div>
+                </div>
+                <div className="flex w-32 flex-none items-center justify-end">
+                  <div className="h-6 w-full max-w-20 animate-pulse rounded bg-gray-200"></div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

@@ -101,7 +101,7 @@ export const orderRelations = relations(orders, ({ one }) => ({
 export const orderCollections = pgTable("order_collections", {
   orderId: integer("order_id")
     .primaryKey()
-    .references(() => orders.id),
+    .references(() => orders.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   collectedBy: integer("collected_by")
     .notNull()

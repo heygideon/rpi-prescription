@@ -7,6 +7,7 @@ import {
   MagnifyingGlass,
 } from "@phosphor-icons/react";
 import { trpc } from "@repo/trpc";
+import dayjs from "@/lib/dayjs";
 import { Link } from "react-router";
 
 export default function OrdersHome() {
@@ -68,7 +69,9 @@ export default function OrdersHome() {
                 className="flex gap-4 px-2 py-3 transition hover:bg-gray-200"
               >
                 <span className="w-24 flex-none">#{order.id}</span>
-                <span className="w-24 flex-none text-gray-600">24/1/25</span>
+                <span className="w-24 flex-none text-gray-600">
+                  {dayjs(order.createdAt).format("DD/MM/YY")}
+                </span>
                 <span className="w-2/5 flex-auto truncate">
                   {order.user.title} {order.user.firstName}{" "}
                   {order.user.lastName}

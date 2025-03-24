@@ -13,7 +13,8 @@ This is the backend API that the app talks to. It can be run anywhere - on the P
 
 Make sure you have Node.js and pnpm installed, then run:
 
-```
+```sh
+# cd api
 pnpm install
 ```
 
@@ -46,4 +47,4 @@ pnpm dev
 ```
 
 > [!TIP]
-> You can run `pnpm dev` in the root folder to just run everything at once.
+> You can run `pnpm dev` in the root folder to just run everything at once _(excl. Bluetooth server)_.

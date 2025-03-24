@@ -16,7 +16,8 @@ This is the mobile app, running on consumers' devices.
 
 Make sure you have Node.js and pnpm installed, then run:
 
-```
+```sh
+# cd app
 pnpm install
 pnpm dev
 ```
@@ -32,4 +33,4 @@ PUBLIC_RENDER_API_URL="http://my-api-somewhere.com"
 ```
 
 > [!TIP]
-> You can run `pnpm dev` in the root folder to just run everything at once.
+> You can run `pnpm dev` in the root folder to just run everything at once _(excl. Bluetooth server)_.

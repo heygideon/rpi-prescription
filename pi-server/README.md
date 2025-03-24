@@ -12,7 +12,8 @@ This is the code that runs on the Raspberry Pi, that communicates with the app +
 > [!WARNING]
 > This works best on an actual Raspberry Pi (sorry)
 
-```
-pnpm --ignore-workspace install
+```sh
+# cd pi-server
+pnpm install
 sudo node ./index.js
 ```

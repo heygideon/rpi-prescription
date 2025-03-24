@@ -1,10 +1,10 @@
 import { z } from "zod";
 import db from "../../db";
-import { publicProcedure, router } from "../../lib/trpc";
+import { authProcedure, router } from "../../lib/trpc";
 import { desc, eq } from "drizzle-orm";
 
 const adminOrdersRouter = router({
-  getAll: publicProcedure.query(async () => {
+  getAll: authProcedure.query(async () => {
     await new Promise((r) => setTimeout(r, 500));
 
     return await db.query.orders.findMany({
@@ -16,7 +16,7 @@ const adminOrdersRouter = router({
       orderBy: [desc(db.orders.createdAt), db.orders.id],
     });
   }),
-  getOne: publicProcedure
+  getOne: authProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
       await new Promise((r) => setTimeout(r, 500));
@@ -31,7 +31,7 @@ const adminOrdersRouter = router({
       });
     }),
 
-  prepare: publicProcedure
+  prepare: authProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
       await new Promise((r) => setTimeout(r, 500));

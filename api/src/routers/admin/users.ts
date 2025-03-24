@@ -1,10 +1,10 @@
 import { eq } from "drizzle-orm";
 import db from "../../db";
-import { publicProcedure, router } from "../../lib/trpc";
+import { authProcedure, router } from "../../lib/trpc";
 import { z } from "zod";
 
 const adminUsersRouter = router({
-  getAll: publicProcedure.query(async () => {
+  getAll: authProcedure.query(async () => {
     await new Promise((r) => setTimeout(r, 500));
 
     return await db.query.users.findMany({
@@ -18,7 +18,7 @@ const adminUsersRouter = router({
       orderBy: db.users.id,
     });
   }),
-  getOne: publicProcedure
+  getOne: authProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
       await new Promise((r) => setTimeout(r, 500));

@@ -64,6 +64,11 @@
     }
   }
 
+  .bg-noise {
+    /* https://rsbuild.dev/guide/basic/static-assets */
+    background-image: url("@/assets/noise.png");
+  }
+
   .bg-stripes-used {
     background-image: repeating-linear-gradient(
       -45deg,

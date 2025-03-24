@@ -20,28 +20,36 @@ import CounterUserLayout from "./routes/counter/user/_layout";
 import CounterUserHome from "./routes/counter/user/home";
 import CounterUserOrder from "./routes/counter/user/order";
 import OrderPrepare from "./routes/orders/order/prepare";
+import AuthLayout from "./routes/_auth";
+import Login from "./routes/auth/login";
+import LoginLayout from "./routes/auth/_layout";
 
 export const AppRoutes = () => (
   <Routes>
-    <Route element={<AppLayout />}>
-      <Route index element={<Home />} />
-      <Route path="orders" element={<OrdersHome />} />
-      <Route path="orders/:id" element={<OrderLayout />}>
-        <Route index element={<OrderHome />} />
-        <Route path="prepare" element={<OrderPrepare />} />
+    <Route element={<AuthLayout />}>
+      <Route element={<AppLayout />}>
+        <Route index element={<Home />} />
+        <Route path="orders" element={<OrdersHome />} />
+        <Route path="orders/:id" element={<OrderLayout />}>
+          <Route index element={<OrderHome />} />
+          <Route path="prepare" element={<OrderPrepare />} />
+        </Route>
+        <Route path="users" element={<UsersHome />} />
+        <Route path="users/:id" element={<UserLayout />}>
+          <Route index element={<UserOrders />} />
+          <Route path="prescriptions" element={<UserPrescriptions />} />
+          <Route path="about" element={<UserAbout />} />
+        </Route>
+        <Route path="lockers" element={<LockersHome />} />
+        <Route path="counter" element={<CounterHome />} />
+        <Route path="counter/user/:userId" element={<CounterUserLayout />}>
+          <Route index element={<CounterUserHome />} />
+          <Route path="order/:orderId" element={<CounterUserOrder />} />
+        </Route>
       </Route>
-      <Route path="users" element={<UsersHome />} />
-      <Route path="users/:id" element={<UserLayout />}>
-        <Route index element={<UserOrders />} />
-        <Route path="prescriptions" element={<UserPrescriptions />} />
-        <Route path="about" element={<UserAbout />} />
-      </Route>
-      <Route path="lockers" element={<LockersHome />} />
-      <Route path="counter" element={<CounterHome />} />
-      <Route path="counter/user/:userId" element={<CounterUserLayout />}>
-        <Route index element={<CounterUserHome />} />
-        <Route path="order/:orderId" element={<CounterUserOrder />} />
-      </Route>
+    </Route>
+    <Route path="auth" element={<LoginLayout />}>
+      <Route index element={<Login />} />
     </Route>
   </Routes>
 );

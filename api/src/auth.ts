@@ -44,6 +44,7 @@ const authRoute = new Hono()
         user: {
           firstName: user.firstName,
           lastName: user.lastName,
+          email: user.email,
           phoneNumberPartial: user.phoneNumber.slice(-4),
         },
       });

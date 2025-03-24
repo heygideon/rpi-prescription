@@ -2,9 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@property --progress {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
 @layer base {
   html,
-  body {
+  body,
+  #root {
     @apply h-full select-none bg-gray-100;
     color-scheme: light;
   }
@@ -57,6 +64,11 @@
     }
   }
 
+  .bg-noise {
+    /* https://rsbuild.dev/guide/basic/static-assets */
+    background-image: url("@/assets/noise.png");
+  }
+
   .bg-stripes-used {
     background-image: repeating-linear-gradient(
       -45deg,
@@ -65,5 +77,23 @@
       transparent 1px,
       transparent 10px
     );
+  }
+
+  .animate-conic-progress {
+    --progress: 0%;
+    background-image: conic-gradient(
+      currentColor var(--progress),
+      transparent 0 var(--progress)
+    );
+    animation: conic-progress 0.5s ease-out forwards;
+  }
+
+  @keyframes conic-progress {
+    0% {
+      --progress: 0%;
+    }
+    100% {
+      --progress: 100%;
+    }
   }
 }

@@ -1,7 +1,12 @@
-import type { Route } from "./+types/order";
 import paracetamolSrc from "@/assets/paracetamol.png";
+import { useParams } from "react-router";
 
-export default function CounterUserOrder({ params }: Route.ComponentProps) {
+export default function CounterUserOrder() {
+  const params = useParams<{
+    userId: string;
+    orderId: string;
+  }>();
+
   return (
     <>
       <div className="p-8">

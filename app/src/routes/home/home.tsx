@@ -52,27 +52,32 @@ export default function Home() {
           </h2>
           <div className="mt-3 space-y-3">
             {orders ? (
-              orders.map(({ user, ...order }) => (
-                <Link
-                  key={order.id}
-                  to={href("/prescription/:id", { id: order.id.toString() })}
-                  className="block rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75"
-                >
-                  <h3 className="text-lg font-bold tracking-tight">
-                    #{order.id} / {user.title} {user.firstName} {user.lastName}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Paracetamol 500mg capsules + 2
-                  </p>
-                  <div className="mt-1.5 flex items-baseline">
-                    <StatusTag status={order.status} />
-                    <div className="flex-1"></div>
-                    {/* <span className="text-sm text-red-700">
+              orders.length > 0 ? (
+                orders.map(({ user, ...order }) => (
+                  <Link
+                    key={order.id}
+                    to={href("/prescription/:id", { id: order.id.toString() })}
+                    className="block rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75"
+                  >
+                    <h3 className="text-lg font-bold tracking-tight">
+                      #{order.id} / {user.title} {user.firstName}{" "}
+                      {user.lastName}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Paracetamol 500mg capsules + 2
+                    </p>
+                    <div className="mt-1.5 flex items-baseline">
+                      <StatusTag status={order.status} />
+                      <div className="flex-1"></div>
+                      {/* <span className="text-sm text-red-700">
                     expires in 2 days
                   </span> */}
-                  </div>
-                </Link>
-              ))
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <p className="text-gray-600">No orders</p>
+              )
             ) : (
               <div className="h-28 animate-pulse rounded-md bg-gray-200"></div>
             )}
@@ -84,27 +89,32 @@ export default function Home() {
           </h2>
           <div className="mt-3 space-y-3">
             {collectedOrders ? (
-              collectedOrders.map(({ user, ...order }) => (
-                <Link
-                  key={order.id}
-                  to={href("/prescription/:id", { id: order.id.toString() })}
-                  className="block rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75"
-                >
-                  <h3 className="text-lg font-bold tracking-tight">
-                    #{order.id} / {user.title} {user.firstName} {user.lastName}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Paracetamol 500mg capsules + 2
-                  </p>
-                  <div className="mt-1.5 flex items-baseline">
-                    <StatusTag status={order.status} />
-                    <div className="flex-1"></div>
-                    {/* <span className="text-sm text-red-700">
+              collectedOrders.length > 0 ? (
+                collectedOrders.map(({ user, ...order }) => (
+                  <Link
+                    key={order.id}
+                    to={href("/prescription/:id", { id: order.id.toString() })}
+                    className="block rounded-md border border-gray-300 bg-white p-4 shadow-sm transition active:scale-95 active:opacity-75"
+                  >
+                    <h3 className="text-lg font-bold tracking-tight">
+                      #{order.id} / {user.title} {user.firstName}{" "}
+                      {user.lastName}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Paracetamol 500mg capsules + 2
+                    </p>
+                    <div className="mt-1.5 flex items-baseline">
+                      <StatusTag status={order.status} />
+                      <div className="flex-1"></div>
+                      {/* <span className="text-sm text-red-700">
                     expires in 2 days
                   </span> */}
-                  </div>
-                </Link>
-              ))
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <p className="text-gray-600">No orders</p>
+              )
             ) : (
               <div className="h-28 animate-pulse rounded-md bg-gray-200"></div>
             )}

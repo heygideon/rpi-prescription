@@ -1,6 +1,6 @@
 import db from "../db";
 import { orderStatusEnum } from "../db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { init } from "@paralleldrive/cuid2";
 import { sha256 } from "hono/utils/crypto";
@@ -23,7 +23,7 @@ const prescriptionsRouter = router({
           .default([...orderStatusEnum.enumValues]),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       await new Promise((r) => setTimeout(r, 500));
       const rows = await db.query.orders.findMany({
         with: {
@@ -31,7 +31,10 @@ const prescriptionsRouter = router({
             columns: { title: true, firstName: true, lastName: true },
           },
         },
-        where: inArray(db.orders.status, input.status),
+        where: and(
+          eq(db.orders.userId, ctx.user.id),
+          inArray(db.orders.status, input.status)
+        ),
       });
 
       return rows.toSorted(
@@ -51,11 +54,29 @@ const prescriptionsRouter = router({
       await new Promise((r) => setTimeout(r, 500));
       const row = await db.query.orders.findFirst({
         where: eq(db.orders.id, input.id),
+        with: {
+          user: {
+            columns: { title: true, firstName: true, lastName: true },
+          },
+        },
       });
       if (!row) throw new TRPCError({ code: "NOT_FOUND" });
 
       return row;
     }),
+
+  new: authProcedure.mutation(async ({ ctx }) => {
+    await new Promise((r) => setTimeout(r, 500));
+    const [row] = await db
+      .insert(db.orders)
+      .values({
+        userId: ctx.user.id,
+        status: "preparing",
+      })
+      .returning();
+
+    return { success: true, order: row };
+  }),
 
   collect: {
     generateCode: authProcedure
@@ -96,7 +117,7 @@ const prescriptionsRouter = router({
             codeHash: codeHash!,
             expiresAt,
             collectedBy: ctx.user.id,
-            isAboutToCollect: false,
+            // isAboutToCollect: false,
           })
           .onConflictDoUpdate({
             target: [db.orderCollections.orderId],
@@ -104,7 +125,7 @@ const prescriptionsRouter = router({
               codeHash: codeHash!,
               expiresAt,
               collectedBy: ctx.user.id,
-              isAboutToCollect: false,
+              // isAboutToCollect: false,
             },
           });
 
@@ -117,33 +138,33 @@ const prescriptionsRouter = router({
         return { code };
       }),
 
-    beforeUnlock: authProcedure
-      .input(
-        z.object({
-          id: z.coerce.number(),
-        })
-      )
-      .mutation(async ({ input }) => {
-        await new Promise((r) => setTimeout(r, 500));
-        const orderCollection = await db.query.orderCollections.findFirst({
-          where: eq(db.orderCollections.orderId, input.id),
-        });
-        if (!orderCollection) throw new TRPCError({ code: "NOT_FOUND" });
+    // beforeUnlock: authProcedure
+    // .input(
+    //   z.object({
+    //     id: z.coerce.number(),
+    //   })
+    // )
+    // .mutation(async ({ input }) => {
+    //   await new Promise((r) => setTimeout(r, 500));
+    //   const orderCollection = await db.query.orderCollections.findFirst({
+    //     where: eq(db.orderCollections.orderId, input.id),
+    //   });
+    //   if (!orderCollection) throw new TRPCError({ code: "NOT_FOUND" });
 
-        await db
-          .update(db.orderCollections)
-          .set({ isAboutToCollect: true })
-          .where(eq(db.orderCollections.orderId, input.id));
+    //   await db
+    //     .update(db.orderCollections)
+    //     .set({ isAboutToCollect: true })
+    //     .where(eq(db.orderCollections.orderId, input.id));
 
-        console.log("");
-        console.log(
-          chalk.bold.yellow(`About to unlock #${orderCollection.orderId}`)
-        );
-        console.log(chalk.gray(" | Set isAboutToCollect to true"));
-        console.log("");
+    //   console.log("");
+    //   console.log(
+    //     chalk.bold.yellow(`About to unlock #${orderCollection.orderId}`)
+    //   );
+    //   console.log(chalk.gray(" | Set isAboutToCollect to true"));
+    //   console.log("");
 
-        return { success: true };
-      }),
+    //   return { success: true };
+    // }),
 
     testUnlock: authProcedure
       .input(
@@ -180,7 +201,10 @@ const prescriptionsRouter = router({
           .where(eq(db.orderCollections.orderId, id));
         await db
           .update(db.orders)
-          .set({ status: "collected", collectedAt: new Date() })
+          .set({
+            status: "collected",
+            //  collectedAt: new Date()
+          })
           .where(eq(db.orders.id, id));
 
         console.log("");
@@ -202,7 +226,10 @@ const prescriptionsRouter = router({
           // revert updates to order
           await db
             .update(db.orders)
-            .set({ status: "ready", collectedAt: null })
+            .set({
+              status: "ready",
+              // collectedAt: null
+            })
             .where(eq(db.orders.id, id));
           console.log("");
           console.log(chalk.gray(` | order status reverted to ready`));

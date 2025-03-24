@@ -21,6 +21,7 @@ import clsx from "clsx";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc } from "@repo/trpc";
 import paracetamolSrc from "@/assets/paracetamol.png";
+import ibuprofenSrc from "@/assets/ibuprofen.png";
 import {
   BleClient,
   type BleDevice,
@@ -130,9 +131,9 @@ function StageCollect({
     mutationFn: async () => {
       if (!device) throw new Error("No locker");
 
-      await queryUtils.client.prescriptions.collect.beforeUnlock.mutate({
-        id: parseInt(params.id!),
-      });
+      // await queryUtils.client.prescriptions.collect.beforeUnlock.mutate({
+      //   id: parseInt(params.id!),
+      // });
 
       const bleConnectTime = performance.now();
       await BleClient.connect(device.deviceId);
@@ -216,27 +217,27 @@ function StageCollect({
         <div>
           <h3 className="mb-2 flex items-baseline justify-between text-xl tracking-tight">
             <span className="font-bold">Locker</span>
-            <span className="text-lg text-gray-600">B4</span>
+            <span className="text-lg text-gray-600">A4</span>
           </h3>
           <div className="grid grid-cols-4 gap-3">
-            {Array.from({ length: 12 }).map((_, i) => (
+            {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
                 className={clsx(
                   "flex items-center justify-center rounded",
-                  i === 7
+                  i === 3
                     ? "-m-1 h-14 bg-gradient-to-br from-emerald-600 to-emerald-700"
                     : "h-12 border border-gray-300",
                 )}
               >
                 <span
                   className={clsx(
-                    i === 7
+                    i === 3
                       ? "font-semibold text-white"
                       : "text-sm text-gray-500",
                   )}
                 >
-                  {["A", "B", "C"][Math.floor(i / 4)] + ((i % 4) + 1)}
+                  A{(i % 4) + 1}
                 </span>
               </div>
             ))}
@@ -245,26 +246,27 @@ function StageCollect({
         <div>
           <h3 className="mb-2 text-xl font-bold tracking-tight">Items</h3>
           <div className="divide-y divide-gray-200 border-t border-gray-200">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="relative flex gap-3 py-2">
-                <span className="absolute -left-1 top-1 grid size-6 place-items-center rounded-full bg-gray-300 text-sm font-semibold leading-none">
-                  2
-                </span>
-                <img
-                  src={paracetamolSrc}
-                  alt="Paracetamol"
-                  className="size-16"
-                />
-                <div className="flex min-w-0 flex-1 flex-col justify-center">
-                  <h3 className="truncate text-lg font-semibold tracking-tight">
-                    Paracetamol
-                  </h3>
-                  <p className="truncate text-sm text-gray-600">
-                    500mg capsules
-                  </p>
-                </div>
+            <div className="relative flex gap-3 py-2">
+              <img src={paracetamolSrc} alt="Paracetamol" className="size-16" />
+              <div className="flex min-w-0 flex-1 flex-col justify-center">
+                <h3 className="truncate text-lg font-semibold tracking-tight">
+                  Paracetamol
+                </h3>
+                <p className="truncate text-sm text-gray-600">500mg capsules</p>
               </div>
-            ))}
+            </div>
+            <div className="relative flex gap-3 py-2">
+              <span className="absolute -left-1 top-1 grid size-6 place-items-center rounded-full bg-gray-300 text-sm font-semibold leading-none">
+                2
+              </span>
+              <img src={ibuprofenSrc} alt="Ibuprofen" className="size-16" />
+              <div className="flex min-w-0 flex-1 flex-col justify-center">
+                <h3 className="truncate text-lg font-semibold tracking-tight">
+                  Ibuprofen
+                </h3>
+                <p className="truncate text-sm text-gray-600">200mg capsules</p>
+              </div>
+            </div>
           </div>
         </div>
         <div className="">

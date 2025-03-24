@@ -30,6 +30,9 @@ export const users = authSchema.table("users", {
   passwordHash: text("password_hash").notNull(),
   phoneNumber: text("phone_number").notNull(),
 });
+export const usersRelations = relations(users, ({ many }) => ({
+  orders: many(orders),
+}));
 
 export const verificationCodes = authSchema.table("verification_codes", {
   id: text("id").notNull().primaryKey(),
@@ -73,28 +76,41 @@ export const orderStatusEnum = pgEnum("order_status", [
 
 export const orders = pgTable("orders", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  status: orderStatusEnum("status").notNull().default("checking"),
+
+  // TODO: remove
+  collectedAt: timestamp("collected_at"),
+
   userId: integer("user_id")
     .notNull()
     .references(() => users.id),
-  status: orderStatusEnum("status").notNull().default("checking"),
-  collectedAt: timestamp("collected_at"),
+
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 export const orderRelations = relations(orders, ({ one }) => ({
   user: one(users, {
     fields: [orders.userId],
     references: [users.id],
   }),
+  orderCollection: one(orderCollections, {
+    fields: [orders.id],
+    references: [orderCollections.orderId],
+  }),
 }));
 
 export const orderCollections = pgTable("order_collections", {
   orderId: integer("order_id")
     .primaryKey()
-    .references(() => orders.id),
+    .references(() => orders.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   collectedBy: integer("collected_by")
     .notNull()
     .references(() => users.id),
+  collectedAt: timestamp("collected_at").notNull().defaultNow(),
+
+  // TODO: remove
   isAboutToCollect: boolean("is_about_to_collect").notNull().default(false),
+
   codeHash: text("code_hash").notNull(),
   expiresAt: timestamp("expires_at").notNull(),
 });

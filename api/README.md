@@ -32,7 +32,6 @@ JWT_SECRET="something-random"
 
 > [!NOTE]
 > If you're not using Neon, you'll need to switch the database adapter in `src/db/index.ts` - learn more [here](https://orm.drizzle.team/docs/get-started-postgresql).
-> You also may not be able to deploy to serverless functions like Netlify (which are cheaper than running your own server)
 
 Then, run this to set up your database tables and add some sample data:
 

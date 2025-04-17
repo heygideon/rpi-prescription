@@ -1,6 +1,6 @@
 import { getUnixTime, addMinutes, addDays, isBefore } from "date-fns";
 import { sign as _sign, verify as _verify } from "hono/jwt";
-import { sha256 } from "hono/utils/crypto";
+import sha256 from "@repo/sha256";
 import { z } from "zod";
 import db from "../db";
 import { init } from "@paralleldrive/cuid2";
@@ -47,7 +47,7 @@ export const Tokens = {
     const refreshToken = this._genRefreshToken();
     const refreshTokenHash = await sha256(refreshToken);
     await db.insert(db.refreshTokens).values({
-      tokenHash: refreshTokenHash!,
+      tokenHash: refreshTokenHash,
       userId: user.id,
       expiresAt: addDays(new Date(), 7),
     });
@@ -63,11 +63,11 @@ export const Tokens = {
   async refreshTokenPair(refreshToken: string) {
     const refreshTokenHash = await sha256(refreshToken);
     const row = await db.query.refreshTokens.findFirst({
-      where: eq(db.refreshTokens.tokenHash, refreshTokenHash!),
+      where: eq(db.refreshTokens.tokenHash, refreshTokenHash),
     });
     await db
       .delete(db.refreshTokens)
-      .where(eq(db.refreshTokens.tokenHash, refreshTokenHash!));
+      .where(eq(db.refreshTokens.tokenHash, refreshTokenHash));
 
     if (!row) {
       throw new Error("Invalid refresh token");
@@ -82,7 +82,7 @@ export const Tokens = {
     const refreshTokenHash = await sha256(refreshToken);
     await db
       .delete(db.refreshTokens)
-      .where(eq(db.refreshTokens.tokenHash, refreshTokenHash!));
+      .where(eq(db.refreshTokens.tokenHash, refreshTokenHash));
   },
 };
 
@@ -102,7 +102,7 @@ export const VerificationCodes = {
     await db.insert(db.verificationCodes).values({
       id,
       userId: user.id,
-      codeHash: codeHash!,
+      codeHash,
       expiresAt,
     });
 

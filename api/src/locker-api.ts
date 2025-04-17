@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { z } from "zod";
 import db from "./db";
 import { eq } from "drizzle-orm";
-import { sha256 } from "hono/utils/crypto";
+import sha256 from "@repo/sha256";
 import { isAfter } from "date-fns";
 
 const lockerApiRoute = new Hono().post(

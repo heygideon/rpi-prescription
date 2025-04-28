@@ -330,6 +330,10 @@ function Modal() {
       await BleClient.initialize();
 
       if (Capacitor.getPlatform() === "web") {
+        // stop multiple popups
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        if (signal.aborted) return null;
+
         // Cannot scan for devices on web
         return await BleClient.requestDevice({
           services: ["A07498CA-AD5B-474E-940D-16F1FBE7E8CD"],

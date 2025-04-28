@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "rsbuild dev",
-    "build": "tsc -b --noCheck && rsbuild build && cap sync",
+    "prebuild": "capacitor-assets generate",
+    "build": "tsc -b --noCheck && rsbuild build",
+    "postbuild": "cap sync",
     "build-cf": "tsc -b --noCheck && rsbuild build",
     "preview": "rsbuild preview",
     "check-types": "tsc --noEmit",
@@ -36,6 +38,7 @@
     "react-router": "^7.3.0"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^7.0.1",
     "@eslint/js": "^9.22.0",
     "@repo/api": "workspace:^",

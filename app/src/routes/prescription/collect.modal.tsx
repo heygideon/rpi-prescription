@@ -19,7 +19,7 @@ import {
   type IconProps,
   Warning,
 } from "@phosphor-icons/react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import clsx from "clsx";
@@ -35,6 +35,7 @@ import {
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import type { SignalStrength } from "./connection";
 import useLockerConnection from "./connection";
+import successSrc from "@/assets/sfx/success.ogg";
 
 function SignalIcon({
   strength,
@@ -177,6 +178,14 @@ function StageCollect({
 }) {
   const queryUtils = trpc.useUtils();
   const params = useParams<{ id: string }>();
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (audioRef.current) return;
+    audioRef.current = new Audio(successSrc);
+    audioRef.current.volume = 0.5;
+    audioRef.current.preload = "auto";
+  }, []);
 
   const {
     data,
@@ -184,7 +193,7 @@ function StageCollect({
     isPending,
   } = useMutation({
     mutationFn: async () => {
-      if (!device) throw new Error("No locker");
+      if (!device) throw new Error("No connected device");
 
       // await queryUtils.client.prescriptions.collect.beforeUnlock.mutate({
       //   id: parseInt(params.id!),
@@ -214,6 +223,7 @@ function StageCollect({
     },
     onSuccess: () => {
       Haptics.vibrate({ duration: 100 });
+      audioRef.current?.play().catch(() => {});
       queryUtils.prescriptions.invalidate();
     },
     onError: () => {

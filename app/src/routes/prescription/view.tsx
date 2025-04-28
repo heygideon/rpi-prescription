@@ -3,7 +3,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router";
 
 import paracetamolSrc from "@/assets/paracetamol.png";
 import ibuprofenSrc from "@/assets/ibuprofen.png";
-import CollectModal from "./collect-copy.modal";
+import CollectModal from "./collect.modal";
 import { StatusProgress, StatusTag } from "@/lib/status";
 import { Transition, TransitionChild } from "@headlessui/react";
 import { trpc } from "@repo/trpc";

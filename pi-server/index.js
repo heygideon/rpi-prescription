@@ -1,3 +1,5 @@
+// @ts-check
+
 import Bleno from "bleno";
 import chalk from "chalk";
 import { exec } from "child_process";
@@ -11,6 +13,31 @@ const DEVICE_NAME = "Prescription";
 // Regex for matching "id:123;code:abc"
 const codeRegex = /^id:(?<id>[0-9]+);code:(?<code>\w+)$/;
 
+/**
+ * Verifies the code and id with the server
+ * @param {Object} arg
+ * @param {string} arg.id
+ * @param {string} arg.code
+ */
+async function verifyCode({ id, code }) {
+  const res = await fetch(`${API_URL}/locker-api/verify`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id, code }),
+  });
+  if (!res.ok) {
+    throw new Error("Invalid id/code");
+  }
+
+  /**
+   * @type {{ success: true, id: number, collectedAt: string, lockerNo: string }}
+   */
+  const data = await res.json();
+  return data;
+}
+
 const prescriptionService = new Bleno.PrimaryService({
   uuid: "A07498CA-AD5B-474E-940D-16F1FBE7E8CD",
   characteristics: [
@@ -18,14 +45,15 @@ const prescriptionService = new Bleno.PrimaryService({
       uuid: "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B",
       properties: ["read", "write"],
       // secure: ["read", "write"],
-      onWriteRequest: (data, offset, withoutResponse, callback) => {
+      onWriteRequest: async (data, _offset, _withoutResponse, callback) => {
         const dataString = data.toString("utf-8");
         const match = dataString.match(codeRegex);
 
-        if (!match) {
-          console.log("");
-          console.log(chalk.red.bold("Incorrect data"));
+        console.log(chalk.yellow.bold("ᛒ Received data: " + dataString));
+
+        if (!match || !match.groups) {
           console.log(chalk.gray(` | data: ${dataString}`));
+          console.log(chalk.red.bold("x Incorrect data"));
           console.log("");
 
           callback(Bleno.Characteristic.RESULT_UNLIKELY_ERROR);
@@ -33,42 +61,44 @@ const prescriptionService = new Bleno.PrimaryService({
         }
 
         const { id, code } = match.groups;
+        console.log(chalk.gray(` | id: ${id}`));
+        console.log(chalk.gray(` | code: ${code}`));
 
-        fetch(`${API_URL}/locker-api/verify`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id, code }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("");
-            console.log(chalk.green.bold("Valid code"));
-            console.log(chalk.gray(` | data: ${dataString}`));
-            console.log(chalk.gray(` | response: ${JSON.stringify(data)}`));
-            console.log("");
+        try {
+          const verifyStart = performance.now();
+          const { lockerNo, collectedAt } = await verifyCode({ id, code });
+          console.log(
+            chalk.green(" ✓ valid! ") +
+              chalk.gray.italic(
+                `(${(performance.now() - verifyStart).toFixed(2)}ms)`
+              )
+          );
+          console.log(chalk.gray(` | locker no: ${lockerNo}`));
+          console.log(
+            chalk.gray(
+              ` | collected at: ${new Date(collectedAt).toLocaleString()}`
+            )
+          );
+          console.log("");
 
-            callback(Bleno.Characteristic.RESULT_SUCCESS);
+          callback(Bleno.Characteristic.RESULT_SUCCESS);
 
-            // TODO: this is unsafe
-            exec(`python3 ${pyPath} ${data.lockerNo}`, (err, stdout) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-              console.log(stdout);
-            });
-          })
-          .catch((error) => {
-            console.log("");
-            console.log(chalk.red.bold("Invalid id/code"));
-            console.log(chalk.gray(` | data: ${dataString}`));
-            console.log(chalk.gray(` | error: ${error}`));
-            console.log("");
-
-            callback(Bleno.Characteristic.RESULT_UNLIKELY_ERROR);
+          console.log("opening locker...");
+          exec(`python3 ${pyPath} ${lockerNo}`, (err, stdout) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+            console.log(stdout);
           });
+        } catch (e) {
+          console.log(chalk.red.bold("x Invalid id/code"));
+          console.log("");
+          console.error(e);
+          console.log("");
+
+          callback(Bleno.Characteristic.RESULT_UNLIKELY_ERROR);
+        }
       },
     }),
   ],

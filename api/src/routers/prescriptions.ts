@@ -3,7 +3,7 @@ import { orderStatusEnum } from "../db/schema";
 import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { init } from "@paralleldrive/cuid2";
-import { sha256 } from "hono/utils/crypto";
+import sha256 from "@repo/sha256";
 import chalk from "chalk";
 import { addHours, format, isAfter } from "date-fns";
 import { authProcedure, router } from "../lib/trpc";
@@ -114,7 +114,7 @@ const prescriptionsRouter = router({
           .insert(db.orderCollections)
           .values({
             orderId: id,
-            codeHash: codeHash!,
+            codeHash,
             expiresAt,
             collectedBy: ctx.user.id,
             // isAboutToCollect: false,
@@ -122,7 +122,7 @@ const prescriptionsRouter = router({
           .onConflictDoUpdate({
             target: [db.orderCollections.orderId],
             set: {
-              codeHash: codeHash!,
+              codeHash,
               expiresAt,
               collectedBy: ctx.user.id,
               // isAboutToCollect: false,

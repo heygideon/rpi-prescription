@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "com.synapse"
+    namespace "com.pharmapoint"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.synapse"
+        applicationId "com.pharmapoint"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

@@ -22,7 +22,7 @@ export default function Signup() {
         />
         <h1 className="text-3xl font-bold tracking-tight">Nice to meet you!</h1>
         <p className="mt-0.5 text-sm text-gray-600">
-          Welcome to SuperCoolApp - we're the easy and secure way to request and
+          Welcome to PharmaPoint - we're the easy and secure way to request and
           collect your prescriptions, right from your phone.
         </p>
         <p className="mt-3 font-bold">Make sure you've got ready:</p>

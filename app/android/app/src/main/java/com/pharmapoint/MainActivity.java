@@ -1,4 +1,4 @@
-package com.synapse;
+package com.pharmapoint;
 
 import com.getcapacitor.BridgeActivity;
 

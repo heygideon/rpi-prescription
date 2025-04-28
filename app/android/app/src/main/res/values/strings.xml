@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">SuperCoolApp</string>
-    <string name="title_activity_main">SuperCoolApp</string>
-    <string name="package_name">com.synapse</string>
-    <string name="custom_url_scheme">com.synapse</string>
+    <string name="app_name">PharmaPoint</string>
+    <string name="title_activity_main">PharmaPoint</string>
+    <string name="package_name">com.pharmapoint</string>
+    <string name="custom_url_scheme">com.pharmapoint</string>
 </resources>

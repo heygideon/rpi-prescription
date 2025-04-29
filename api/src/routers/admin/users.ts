@@ -5,8 +5,6 @@ import { z } from "zod";
 
 const adminUsersRouter = router({
   getAll: authProcedure.query(async () => {
-    await new Promise((r) => setTimeout(r, 500));
-
     return await db.query.users.findMany({
       columns: {
         id: true,
@@ -21,8 +19,6 @@ const adminUsersRouter = router({
   getOne: authProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
-      await new Promise((r) => setTimeout(r, 500));
-
       return await db.query.users.findFirst({
         where: eq(db.users.id, input.id),
         columns: {

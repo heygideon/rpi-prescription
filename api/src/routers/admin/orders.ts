@@ -5,8 +5,6 @@ import { desc, eq } from "drizzle-orm";
 
 const adminOrdersRouter = router({
   getAll: authProcedure.query(async () => {
-    await new Promise((r) => setTimeout(r, 500));
-
     return await db.query.orders.findMany({
       with: {
         user: {
@@ -19,8 +17,6 @@ const adminOrdersRouter = router({
   getOne: authProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
-      await new Promise((r) => setTimeout(r, 500));
-
       return await db.query.orders.findFirst({
         where: eq(db.orders.id, input.id),
         with: {
@@ -34,8 +30,6 @@ const adminOrdersRouter = router({
   prepare: authProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
-      await new Promise((r) => setTimeout(r, 500));
-
       const order = await db.query.orders.findFirst({
         where: eq(db.orders.id, input.id),
       });

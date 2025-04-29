@@ -24,7 +24,6 @@ const prescriptionsRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      await new Promise((r) => setTimeout(r, 500));
       const rows = await db.query.orders.findMany({
         with: {
           user: {
@@ -51,7 +50,6 @@ const prescriptionsRouter = router({
       })
     )
     .query(async ({ input }) => {
-      await new Promise((r) => setTimeout(r, 500));
       const row = await db.query.orders.findFirst({
         where: eq(db.orders.id, input.id),
         with: {
@@ -66,7 +64,6 @@ const prescriptionsRouter = router({
     }),
 
   new: authProcedure.mutation(async ({ ctx }) => {
-    await new Promise((r) => setTimeout(r, 500));
     const [row] = await db
       .insert(db.orders)
       .values({
@@ -87,7 +84,6 @@ const prescriptionsRouter = router({
         })
       )
       .mutation(async ({ input, ctx }) => {
-        await new Promise((r) => setTimeout(r, 500));
         const { id, postcodeHalf } = input;
 
         const order = await db.query.orders.findFirst({
@@ -175,7 +171,6 @@ const prescriptionsRouter = router({
       )
       .mutation(async ({ input }) => {
         // This is what would run on the client
-        await new Promise((r) => setTimeout(r, 500));
         const { id, code } = input;
 
         const orderCollection = await db.query.orderCollections.findFirst({

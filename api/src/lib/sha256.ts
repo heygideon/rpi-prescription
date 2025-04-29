@@ -1,5 +1,3 @@
-// Shared SHA-256 implementation for server and pi
-
 export default async function sha256(input: string) {
   const inputUint8 = new TextEncoder().encode(input);
   const hashBuffer = await crypto.subtle.digest("SHA-256", inputUint8);

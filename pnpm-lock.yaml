@@ -135,9 +135,6 @@ importers:
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
-      '@repo/sha256':
-        specifier: workspace:^
-        version: link:../packages/sha256
       '@trpc/server':
         specifier: 11.0.0
         version: 11.0.0(typescript@5.8.2)
@@ -320,8 +317,6 @@ importers:
       hono:
         specifier: ^4.6.12
         version: 4.7.5
-
-  packages/sha256: {}
 
   packages/trpc:
     dependencies:

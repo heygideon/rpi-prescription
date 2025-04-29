@@ -3,7 +3,7 @@ import { orderStatusEnum } from "../db/schema";
 import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { init } from "@paralleldrive/cuid2";
-import sha256 from "@repo/sha256";
+import sha256 from "../lib/sha256";
 import chalk from "chalk";
 import { addHours, format, isAfter } from "date-fns";
 import { authProcedure, router } from "../lib/trpc";

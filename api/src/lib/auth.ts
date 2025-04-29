@@ -1,6 +1,6 @@
 import { getUnixTime, addMinutes, addDays, isBefore } from "date-fns";
 import { sign as _sign, verify as _verify } from "hono/jwt";
-import sha256 from "@repo/sha256";
+import sha256 from "./sha256";
 import { z } from "zod";
 import db from "../db";
 import { init } from "@paralleldrive/cuid2";

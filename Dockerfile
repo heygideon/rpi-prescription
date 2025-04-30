@@ -23,6 +23,7 @@ RUN apt-get update -qq && \
 # Install node modules
 COPY pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY api/package.json ./api/
+RUN npm install -g corepack@latest
 RUN corepack enable pnpm && pnpm install --prod --frozen-lockfile
 
 # Copy application code

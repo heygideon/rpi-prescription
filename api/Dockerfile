@@ -21,10 +21,12 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
 
 # Install node modules
-COPY package.json pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY api/package.json ./api/
 RUN corepack enable pnpm && pnpm install --prod --frozen-lockfile
+
 # Copy application code
-COPY . .
+COPY api ./api
 
 # Build application
 RUN pnpm run build
@@ -41,4 +43,5 @@ COPY --from=build /app /app
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD [ "node", "dist/src/index.js" ]
+WORKDIR /app/api
+CMD [ "pnpm", "start" ]

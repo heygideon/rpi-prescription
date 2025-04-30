@@ -405,7 +405,10 @@ function Modal() {
                   </>
                 ) : (
                   <>
-                    <span className="animate-pulse text-sm text-gray-500">
+                    <div className="relative ml-1 mr-2 size-2 rounded-full bg-cyan-600">
+                      <div className="absolute inset-0 animate-ping rounded-full bg-cyan-600"></div>
+                    </div>
+                    <span className="mt-px text-sm text-gray-500">
                       Connecting to locker...
                     </span>
                   </>

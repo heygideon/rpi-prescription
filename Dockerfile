@@ -30,7 +30,7 @@ RUN corepack enable pnpm && pnpm install --prod --frozen-lockfile
 COPY api ./api
 
 # Build application
-RUN pnpm run build
+RUN pnpm --filter "@repo/api" run build
 
 # Remove development dependencies
 # RUN npm prune --omit=dev

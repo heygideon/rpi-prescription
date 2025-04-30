@@ -21,7 +21,7 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
 
 # Install node modules
-COPY pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY api/package.json ./api/
 RUN npm install -g corepack@latest
 RUN corepack enable pnpm && pnpm install --prod --frozen-lockfile

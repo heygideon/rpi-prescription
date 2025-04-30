@@ -24,13 +24,13 @@ RUN apt-get update -qq && \
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY api/package.json ./api/
 RUN npm install -g corepack@latest
-RUN corepack enable pnpm && pnpm install --prod --frozen-lockfile
+RUN corepack enable pnpm && pnpm install --prod=false --frozen-lockfile
 
 # Copy application code
 COPY api ./api
 
 # Build application
-RUN pnpm --filter "@repo/api" run build
+RUN pnpm run build
 
 # Remove development dependencies
 # RUN npm prune --omit=dev

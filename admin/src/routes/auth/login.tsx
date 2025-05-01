@@ -170,7 +170,15 @@ export default function Login() {
   }
 
   return (
-    <div className="">
+    <form
+      onSubmit={(ev) => {
+        ev.preventDefault();
+        login.mutate({
+          email,
+          password,
+        });
+      }}
+    >
       <p className="text-center text-xl font-bold tracking-tight text-emerald-700">
         PharmaPoint <span className="font-medium text-gray-600">Admin</span>
       </p>
@@ -203,13 +211,8 @@ export default function Login() {
         </div>
       </div>
       <button
+        type="submit"
         disabled={login.isPending || !email || !password}
-        onClick={() =>
-          login.mutate({
-            email,
-            password,
-          })
-        }
         className="mt-4 flex h-12 w-full items-center justify-center gap-1.5 rounded-md bg-emerald-700 font-medium text-white shadow-sm transition active:scale-95 active:bg-emerald-900 disabled:bg-gray-400"
       >
         <span>Continue</span>
@@ -218,6 +221,6 @@ export default function Login() {
       <p className="mt-3 font-medium text-emerald-700 transition active:scale-95 active:text-emerald-900">
         Forgot your password?
       </p>
-    </div>
+    </form>
   );
 }

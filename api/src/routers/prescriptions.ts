@@ -89,12 +89,22 @@ const prescriptionsRouter = router({
         const order = await db.query.orders.findFirst({
           where: eq(db.orders.id, id),
         });
+        const orderCollection = await db.query.orderCollections.findFirst({
+          where: eq(db.orderCollections.orderId, id),
+        });
+
         if (!order) throw new TRPCError({ code: "NOT_FOUND" });
-        if (order.status !== "ready")
-          throw new TRPCError({ code: "FORBIDDEN" });
+        if (!orderCollection || order.status !== "ready")
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Order not ready yet",
+          });
 
         if (!/[0-9]{1}[A-Z]{2}/.test(postcodeHalf)) {
-          throw new TRPCError({ code: "BAD_REQUEST" });
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Invalid postcode half",
+          });
         }
 
         // TODO: verify postcode half with user
@@ -103,27 +113,14 @@ const prescriptionsRouter = router({
         const codeHash = await sha256(code);
         const expiresAt = addHours(new Date(), 1);
 
-        // TODO: if order collection item does not exist, return 404
-        // to wait for a locker to be assigned
-
         await db
-          .insert(db.orderCollections)
-          .values({
-            orderId: id,
+          .update(db.orderCollections)
+          .set({
             codeHash,
             expiresAt,
             collectedBy: ctx.user.id,
-            // isAboutToCollect: false,
           })
-          .onConflictDoUpdate({
-            target: [db.orderCollections.orderId],
-            set: {
-              codeHash,
-              expiresAt,
-              collectedBy: ctx.user.id,
-              // isAboutToCollect: false,
-            },
-          });
+          .where(eq(db.orderCollections.orderId, id));
 
         console.log("");
         console.log(chalk.bold.yellow(`Generated code for #${id}`));
@@ -132,106 +129,6 @@ const prescriptionsRouter = router({
         console.log("");
 
         return { code };
-      }),
-
-    // beforeUnlock: authProcedure
-    // .input(
-    //   z.object({
-    //     id: z.coerce.number(),
-    //   })
-    // )
-    // .mutation(async ({ input }) => {
-    //   await new Promise((r) => setTimeout(r, 500));
-    //   const orderCollection = await db.query.orderCollections.findFirst({
-    //     where: eq(db.orderCollections.orderId, input.id),
-    //   });
-    //   if (!orderCollection) throw new TRPCError({ code: "NOT_FOUND" });
-
-    //   await db
-    //     .update(db.orderCollections)
-    //     .set({ isAboutToCollect: true })
-    //     .where(eq(db.orderCollections.orderId, input.id));
-
-    //   console.log("");
-    //   console.log(
-    //     chalk.bold.yellow(`About to unlock #${orderCollection.orderId}`)
-    //   );
-    //   console.log(chalk.gray(" | Set isAboutToCollect to true"));
-    //   console.log("");
-
-    //   return { success: true };
-    // }),
-
-    testUnlock: authProcedure
-      .input(
-        z.object({
-          id: z.coerce.number(),
-          code: z.string(),
-        })
-      )
-      .mutation(async ({ input }) => {
-        // This is what would run on the client
-        const { id, code } = input;
-
-        const orderCollection = await db.query.orderCollections.findFirst({
-          where: eq(db.orderCollections.orderId, id),
-        });
-        if (!orderCollection) throw new TRPCError({ code: "NOT_FOUND" });
-
-        const codeHash = await sha256(code);
-        if (codeHash !== orderCollection.codeHash) {
-          throw new TRPCError({ code: "BAD_REQUEST" });
-        }
-        if (
-          !orderCollection.expiresAt ||
-          isAfter(new Date(), orderCollection.expiresAt)
-        ) {
-          throw new TRPCError({ code: "BAD_REQUEST" });
-        }
-
-        const collectedAt = new Date();
-
-        await db
-          .delete(db.orderCollections)
-          .where(eq(db.orderCollections.orderId, id));
-        await db
-          .update(db.orders)
-          .set({
-            status: "collected",
-            //  collectedAt: new Date()
-          })
-          .where(eq(db.orders.id, id));
-
-        console.log("");
-        console.log(
-          chalk.bold.yellow(`Test unlocking #${orderCollection.orderId}`)
-        );
-        console.log(chalk.gray(` | code: ${code}`));
-        console.log(chalk.gray(` | codeHash: ${codeHash}`));
-        console.log(chalk.gray(` | savedHash: ${orderCollection.codeHash}`));
-        console.log(chalk.green(" ✓ matches"));
-        console.log(
-          chalk.gray(
-            ` | collectedAt: ${format(collectedAt, "yyyy-MM-dd HH:mm:ss")}`
-          )
-        );
-        console.log("");
-
-        setTimeout(async () => {
-          // revert updates to order
-          await db
-            .update(db.orders)
-            .set({
-              status: "ready",
-              // collectedAt: null
-            })
-            .where(eq(db.orders.id, id));
-          console.log("");
-          console.log(chalk.gray(` | order status reverted to ready`));
-          console.log("");
-        }, 2000);
-
-        return { success: true };
       }),
   },
 });

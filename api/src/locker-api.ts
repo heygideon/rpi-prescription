@@ -40,9 +40,41 @@ const lockerApiRoute = new Hono().post(
 
     const collectedAt = new Date();
 
-    // TODO: save collectedAt
+    await db
+      .update(db.orderCollections)
+      .set({
+        collectedAt,
+      })
+      .where(eq(db.orderCollections.orderId, id));
+    await db
+      .update(db.orders)
+      .set({
+        status: "collected",
+      })
+      .where(eq(db.orders.id, id));
 
-    return c.json({ success: true, id, collectedAt, lockerNo: "A1" });
+    setTimeout(async () => {
+      // Undo the collection after 5 seconds
+      await db.update(db.orderCollections).set({
+        collectedAt: null,
+        collectedBy: null,
+        codeHash: null,
+        expiresAt: null,
+      });
+      await db
+        .update(db.orders)
+        .set({
+          status: "ready",
+        })
+        .where(eq(db.orders.id, id));
+    }, 5000);
+
+    return c.json({
+      success: true,
+      id,
+      collectedAt,
+      lockerNo: orderCollection.lockerNo,
+    });
   }
 );
 

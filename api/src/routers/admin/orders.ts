@@ -28,13 +28,29 @@ const adminOrdersRouter = router({
     }),
 
   prepare: authProcedure
-    .input(z.object({ id: z.number() }))
-    .mutation(async ({ input }) => {
+    .input(
+      z.object({
+        id: z.number(),
+        lockerNo: z
+          .string()
+          .regex(/^[A-Z]\d+$/)
+          .default("A1"),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
       const order = await db.query.orders.findFirst({
         where: eq(db.orders.id, input.id),
       });
       if (!order) throw new Error("Order not found");
 
+      await db
+        .delete(db.orderCollections)
+        .where(eq(db.orderCollections.orderId, order.id));
+      await db.insert(db.orderCollections).values({
+        orderId: order.id,
+        lockerNo: input.lockerNo,
+        preparedBy: ctx.user.id,
+      });
       await db
         .update(db.orders)
         .set({

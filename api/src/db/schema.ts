@@ -77,10 +77,6 @@ export const orderStatusEnum = pgEnum("order_status", [
 export const orders = pgTable("orders", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   status: orderStatusEnum("status").notNull().default("checking"),
-
-  // TODO: remove
-  collectedAt: timestamp("collected_at"),
-
   userId: integer("user_id")
     .notNull()
     .references(() => users.id),
@@ -99,18 +95,21 @@ export const orderRelations = relations(orders, ({ one }) => ({
 }));
 
 export const orderCollections = pgTable("order_collections", {
+  // by pharmacist, when order is ready
   orderId: integer("order_id")
     .primaryKey()
     .references(() => orders.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  collectedBy: integer("collected_by")
+  preparedAt: timestamp("prepared_at").notNull().defaultNow(),
+  preparedBy: integer("prepared_by")
     .notNull()
-    .references(() => users.id),
-  collectedAt: timestamp("collected_at").notNull().defaultNow(),
+    .references(() => users.id, { onDelete: "cascade" }),
+  lockerNo: text("locker_no").notNull(),
 
-  // TODO: remove
-  isAboutToCollect: boolean("is_about_to_collect").notNull().default(false),
+  // when customer is collecting
+  codeHash: text("code_hash"),
+  expiresAt: timestamp("expires_at"),
 
-  codeHash: text("code_hash").notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
+  // when customer *has* collected
+  collectedBy: integer("collected_by").references(() => users.id),
+  collectedAt: timestamp("collected_at"),
 });

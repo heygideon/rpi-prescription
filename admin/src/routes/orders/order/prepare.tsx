@@ -138,9 +138,21 @@ export default function OrderPrepare() {
           >
             <p className="pt-4 text-xl font-semibold tracking-tight">avocet</p>
             <div className="mt-2 grid w-full max-w-lg grid-cols-4 gap-4">
-              <div className="bg-stripes-used flex flex-col items-center justify-center rounded-md border border-gray-300 bg-gray-50 p-4 text-center">
-                <p className="text-lg font-semibold text-gray-500">A1</p>
-                <p className="text-sm font-medium text-gray-400">#1</p>
+              <div
+                onClick={() => setSelectedLocker("A1")}
+                className={clsx(
+                  "flex flex-col items-center justify-center rounded-md border p-4 text-center shadow-sm ring-blue-600 transition",
+                  selectedLocker === "A1"
+                    ? "border-blue-600 bg-blue-100 ring-1"
+                    : "border-gray-300 bg-gray-100",
+                )}
+              >
+                <p className="text-lg font-semibold">A1</p>
+                {selectedLocker === "A1" ? (
+                  <p className="text-sm font-medium text-blue-700">Selected</p>
+                ) : (
+                  <p className="text-sm text-gray-600">Available</p>
+                )}
               </div>
               <div
                 onClick={() => setSelectedLocker("A2")}
@@ -160,23 +172,11 @@ export default function OrderPrepare() {
               </div>
               <div className="bg-stripes-used flex flex-col items-center justify-center rounded-md border border-gray-300 bg-gray-50 p-4 text-center">
                 <p className="text-lg font-semibold text-gray-500">A3</p>
-                <p className="text-sm font-medium text-gray-400">#2</p>
+                <p className="text-sm font-medium text-gray-400">not here</p>
               </div>
-              <div
-                onClick={() => setSelectedLocker("A4")}
-                className={clsx(
-                  "flex flex-col items-center justify-center rounded-md border p-4 text-center shadow-sm ring-blue-600 transition",
-                  selectedLocker === "A4"
-                    ? "border-blue-600 bg-blue-100 ring-1"
-                    : "border-gray-300 bg-gray-100",
-                )}
-              >
-                <p className="text-lg font-semibold">A4</p>
-                {selectedLocker === "A4" ? (
-                  <p className="text-sm font-medium text-blue-700">Selected</p>
-                ) : (
-                  <p className="text-sm text-gray-600">Available</p>
-                )}
+              <div className="bg-stripes-used flex flex-col items-center justify-center rounded-md border border-gray-300 bg-gray-50 p-4 text-center">
+                <p className="text-lg font-semibold text-gray-500">A4</p>
+                <p className="text-sm font-medium text-gray-400">not here</p>
               </div>
             </div>
             <button
@@ -244,8 +244,17 @@ export default function OrderPrepare() {
               hold to unlock
             </p>
             <button
-              disabled={!confirmedItems.every(Boolean) || complete.isPending}
-              onClick={() => complete.mutate({ id: parseInt(params.id!) })}
+              disabled={
+                !confirmedItems.every(Boolean) ||
+                complete.isPending ||
+                !selectedLocker
+              }
+              onClick={() =>
+                complete.mutate({
+                  id: parseInt(params.id!),
+                  lockerNo: selectedLocker!,
+                })
+              }
               className="mt-4 h-10 rounded-md bg-emerald-700 px-4 text-white transition hover:bg-emerald-800 active:scale-95 disabled:scale-100 disabled:bg-gray-400"
             >
               <span className="font-medium">Finish</span>

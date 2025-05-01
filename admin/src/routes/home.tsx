@@ -24,12 +24,13 @@ function Greeting() {
 }
 
 export default function Home() {
+  const { data: user } = trpc.auth.me.useQuery();
   const { data: orders, isPending } = trpc.admin.orders.getAll.useQuery();
 
   return (
     <div className="mx-auto max-w-6xl p-8">
       <h1 className="text-3xl font-bold tracking-tight">
-        <Greeting />, Jane
+        <Greeting />, {user?.firstName}
       </h1>
       <div className="mt-8">
         <h2 className="text-lg font-semibold tracking-tight">Overview</h2>

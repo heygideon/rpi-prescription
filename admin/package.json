@@ -12,6 +12,7 @@
   "dependencies": {
     "@fontsource-variable/figtree": "^5.1.2",
     "@headlessui/react": "^2.2.0",
+    "@mantine/hooks": "^7.17.1",
     "@phosphor-icons/react": "^2.1.7",
     "@repo/auth": "workspace:^",
     "@repo/trpc": "workspace:^",

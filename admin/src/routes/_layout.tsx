@@ -1,3 +1,4 @@
+import { useClickOutside } from "@mantine/hooks";
 import {
   ArrowLeft,
   Basket,
@@ -6,9 +7,12 @@ import {
   ClipboardText,
   Door,
   House,
+  SignOut,
   Users,
 } from "@phosphor-icons/react";
+import { trpc } from "@repo/trpc";
 import clsx from "clsx";
+import { useState } from "react";
 import { Link, NavLink, Outlet, useMatch, useNavigate } from "react-router";
 
 export default function AppLayout() {
@@ -17,6 +21,11 @@ export default function AppLayout() {
     end: false,
   });
   const navigate = useNavigate();
+
+  const { data: user } = trpc.auth.me.useQuery();
+
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useClickOutside(() => setShowMenu(false));
 
   return (
     <div className="flex h-full gap-2 bg-gray-100 p-2">
@@ -148,15 +157,31 @@ export default function AppLayout() {
           </Link>
         </div>
         <hr className="my-4 border-gray-300" />
-        <div className="-m-2 flex items-center gap-2 rounded-md p-2 transition hover:bg-gray-300">
-          <div className="size-8 flex-none rounded-full bg-gradient-to-br from-red-600 to-amber-600"></div>
-          <div className="min-w-0 flex-1">
-            <h4 className="text-sm font-medium leading-tight">Jane Doe</h4>
-            <p className="mt-px text-xs leading-tight text-gray-600">
-              jane@cohens.pharmacy
-            </p>
+        <div ref={menuRef} className="relative">
+          {showMenu && (
+            <div className="absolute -inset-x-2 bottom-full mb-3 rounded-lg border border-gray-300 bg-white p-1 shadow">
+              <button className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-red-700 transition hover:bg-red-200">
+                <SignOut className="size-4" />
+                <span className="font-medium">Logout</span>
+              </button>
+            </div>
+          )}
+
+          <div
+            onClick={() => setShowMenu((v) => !v)}
+            className="-m-2 flex items-center gap-2 rounded-md p-2 transition hover:bg-gray-300"
+          >
+            <div className="size-8 flex-none rounded-full bg-gradient-to-br from-red-600 to-amber-600"></div>
+            <div className="min-w-0 flex-1">
+              <h4 className="text-sm font-medium leading-tight">
+                {user?.firstName} {user?.lastName}
+              </h4>
+              <p className="mt-px text-xs leading-tight text-gray-600">
+                {user?.email}
+              </p>
+            </div>
+            <CaretUp weight="bold" className="size-4 text-gray-500" />
           </div>
-          <CaretUp weight="bold" className="size-4 text-gray-500" />
         </div>
       </div>
       <div

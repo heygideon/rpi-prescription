@@ -73,7 +73,9 @@ class Auth {
       json: { refreshToken },
     });
     if (!res.ok) {
-      throw new Error(await res.text());
+      console.error("Couldn't refresh:", await res.text());
+      this.tokens.accessToken = null;
+      this.tokens.refreshToken = null;
     }
 
     const tokens = await res.json();
@@ -117,16 +119,11 @@ class Auth {
     }
   }
   async getAccessToken() {
-    if (!this.tokens.accessToken || !this.tokens.refreshToken) {
-      throw new Error("Not logged in");
-    }
-
     // TODO: store this promise to avoid multiple refreshes / race conditions
-    if (this.shouldRefreshTokens()) {
+    if (this.tokens.refreshToken && this.shouldRefreshTokens()) {
       await this.refresh();
     }
-
-    return this.tokens.accessToken;
+    return this.tokens.accessToken ?? null;
   }
 }
 export default Auth;

@@ -18,10 +18,14 @@ export function createClient(
         url,
         async headers() {
           if (opts.auth) {
-            return {
-              Authorization: `Bearer ${await opts.auth.getAccessToken()}`,
-            };
+            const token = await opts.auth.getAccessToken();
+            if (token) {
+              return {
+                Authorization: `Bearer ${token}`,
+              };
+            }
           }
+
           return {};
         },
       }),

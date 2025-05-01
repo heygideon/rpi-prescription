@@ -211,7 +211,7 @@ export default function OrderPrepare() {
               className="group mt-4 flex items-center rounded-md border border-gray-300 bg-gray-50 p-4 shadow-sm transition active:border-gray-500"
             >
               <div className="min-w-0 flex-1">
-                <p className="font-semibold">A4</p>
+                <p className="font-semibold">{selectedLocker}</p>
                 <p className="text-sm text-gray-600">avocet</p>
               </div>
               <div className="relative size-8">

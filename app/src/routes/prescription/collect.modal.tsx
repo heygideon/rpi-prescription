@@ -178,6 +178,10 @@ function StageCollect({
 }) {
   const queryUtils = trpc.useUtils();
   const params = useParams<{ id: string }>();
+  const { data: order } = trpc.prescriptions.getOne.useQuery({
+    id: parseInt(params.id!),
+  });
+
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -258,27 +262,29 @@ function StageCollect({
         <div>
           <h3 className="mb-2 flex items-baseline justify-between text-xl tracking-tight">
             <span className="font-bold">Locker</span>
-            <span className="text-lg text-gray-600">A4</span>
+            <span className="text-lg text-gray-600">
+              {order?.orderCollection?.lockerNo}
+            </span>
           </h3>
           <div className="grid grid-cols-4 gap-3">
-            {Array.from({ length: 4 }).map((_, i) => (
+            {["A1", "A2", "A3", "A4"].map((locker) => (
               <div
-                key={i}
+                key={locker}
                 className={clsx(
                   "flex items-center justify-center rounded",
-                  i === 3
+                  locker === order?.orderCollection?.lockerNo
                     ? "-m-1 h-14 bg-gradient-to-br from-emerald-600 to-emerald-700"
                     : "h-12 border border-gray-300",
                 )}
               >
                 <span
                   className={clsx(
-                    i === 3
+                    locker === order?.orderCollection?.lockerNo
                       ? "font-semibold text-white"
                       : "text-sm text-gray-500",
                   )}
                 >
-                  A{(i % 4) + 1}
+                  {locker}
                 </span>
               </div>
             ))}

@@ -2,6 +2,7 @@ import paracetamolSrc from "@/assets/paracetamol.png";
 import ibuprofenSrc from "@/assets/ibuprofen.png";
 import { trpc } from "@repo/trpc";
 import { Link, useParams } from "react-router";
+import clsx from "clsx";
 
 export default function OrderHome() {
   const params = useParams<{ id: string }>();
@@ -19,18 +20,19 @@ export default function OrderHome() {
             <section>
               <h3 className="text-lg font-bold tracking-tight">Locker</h3>
               <div className="mt-3 grid w-full max-w-md grid-cols-4 gap-3">
-                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                  <p className="text-lg">A1</p>
-                </div>
-                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                  <p className="text-lg">A2</p>
-                </div>
-                <div className="flex flex-col items-center justify-center rounded-md border border-gray-300 p-4 text-center text-gray-500">
-                  <p className="text-lg">A3</p>
-                </div>
-                <div className="-m-1 flex flex-col items-center justify-center rounded-md bg-emerald-700 p-4 text-center text-white shadow-sm">
-                  <p className="text-xl font-semibold">A4</p>
-                </div>
+                {["A1", "A2", "A3", "A4"].map((locker) => (
+                  <div
+                    key={locker}
+                    className={clsx(
+                      "flex flex-col items-center justify-center rounded-md p-4 text-center text-gray-500",
+                      locker === order.orderCollection?.lockerNo
+                        ? "-m-0.5 bg-emerald-700 text-xl font-semibold text-white shadow-sm"
+                        : "border border-gray-300 text-lg",
+                    )}
+                  >
+                    <p className="text-lg">{locker}</p>
+                  </div>
+                ))}
               </div>
             </section>
           )}

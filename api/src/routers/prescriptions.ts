@@ -60,7 +60,11 @@ const prescriptionsRouter = router({
       });
       if (!row) throw new TRPCError({ code: "NOT_FOUND" });
 
-      return row;
+      const orderCollection = await db.query.orderCollections.findFirst({
+        where: eq(db.orderCollections.orderId, input.id),
+      });
+
+      return { ...row, orderCollection };
     }),
 
   new: authProcedure.mutation(async ({ ctx }) => {

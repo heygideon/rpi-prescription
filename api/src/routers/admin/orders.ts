@@ -17,7 +17,7 @@ const adminOrdersRouter = router({
   getOne: authProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
-      return await db.query.orders.findFirst({
+      const order = await db.query.orders.findFirst({
         where: eq(db.orders.id, input.id),
         with: {
           user: {
@@ -25,6 +25,11 @@ const adminOrdersRouter = router({
           },
         },
       });
+      const orderCollection = await db.query.orderCollections.findFirst({
+        where: eq(db.orderCollections.orderId, input.id),
+      });
+
+      return { ...order, orderCollection };
     }),
 
   prepare: authProcedure

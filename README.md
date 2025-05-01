@@ -1,3 +1,6 @@
+> <sup>oh my gosh</sup><br/>
+> **🎉 we won the 10-11 Innovation Award!!**
+
 # PharmaPoint
 
 <!-- logo would go here! -->
@@ -12,6 +15,6 @@ Entry for _PA Raspberry Pi Competition 2025_
 
 🌐 [`api/`](https://github.com/heygideon/rpi-prescription/tree/main/api) - api for the app
 
-💻 [`admin/`](https://github.com/heygideon/rpi-prescription/tree/main/admin) - admin dashboard (wip)
+💻 [`admin/`](https://github.com/heygideon/rpi-prescription/tree/main/admin) - admin dashboard
 
 📦 [`packages/`](https://github.com/heygideon/rpi-prescription/tree/main/packages)`{auth,trpc}/` - auth/api for apps, not much to see

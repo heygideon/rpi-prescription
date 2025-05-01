@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@capacitor-community/bluetooth-le": "^7.0.0",
     "@fontsource-variable/figtree": "^5.1.2",
     "@headlessui/react": "^2.2.0",
     "@phosphor-icons/react": "^2.1.7",

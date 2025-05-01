@@ -17,6 +17,9 @@ importers:
 
   admin:
     dependencies:
+      '@capacitor-community/bluetooth-le':
+        specifier: ^7.0.0
+        version: 7.0.0(@capacitor/core@7.1.0)
       '@fontsource-variable/figtree':
         specifier: ^5.1.2
         version: 5.2.6

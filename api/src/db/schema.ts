@@ -114,3 +114,13 @@ export const orderCollections = pgTable("order_collections", {
   codeHash: text("code_hash").notNull(),
   expiresAt: timestamp("expires_at").notNull(),
 });
+
+export const adminCodes = pgTable("admin_codes", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+
+  codeHash: text("code_hash").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+});

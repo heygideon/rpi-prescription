@@ -2,6 +2,13 @@ import { z } from "zod";
 import db from "../../db";
 import { authProcedure, router } from "../../lib/trpc";
 import { desc, eq } from "drizzle-orm";
+import { init } from "@paralleldrive/cuid2";
+import sha256 from "../../lib/sha256";
+import { addHours } from "date-fns";
+
+const createCollectCode = init({
+  length: 32,
+});
 
 const adminOrdersRouter = router({
   getAll: authProcedure.query(async () => {
@@ -27,6 +34,20 @@ const adminOrdersRouter = router({
       });
     }),
 
+  genCode: authProcedure.query(async ({ ctx }) => {
+    const code = createCollectCode();
+    const codeHash = await sha256(code);
+    const expiresAt = addHours(new Date(), 1);
+
+    await db.insert(db.adminCodes).values({
+      userId: ctx.user.id,
+      codeHash,
+      expiresAt,
+      // isAboutToCollect: false,
+    });
+
+    return { code };
+  }),
   prepare: authProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
